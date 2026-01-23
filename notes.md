@@ -26,6 +26,11 @@
 ## Invariants
 
 - **Flow**: QR Scan -> WhatsApp Identity -> Feedback -> Coupon -> Next Visit Redemption.
+- **Feedback Logic (Option 1)**:
+  - 0-3 Stars: Private feedback only.
+  - 4-5 Stars: Auto-save, toast "Coupon added", and redirect to Google Maps (if link exists).
+  - **Invariant**: ALL valid feedback gets a coupon.
+  - **Notification**: WhatsApp message sent with coupon details (async).
 - **Sudo Page**: Hardcoded access, zero polish, operational safety only.
 - **No Microservices**: Keep it simple.
 
