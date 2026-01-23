@@ -12,6 +12,10 @@ class Cafe(Base):
     # Simple auth for staff/owners for now
     hashed_password = Column(String, nullable=False) 
     
+    # Metadata for Option 1 Flow
+    google_maps_link = Column(String, nullable=True) # For 4-5 star redirect
+    reward_text = Column(String, default="10% off on your next visit", nullable=True) # Nullable for migration safety
+
     feedbacks = relationship("Feedback", back_populates="cafe")
     coupons = relationship("Coupon", back_populates="cafe")
 
