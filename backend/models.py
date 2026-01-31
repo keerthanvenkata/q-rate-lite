@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, Text
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
-from database import Base
+from .database import Base
 
 class Cafe(Base):
     __tablename__ = "cafes"
