@@ -17,6 +17,10 @@ def verify_redemption():
     cafe.hashed_password = "staff-secret"
     db.commit()
 
+    # Clean up previous test run
+    db.query(Coupon).filter(Coupon.code == "REDEEM123").delete()
+    db.commit()
+
     # Create a fresh coupon
     coupon = Coupon(cafe_id=cafe.id, customer_phone="919000000009", code="REDEEM123", status="issued")
     db.add(coupon)
