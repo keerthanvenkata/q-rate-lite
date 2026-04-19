@@ -57,3 +57,39 @@ export async function redeemCoupon(data: RedeemData): Promise<RedeemResponse> {
 
   return response.json();
 }
+
+export interface AdminAuthData {
+  cafe_id: number;
+  passcode: string;
+}
+
+export interface FeedbackItem {
+  id: number;
+  rating: number;
+  comment?: string;
+  customer_phone: string;
+  created_at: string;
+}
+
+export interface AdminDataResponse {
+  total_feedback: number;
+  average_rating: number;
+  recent_feedbacks: FeedbackItem[];
+}
+
+export async function fetchAdminDashboard(data: AdminAuthData): Promise<AdminDataResponse> {
+  const response = await fetch(`${API_BASE_URL}/admin/dashboard`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to fetch dashboard");
+  }
+
+  return response.json();
+}

@@ -1,11 +1,12 @@
 from fastapi import FastAPI
-from routers import auth, feedback, coupon
+from routers import auth, feedback, coupon, admin
 
 app = FastAPI(title="Q-Rate Lite")
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(feedback.router, prefix="/feedback", tags=["feedback"])
 app.include_router(coupon.router, prefix="/coupon", tags=["coupon"])
+app.include_router(admin.router, prefix="/admin", tags=["admin"])
 
 @app.get("/")
 def read_root():
