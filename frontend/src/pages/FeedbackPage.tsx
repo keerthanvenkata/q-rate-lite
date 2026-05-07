@@ -10,6 +10,7 @@ export default function FeedbackPage() {
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [comment, setComment] = useState("");
+  const [optIn, setOptIn] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<FeedbackResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +34,7 @@ export default function FeedbackPage() {
     setError(null);
     setIsSubmitting(true);
     try {
-      const data = await submitFeedback({ token, rating, comment: comment.trim() || undefined });
+      const data = await submitFeedback({ token, rating, comment: comment.trim() || undefined, marketing_opt_in: optIn });
       setResult(data);
       if (data.redirect_url) {
         // Option 1 Logic: Brief toast/message, then redirect to Google
@@ -120,6 +121,20 @@ export default function FeedbackPage() {
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
               />
+            </div>
+
+            {/* Opt-in Checkbox */}
+            <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-100">
+              <input
+                type="checkbox"
+                id="optIn"
+                className="w-5 h-5 rounded text-amber-600 focus:ring-amber-500 border-gray-300"
+                checked={optIn}
+                onChange={(e) => setOptIn(e.target.checked)}
+              />
+              <label htmlFor="optIn" className="text-sm text-gray-600">
+                Send me future offers and exclusive discounts from this cafe.
+              </label>
             </div>
 
             {error && (

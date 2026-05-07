@@ -4,6 +4,7 @@ export interface FeedbackData {
   token: string;
   rating: number;
   comment?: string;
+  marketing_opt_in: boolean;
 }
 
 export interface FeedbackResponse {

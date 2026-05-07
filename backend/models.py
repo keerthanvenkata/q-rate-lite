@@ -21,6 +21,7 @@ class Cafe(Base):
     subscription_plan = Column(String, nullable=True) # monthly, annual
     razorpay_customer_id = Column(String, nullable=True)
     plan_expiry = Column(DateTime, nullable=True)
+    marketing_credits = Column(Integer, server_default="0", default=0, nullable=False)
 
     feedbacks = relationship("Feedback", back_populates="cafe")
     coupons = relationship("Coupon", back_populates="cafe")
@@ -33,6 +34,7 @@ class Feedback(Base):
     customer_phone = Column(String, index=True, nullable=False) # WhatsApp number
     rating = Column(Integer, nullable=False) # 1-5
     comment = Column(Text, nullable=True)
+    marketing_opt_in = Column(Boolean, server_default="1", default=True, nullable=False)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     cafe = relationship("Cafe", back_populates="feedbacks")

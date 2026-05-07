@@ -11,10 +11,11 @@ from routers.auth import verify_session # Reuse the verification logic
 
 router = APIRouter()
 
-class FeedbackCreate(BaseModel):
+class FeedbackSubmit(BaseModel):
     token: str
     rating: int # 1-5
     comment: Optional[str] = None
+    marketing_opt_in: bool = True
 
 class FeedbackResponse(BaseModel):
     status: str
@@ -26,7 +27,7 @@ def generate_coupon_code():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
 
 @router.post("/submit", response_model=FeedbackResponse)
-def submit_feedback(data: FeedbackCreate, db: Session = Depends(get_db)):
+def submit_feedback(data: FeedbackSubmit, db: Session = Depends(get_db)):
     # 1. Verify User
     # We call the logic from auth directly or use the dependency?
     # For simplicity, let's just decode here or rely on specific endpoints.
@@ -69,10 +70,11 @@ def submit_feedback(data: FeedbackCreate, db: Session = Depends(get_db)):
 
     # 3. Save Feedback
     new_feedback = Feedback(
-        cafe_id=cafe_id,
+        cafe_id=cafe.id,
         customer_phone=phone,
         rating=data.rating,
-        comment=data.comment
+        comment=data.comment,
+        marketing_opt_in=data.marketing_opt_in
     )
     db.add(new_feedback)
 
