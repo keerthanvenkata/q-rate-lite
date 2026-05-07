@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, Text
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
-from .database import Base
+from database import Base
 
 class Cafe(Base):
     __tablename__ = "cafes"
@@ -15,6 +15,12 @@ class Cafe(Base):
     # Metadata for Option 1 Flow
     google_maps_link = Column(String, nullable=True) # For 4-5 star redirect
     reward_text = Column(String, default="10% off on your next visit", nullable=True) # Nullable for migration safety
+
+    # Billing & Subscriptions
+    subscription_status = Column(String, server_default="trial", default="trial", nullable=False) # trial, active, past_due, cancelled
+    subscription_plan = Column(String, nullable=True) # monthly, annual
+    razorpay_customer_id = Column(String, nullable=True)
+    plan_expiry = Column(DateTime, nullable=True)
 
     feedbacks = relationship("Feedback", back_populates="cafe")
     coupons = relationship("Coupon", back_populates="cafe")
@@ -43,3 +49,13 @@ class Coupon(Base):
     redeemed_at = Column(DateTime, nullable=True)
 
     cafe = relationship("Cafe", back_populates="coupons")
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    actor = Column(String, nullable=False) # e.g. "superadmin"
+    action = Column(String, nullable=False) # e.g. "UPDATE_SUBSCRIPTION"
+    target_cafe_id = Column(Integer, nullable=True)
+    details = Column(Text, nullable=True) # JSON dump of what changed
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
