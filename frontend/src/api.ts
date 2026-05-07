@@ -93,3 +93,35 @@ export async function fetchAdminDashboard(data: AdminAuthData): Promise<AdminDat
 
   return response.json();
 }
+
+// --- Super Admin API ---
+
+export async function fetchAllCafes(passcode: string) {
+  const response = await fetch(`${API_BASE_URL}/superadmin/cafes`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ passcode }),
+  });
+  if (!response.ok) throw new Error("Failed to load cafes");
+  return response.json();
+}
+
+export async function updateCafeSubscription(cafeId: number, passcode: string, status: string, plan: string) {
+  const response = await fetch(`${API_BASE_URL}/superadmin/cafes/${cafeId}/subscription`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ passcode, subscription_status: status, subscription_plan: plan }),
+  });
+  if (!response.ok) throw new Error("Failed to update subscription");
+  return response.json();
+}
+
+export async function fetchAuditLogs(passcode: string) {
+  const response = await fetch(`${API_BASE_URL}/superadmin/audit-logs`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ passcode }),
+  });
+  if (!response.ok) throw new Error("Failed to load audit logs");
+  return response.json();
+}

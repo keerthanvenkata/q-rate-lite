@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import FeedbackPage from './pages/FeedbackPage';
 import StaffPage from './pages/StaffPage';
 import AdminPage from './pages/AdminPage';
+import SuperAdminPage from './pages/SuperAdminPage';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Route path="/feedback" element={<FeedbackPage />} />
         <Route path="/staff" element={<StaffPage />} />
         <Route path="/sudo" element={<AdminPage />} />
+        <Route path="/superadmin" element={<SuperAdminPage />} />
       </Routes>
     </BrowserRouter>
   );
