@@ -9,28 +9,54 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str
     redirect_url: str
+    whatsapp_status: Optional[dict] = None
 
-@router.post("/login_stub", response_model=TokenResponse)
-def login_stub(phone: str, cafe_id: int):
+from routers.whatsapp import send_whatsapp_template
+import os
+
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
+@router.post("/request-feedback-link", response_model=TokenResponse)
+async def request_feedback_link(phone: str, cafe_id: int):
     """
-    STUB: Simulates a user scanning a QR code and getting a link via WhatsApp.
-    In prod, this would be a Gupshup webhook.
-    Here, it just returns the valid token.
+    Called when a user scans the QR code or staff enters their number.
+    Generates a token and sends the feedback link via Meta WhatsApp Cloud API.
     """
     if not phone or not cafe_id:
         raise HTTPException(status_code=400, detail="Phone and Cafe ID required")
     
     # Create the session token
-    # We embed cafe_id to ensure the feedback is for the right place
     token_data = {"sub": phone, "cafe_id": cafe_id}
     token = create_access_token(token_data)
     
-    # In reality, the redirect URL handles the "resume" of the flow
-    # Frontend URL e.g. /feedback?token=...
+    feedback_url = f"{FRONTEND_URL}/feedback?token={token}"
+    
+    # Send the WhatsApp message (async)
+    # The template must be approved in Meta. E.g. "feedback_request_v1"
+    # Assuming the template takes 1 variable: the feedback URL
+    components = [
+        {
+            "type": "body",
+            "parameters": [
+                {
+                    "type": "text",
+                    "text": feedback_url
+                }
+            ]
+        }
+    ]
+    
+    wa_response = await send_whatsapp_template(
+        to_phone=phone,
+        template_name="feedback_request_v1",
+        components=components
+    )
+    
     return {
         "access_token": token,
         "token_type": "bearer",
-        "redirect_url": f"/feedback?token={token}"
+        "redirect_url": feedback_url,
+        "whatsapp_status": wa_response
     }
 
 @router.get("/verify")
