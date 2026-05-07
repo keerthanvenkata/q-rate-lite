@@ -3,6 +3,7 @@ import FeedbackPage from './pages/FeedbackPage';
 import StaffPage from './pages/StaffPage';
 import AdminPage from './pages/AdminPage';
 import SuperAdminPage from './pages/SuperAdminPage';
+import MarketingPage from './pages/MarketingPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/staff" element={<StaffPage />} />
         <Route path="/sudo" element={<AdminPage />} />
         <Route path="/superadmin" element={<SuperAdminPage />} />
+        <Route path="/marketing" element={<MarketingPage />} />
       </Routes>
     </BrowserRouter>
   );
