@@ -15,8 +15,15 @@
 
 ## Key Flows
 
-1. **Feedback**: Scan QR -> WhatsApp Auth (Stub/Gupshup) -> Feedback Form -> Coupon Issued.
-2. **Redemption**: Staff Page -> Enter Coupon Code -> Mark Redeemed.
+1. **Feedback**: Scan `wa.me` QR -> Auto-Reply Webhook (Service Conversation) -> Feedback PWA -> Coupon Issued.
+2. **Redemption**: Staff Page -> Enter Cafe Passcode -> Redeem Coupon.
+3. **Super Admin**: Sudo Auth -> View Audit Logs & Manage Subscriptions.
+4. **Marketing**: Cafe Owner Auth -> Broadcast Meta Approved Templates to Opted-in Users.
+
+## Advanced Features
+- **Vercel Serverless**: The FastAPI backend is deployed natively via `api/index.py` using Vercel's Serverless environment.
+- **Audit Logs**: An immutable `audit_logs` table records all major system events (Super Admin overrides, Razorpay webhooks, Marketing blasts).
+- **Direct Meta API**: The system bypasses BSPs completely and hooks directly into the Meta WhatsApp Cloud API for dispatching templates and receiving webhooks.
 
 ## Code Standards
 

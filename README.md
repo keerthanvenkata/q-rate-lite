@@ -12,9 +12,10 @@ A "boring," reliable SaaS for independent cafés to collect private feedback and
 
 ## Tech Stack
 
-- **Backend**: FastAPI, SQLAlchemy, Alembic, Supabase (Postgres).
+- **Backend**: FastAPI, SQLAlchemy, Alembic, Supabase (Postgres). Vercel Serverless entrypoint (`api/index.py`).
 - **Frontend**: React, Vite, Tailwind CSS, PWA.
-- **Infra**: Monorepo.
+- **External APIs**: Direct Meta WhatsApp Cloud API, Razorpay Subscriptions.
+- **Infra**: Vercel (Frontend & Backend), Supabase.
 
 ## Quick Start
 
