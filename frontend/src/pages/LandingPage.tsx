@@ -345,7 +345,7 @@ export default function LandingPage() {
             <div className="flex gap-8 font-medium">
               <Link to="/privacy" className="hover:text-stone-900 dark:hover:text-white transition-colors">Privacy</Link>
               <Link to="/terms" className="hover:text-stone-900 dark:hover:text-white transition-colors">Terms</Link>
-              <a href="mailto:hello@qrate.tinkernlabs.com" className="hover:text-stone-900 dark:hover:text-white transition-colors">Contact</a>
+              <Link to="/contact" className="hover:text-stone-900 dark:hover:text-white transition-colors">Contact</Link>
             </div>
           </div>
         </footer>

@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { fetchAllCafes, updateCafeSubscription, fetchAuditLogs } from '../api';
-import { ShieldAlert, Activity, Check, FileText } from 'lucide-react';
+import { fetchAllCafes, updateCafeSubscription, fetchAuditLogs, fetchContactMessages } from '../api';
+import { ShieldAlert, Activity, Check, FileText, MessageSquare } from 'lucide-react';
 
 export default function SuperAdminPage() {
   const [passcode, setPasscode] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [cafes, setCafes] = useState<any[]>([]);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<"cafes" | "logs">("cafes");
+  const [messages, setMessages] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<"cafes" | "logs" | "messages">("cafes");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       // Fetch both to verify passcode
-      const [cafeResp, logsResp] = await Promise.all([
+      const [cafeResp, logsResp, msgResp] = await Promise.all([
         fetchAllCafes(passcode),
-        fetchAuditLogs(passcode)
+        fetchAuditLogs(passcode),
+        fetchContactMessages(passcode)
       ]);
       setCafes(cafeResp.cafes);
       setAuditLogs(logsResp.logs);
+      setMessages(msgResp.messages);
       setIsAuthenticated(true);
     } catch (err) {
       alert("Invalid Sudo Passcode");
@@ -70,6 +73,12 @@ export default function SuperAdminPage() {
           <div className="flex gap-4">
             <button onClick={() => setActiveTab("cafes")} className={`px-4 py-2 rounded-lg font-bold ${activeTab === 'cafes' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'}`}>Cafes</button>
             <button onClick={() => setActiveTab("logs")} className={`px-4 py-2 rounded-lg font-bold ${activeTab === 'logs' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'}`}>Audit Logs</button>
+            <button onClick={() => setActiveTab("messages")} className={`px-4 py-2 rounded-lg font-bold flex items-center gap-2 ${activeTab === 'messages' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'}`}>
+              Messages
+              {messages.filter(m => m.status === 'unread').length > 0 && (
+                <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">{messages.filter(m => m.status === 'unread').length}</span>
+              )}
+            </button>
           </div>
         </div>
 
@@ -118,6 +127,38 @@ export default function SuperAdminPage() {
               </div>
             ))}
             {auditLogs.length === 0 && <p className="text-slate-500">No logs generated yet.</p>}
+          </div>
+        )}
+
+        {activeTab === "messages" && (
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            {messages.length === 0 ? (
+              <div className="p-8 text-center text-slate-500 font-medium">No contact messages received.</div>
+            ) : (
+              <div className="divide-y divide-slate-100">
+                {messages.map(msg => (
+                  <div key={msg.id} className={`p-6 hover:bg-slate-50 transition-colors ${msg.status === 'unread' ? 'bg-blue-50/50' : ''}`}>
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-lg flex items-center gap-2">
+                          {msg.name} 
+                          {msg.status === 'unread' && <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded uppercase font-bold">New</span>}
+                        </h3>
+                        <p className="text-slate-500 text-sm">
+                          <a href={`mailto:${msg.email}`} className="text-blue-600 hover:underline">{msg.email}</a> 
+                          {msg.phone && <span className="ml-2">| {msg.phone}</span>}
+                          {msg.company && <span className="ml-2">| {msg.company}</span>}
+                        </p>
+                      </div>
+                      <span className="text-slate-400 text-xs font-mono">{new Date(msg.created_at).toLocaleString()}</span>
+                    </div>
+                    <div className="bg-slate-100 p-4 rounded-lg text-slate-700 whitespace-pre-wrap font-serif text-sm">
+                      {msg.message}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

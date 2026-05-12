@@ -61,3 +61,15 @@ class AuditLog(Base):
     target_cafe_id = Column(Integer, nullable=True)
     details = Column(Text, nullable=True) # JSON dump of what changed
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+class ContactMessage(Base):
+    __tablename__ = "contact_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    company = Column(String, nullable=True)
+    phone = Column(String, nullable=True)
+    message = Column(Text, nullable=False)
+    status = Column(String, server_default="unread", default="unread", nullable=False) # unread, read, archived
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))

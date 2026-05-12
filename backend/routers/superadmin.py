@@ -70,3 +70,12 @@ def get_audit_logs(data: SudoAuthRequest, db: Session = Depends(get_db)):
     
     logs = db.query(AuditLog).order_by(AuditLog.id.desc()).limit(100).all()
     return {"status": "success", "logs": logs}
+
+from models import ContactMessage
+
+@router.post("/messages")
+def get_contact_messages(data: SudoAuthRequest, db: Session = Depends(get_db)):
+    verify_sudo(data.passcode)
+    
+    messages = db.query(ContactMessage).order_by(ContactMessage.id.desc()).all()
+    return {"status": "success", "messages": messages}

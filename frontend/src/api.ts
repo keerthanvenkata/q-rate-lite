@@ -126,3 +126,31 @@ export async function fetchAuditLogs(passcode: string) {
   if (!response.ok) throw new Error("Failed to load audit logs");
   return response.json();
 }
+
+export interface ContactMessageData {
+  name: string;
+  email: string;
+  message: string;
+  company?: string;
+  phone?: string;
+}
+
+export async function submitContactMessage(data: ContactMessageData) {
+  const response = await fetch(`${API_BASE_URL}/contact/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error("Failed to submit message");
+  return response.json();
+}
+
+export async function fetchContactMessages(passcode: string) {
+  const response = await fetch(`${API_BASE_URL}/superadmin/messages`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ passcode }),
+  });
+  if (!response.ok) throw new Error("Failed to load messages");
+  return response.json();
+}

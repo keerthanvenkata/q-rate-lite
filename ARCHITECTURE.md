@@ -22,6 +22,7 @@ The backend is modularized via FastAPI Routers:
 | :--- | :--- | :--- |
 | `/whatsapp` | Listens to inbound Meta Webhooks. Parses incoming `wa.me` messages and dispatches automated template/text replies. | Meta Cloud API |
 | `/auth` | Generates secure JWT session tokens embedding the customer's phone number and `cafe_id`. | `python-jose` (JWT) |
+| `/contact` | Processes inbound public contact form submissions and stores them in the database. | N/A |
 | `/feedback` | Validates JWT tokens, saves ratings/comments, and automatically issues unique 6-character alphanumeric coupons. | SQLAlchemy |
 | `/coupon` | Used by cafe staff to verify coupon validity and mark them as "redeemed." | SQLAlchemy |
 | `/admin` | Tenant dashboard. Returns real-time feedback aggregates (avg stars, total count) and recent customer comments. | |
