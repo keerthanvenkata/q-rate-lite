@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-react';
+import { motion } from 'framer-motion';
 import { Mail, MessageSquare, Building2, User, Phone, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { submitContactMessage } from '../api';
 import { Link } from 'react-router-dom';
