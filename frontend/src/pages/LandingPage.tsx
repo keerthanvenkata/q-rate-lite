@@ -22,7 +22,6 @@ export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    // Check local storage or system preference
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
@@ -57,9 +56,7 @@ export default function LandingPage() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
+      transition: { staggerChildren: 0.1 }
     }
   };
 
@@ -129,17 +126,12 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden px-6">
-        {/* Subtle background pattern */}
         <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] dark:bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px] opacity-50"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-50 dark:from-zinc-950 to-transparent"></div>
 
         <div className="max-w-5xl mx-auto relative z-10 text-center">
-          <motion.div 
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-            className="flex flex-col items-center"
-          >
+          <motion.div initial="hidden" animate="visible" variants={staggerContainer} className="flex flex-col items-center">
+            
             <motion.div variants={fadeIn} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-sm font-semibold text-indigo-700 dark:text-indigo-300 mb-8 shadow-sm">
               <ShieldCheck className="w-4 h-4" />
               Built for High-Volume Cafés
@@ -157,7 +149,7 @@ export default function LandingPage() {
             </motion.p>
             
             <motion.div variants={fadeIn} className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-              <a href="#pricing" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-semibold text-lg hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-zinc-900/10 dark:shadow-white/10 group">
+              <a href="#pricing" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-semibold text-lg hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors flex items-center justify-center gap-2 shadow-lg group">
                 Start 14-Day Free Trial
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </a>
@@ -176,13 +168,10 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works Section */}
-      <section id="how-it-works" className="py-24 bg-white dark:bg-zinc-900/30 border-t border-zinc-200 dark:border-zinc-800/50 relative">
+      <section id="how-it-works" className="py-24 bg-white dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800/50 relative">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeIn}
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn}
             className="text-center mb-20"
           >
             <h2 className="text-3xl md:text-5xl font-bold mb-6 text-zinc-900 dark:text-white tracking-tight">Zero friction workflow.</h2>
@@ -190,14 +179,11 @@ export default function LandingPage() {
           </motion.div>
 
           <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="grid md:grid-cols-3 gap-8 relative"
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}
+            className="grid md:grid-cols-3 gap-12 relative"
           >
             {/* Connecting line for desktop */}
-            <div className="hidden md:block absolute top-[48px] left-[20%] right-[20%] h-[1px] bg-zinc-200 dark:bg-zinc-800 z-0"></div>
+            <div className="hidden md:block absolute top-[44px] left-[15%] right-[15%] h-[1px] bg-zinc-200 dark:bg-zinc-800 z-0"></div>
 
             {[
               {
@@ -220,12 +206,10 @@ export default function LandingPage() {
               }
             ].map((item, i) => (
               <motion.div key={i} variants={fadeIn} className="relative z-10 flex flex-col items-center text-center">
-                <div className="w-24 h-24 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 shadow-xl dark:shadow-2xl flex items-center justify-center mb-6 relative">
+                <div className="w-24 h-24 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl dark:shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center mb-6 relative">
                   <item.icon className="w-10 h-10 text-indigo-600 dark:text-indigo-400" strokeWidth={1.5} />
-                  <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-sm border-2 border-white dark:border-zinc-900 shadow-sm">
-                    {item.step}
-                  </div>
                 </div>
+                <div className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-2">Step {item.step}</div>
                 <h3 className="text-xl font-bold mb-3 text-zinc-900 dark:text-white">{item.title}</h3>
                 <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-xs">{item.desc}</p>
               </motion.div>
@@ -238,65 +222,54 @@ export default function LandingPage() {
       <section id="features" className="py-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeIn}
-            className="mb-16"
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn}
+            className="mb-16 text-center md:text-left"
           >
             <h2 className="text-3xl md:text-5xl font-bold mb-6 text-zinc-900 dark:text-white tracking-tight">Engineered for growth.</h2>
-            <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-xl">Every feature is designed to protect your brand reputation and drive repeat revenue.</p>
+            <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto md:mx-0">Every feature is designed to protect your brand reputation and drive repeat revenue.</p>
           </motion.div>
 
           <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px]"
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={staggerContainer}
+            className="grid grid-cols-1 lg:grid-cols-3 gap-6"
           >
             {/* Large Bento Box */}
-            <motion.div variants={fadeIn} className="md:col-span-2 md:row-span-2 p-8 md:p-12 rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md flex flex-col justify-between group overflow-hidden relative">
+            <motion.div variants={fadeIn} className="lg:col-span-2 p-8 md:p-12 rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-lg dark:shadow-none flex flex-col justify-between group overflow-hidden relative min-h-[400px]">
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-white dark:from-indigo-500/5 dark:to-zinc-900/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
+              <div className="relative z-10 flex flex-col h-full justify-center">
                 <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 flex items-center justify-center mb-8 text-indigo-600 dark:text-indigo-400">
                   <TrendingUp className="w-8 h-8" />
                 </div>
                 <h3 className="text-3xl md:text-4xl font-bold mb-4 text-zinc-900 dark:text-white tracking-tight">Boost Google Ratings Autonomously</h3>
-                <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-md leading-relaxed">
-                  Our system intelligently identifies your happiest customers and seamlessly redirects them to your Google Maps review page, burying old negative reviews over time.
+                <p className="text-zinc-600 dark:text-zinc-400 text-lg max-w-lg leading-relaxed">
+                  Our system intelligently identifies your happiest customers and seamlessly redirects them to your Google Maps review page, burying old negative reviews over time without lifting a finger.
                 </p>
               </div>
             </motion.div>
 
-            {/* Medium Bento Box */}
-            <motion.div variants={fadeIn} className="p-8 rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between group hover:border-indigo-500/30 transition-colors">
-              <div>
+            {/* Small Cards Column */}
+            <div className="flex flex-col gap-6">
+              <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-lg dark:shadow-none flex flex-col justify-center group hover:border-indigo-500/30 transition-colors">
                 <ShieldCheck className="w-10 h-10 text-indigo-600 dark:text-indigo-400 mb-6" />
                 <h3 className="text-xl font-bold mb-3 text-zinc-900 dark:text-white">Private Damage Control</h3>
                 <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Intercept 1-3 star reviews before they go public. Resolve issues directly.</p>
-              </div>
-            </motion.div>
+              </motion.div>
 
-            <motion.div variants={fadeIn} className="p-8 rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between group hover:border-indigo-500/30 transition-colors">
-              <div>
+              <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-lg dark:shadow-none flex flex-col justify-center group hover:border-indigo-500/30 transition-colors">
                 <Gift className="w-10 h-10 text-indigo-600 dark:text-indigo-400 mb-6" />
                 <h3 className="text-xl font-bold mb-3 text-zinc-900 dark:text-white">Automated Loyalty</h3>
                 <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">Issue unique, trackable discount codes to incentivize repeat visits.</p>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 bg-white dark:bg-zinc-900/30 border-t border-zinc-200 dark:border-zinc-800/50 relative">
+      <section id="pricing" className="py-24 bg-white dark:bg-zinc-900/30 border-y border-zinc-200 dark:border-zinc-800/50 relative">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeIn}
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn}
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-5xl font-bold mb-6 text-zinc-900 dark:text-white tracking-tight">Transparent pricing.</h2>
@@ -304,18 +277,15 @@ export default function LandingPage() {
           </motion.div>
 
           <motion.div 
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={fadeIn}
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeIn}
             className="max-w-lg mx-auto"
           >
-            <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl dark:shadow-2xl dark:shadow-zinc-950/50 overflow-hidden relative">
+            <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden relative">
               <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-indigo-500 to-indigo-400"></div>
               <div className="p-8 md:p-12">
                 <div className="flex justify-between items-center mb-8">
                   <h3 className="text-2xl font-bold text-zinc-900 dark:text-white">Pro License</h3>
-                  <div className="px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 text-xs font-bold rounded-full uppercase tracking-wide">
+                  <div className="px-3 py-1 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-300 text-xs font-bold rounded-full uppercase tracking-wide">
                     Flat Rate
                   </div>
                 </div>
@@ -351,10 +321,7 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="py-24 px-6 relative">
         <motion.div 
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={fadeIn}
+          initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn}
           className="max-w-5xl mx-auto rounded-[3rem] bg-indigo-600 dark:bg-indigo-600 relative overflow-hidden shadow-2xl"
         >
           {/* Subtle structural background */}
