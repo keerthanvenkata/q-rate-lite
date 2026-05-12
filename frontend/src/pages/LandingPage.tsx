@@ -59,21 +59,24 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFCF8] dark:bg-[#09090b] text-stone-900 dark:text-zinc-50 font-sans selection:bg-amber-500/30 dark:selection:bg-indigo-500/30 transition-colors duration-500 relative">
+    <div className="min-h-screen bg-[#FFFCF8] dark:bg-[#09090b] text-stone-900 dark:text-zinc-50 font-sans selection:bg-amber-500/30 dark:selection:bg-indigo-500/30 transition-colors duration-500 relative overflow-hidden">
       
       {/* Global Backgrounds */}
-      {/* Dark Mode Grid Background */}
-      <div className="hidden dark:block fixed inset-0 z-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
+      {/* Dark Mode Grid Background (Animated) */}
+      <div className="hidden dark:block fixed inset-0 z-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none animate-bg-pan"></div>
       
-      {/* Light Mode Creative Background */}
-      <div className="dark:hidden fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-100/50 via-[#FFFCF8] to-[#FFFCF8] pointer-events-none"></div>
+      {/* Light Mode Creative Background (Floating Gradient Blob) */}
+      <div className="dark:hidden fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-amber-200/40 to-orange-100/20 blur-3xl opacity-60 animate-blob"></div>
+        <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-amber-100/30 to-yellow-50/20 blur-3xl opacity-60 animate-blob" style={{ animationDelay: '2s' }}></div>
+      </div>
 
       <div className="relative z-10">
         {/* Navigation */}
         <nav className="fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-xl bg-white/60 dark:bg-zinc-950/60 border-b border-amber-100/50 dark:border-zinc-800/50">
           <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-stone-900 dark:bg-white flex items-center justify-center shadow-sm">
+              <div className="w-9 h-9 rounded-xl bg-stone-900 dark:bg-white flex items-center justify-center shadow-sm transition-transform hover:scale-105">
                 <MessageCircle className="w-5 h-5 text-[#FFFCF8] dark:text-zinc-900" />
               </div>
               <span className="text-xl font-bold tracking-tight text-stone-900 dark:text-white">Q-Rate <span className="text-stone-500 dark:text-zinc-400 font-normal">Lite</span></span>
@@ -136,7 +139,7 @@ export default function LandingPage() {
               
               <motion.h1 variants={fadeIn} className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 text-stone-900 dark:text-white leading-[1.1]">
                 Intercept negative feedback <br className="hidden md:block" />
-                <span className="text-amber-600 dark:text-indigo-400">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-600 to-amber-400 dark:from-indigo-400 dark:to-cyan-400">
                   before it hits Google.
                 </span>
               </motion.h1>
@@ -180,8 +183,8 @@ export default function LandingPage() {
                 { step: "02", icon: Smartphone, title: "WhatsApp Opens", desc: "No apps. No sign-ups. WhatsApp opens with a pre-filled message." },
                 { step: "03", icon: Gift, title: "Automated Routing", desc: "1-3 stars are kept private. 4-5 stars are pushed to Google. All get a coupon." }
               ].map((item, i) => (
-                <motion.div key={i} variants={fadeIn} className="relative z-10 flex flex-col items-center text-center">
-                  <div className="w-24 h-24 rounded-3xl bg-[#FFFBF5] dark:bg-zinc-900 border border-amber-100 dark:border-zinc-800 shadow-xl shadow-amber-900/5 dark:shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center mb-6">
+                <motion.div key={i} variants={fadeIn} className="relative z-10 flex flex-col items-center text-center group">
+                  <div className="w-24 h-24 rounded-3xl bg-[#FFFBF5] dark:bg-zinc-900 border border-amber-100 dark:border-zinc-800 shadow-xl shadow-amber-900/5 dark:shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center justify-center mb-6 group-hover:-translate-y-2 transition-transform duration-500">
                     <item.icon className="w-10 h-10 text-amber-600 dark:text-indigo-400" strokeWidth={1.5} />
                   </div>
                   <div className="text-xs font-bold text-amber-600 dark:text-indigo-400 uppercase tracking-widest mb-2">Step {item.step}</div>
@@ -203,10 +206,10 @@ export default function LandingPage() {
 
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={staggerContainer} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
-              <motion.div variants={fadeIn} className="lg:col-span-2 p-8 md:p-12 rounded-[2rem] bg-white/80 dark:bg-zinc-900/90 backdrop-blur-md border border-amber-100/50 dark:border-zinc-800 shadow-xl shadow-amber-900/5 dark:shadow-none flex flex-col justify-between group overflow-hidden relative min-h-[400px]">
+              <motion.div variants={fadeIn} className="lg:col-span-2 p-8 md:p-12 rounded-[2rem] bg-white/80 dark:bg-zinc-900/90 backdrop-blur-md border border-amber-100/50 dark:border-zinc-800 shadow-xl shadow-amber-900/5 dark:shadow-none flex flex-col justify-between group overflow-hidden relative min-h-[400px] hover:-translate-y-1 transition-transform duration-500">
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-transparent dark:from-indigo-500/5 dark:to-zinc-900/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10 flex flex-col h-full justify-center">
-                  <div className="w-16 h-16 rounded-2xl bg-[#FFF6EA] dark:bg-indigo-500/10 border border-amber-200/50 dark:border-indigo-500/20 flex items-center justify-center mb-8 text-amber-600 dark:text-indigo-400">
+                  <div className="w-16 h-16 rounded-2xl bg-[#FFF6EA] dark:bg-indigo-500/10 border border-amber-200/50 dark:border-indigo-500/20 flex items-center justify-center mb-8 text-amber-600 dark:text-indigo-400 group-hover:scale-110 transition-transform duration-500">
                     <TrendingUp className="w-8 h-8" />
                   </div>
                   <h3 className="text-3xl md:text-4xl font-bold mb-4 text-stone-900 dark:text-white tracking-tight">Boost Google Ratings Autonomously</h3>
@@ -217,14 +220,14 @@ export default function LandingPage() {
               </motion.div>
 
               <div className="flex flex-col gap-6">
-                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white/80 dark:bg-zinc-900/90 backdrop-blur-md border border-amber-100/50 dark:border-zinc-800 shadow-lg shadow-amber-900/5 dark:shadow-none flex flex-col justify-center group hover:border-amber-300/50 dark:hover:border-indigo-500/30 transition-colors">
-                  <ShieldCheck className="w-10 h-10 text-amber-600 dark:text-indigo-400 mb-6" />
+                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white/80 dark:bg-zinc-900/90 backdrop-blur-md border border-amber-100/50 dark:border-zinc-800 shadow-lg shadow-amber-900/5 dark:shadow-none flex flex-col justify-center group hover:border-amber-300/50 dark:hover:border-indigo-500/30 hover:-translate-y-1 transition-all duration-500">
+                  <ShieldCheck className="w-10 h-10 text-amber-600 dark:text-indigo-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
                   <h3 className="text-xl font-bold mb-3 text-stone-900 dark:text-white">Private Damage Control</h3>
                   <p className="text-stone-600 dark:text-zinc-400 text-sm leading-relaxed">Intercept 1-3 star reviews before they go public. Resolve issues directly.</p>
                 </motion.div>
 
-                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white/80 dark:bg-zinc-900/90 backdrop-blur-md border border-amber-100/50 dark:border-zinc-800 shadow-lg shadow-amber-900/5 dark:shadow-none flex flex-col justify-center group hover:border-amber-300/50 dark:hover:border-indigo-500/30 transition-colors">
-                  <Gift className="w-10 h-10 text-amber-600 dark:text-indigo-400 mb-6" />
+                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white/80 dark:bg-zinc-900/90 backdrop-blur-md border border-amber-100/50 dark:border-zinc-800 shadow-lg shadow-amber-900/5 dark:shadow-none flex flex-col justify-center group hover:border-amber-300/50 dark:hover:border-indigo-500/30 hover:-translate-y-1 transition-all duration-500">
+                  <Gift className="w-10 h-10 text-amber-600 dark:text-indigo-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
                   <h3 className="text-xl font-bold mb-3 text-stone-900 dark:text-white">Automated Loyalty</h3>
                   <p className="text-stone-600 dark:text-zinc-400 text-sm leading-relaxed">Issue unique, trackable discount codes to incentivize repeat visits.</p>
                 </motion.div>
@@ -242,12 +245,12 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeIn} className="max-w-lg mx-auto">
-              <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-amber-100 dark:border-zinc-800 shadow-2xl shadow-amber-900/10 overflow-hidden relative">
+              <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900 border border-amber-100 dark:border-zinc-800 shadow-2xl shadow-amber-900/10 overflow-hidden relative transition-transform hover:-translate-y-1 duration-500">
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-400 to-amber-500 dark:from-indigo-500 dark:to-indigo-400"></div>
                 <div className="p-8 md:p-12">
                   <div className="flex justify-between items-center mb-8">
                     <h3 className="text-2xl font-bold text-stone-900 dark:text-white">Pro License</h3>
-                    <div className="px-3 py-1 bg-[#FFF6EA] dark:bg-indigo-500/10 border border-amber-200/50 dark:border-indigo-500/30 text-amber-700 dark:text-indigo-300 text-xs font-bold rounded-full uppercase tracking-wide">
+                    <div className="px-3 py-1 bg-[#FFF6EA] dark:bg-indigo-500/10 border border-amber-200/50 dark:border-indigo-500/30 text-amber-700 dark:text-indigo-300 text-xs font-bold rounded-full uppercase tracking-wide shadow-sm">
                       Flat Rate
                     </div>
                   </div>
@@ -289,9 +292,9 @@ export default function LandingPage() {
               <p className="text-amber-100 dark:text-indigo-100 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
                 Join the smart cafés using Q-Rate Lite to protect their brand and turn every customer into a regular.
               </p>
-              <button className="px-8 py-4 rounded-xl bg-white text-amber-900 dark:text-indigo-900 font-bold text-lg hover:-translate-y-1 transition-transform shadow-xl flex items-center justify-center gap-2 mx-auto">
+              <button className="px-8 py-4 rounded-xl bg-white text-amber-900 dark:text-indigo-900 font-bold text-lg hover:-translate-y-1 transition-transform shadow-xl flex items-center justify-center gap-2 mx-auto group">
                 Get Started Now
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           </motion.div>
@@ -301,7 +304,7 @@ export default function LandingPage() {
         <footer className="border-t border-amber-200/60 dark:border-zinc-800/50 py-12 px-6 bg-white dark:bg-zinc-950">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-stone-500 dark:text-zinc-500">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-stone-900 dark:bg-white flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-stone-900 dark:bg-white flex items-center justify-center group-hover:scale-105 transition-transform">
                 <MessageCircle className="w-4 h-4 text-[#FFFCF8] dark:text-zinc-900" />
               </div>
               <span className="font-semibold text-stone-900 dark:text-zinc-300 text-base">Q-Rate Lite</span>
