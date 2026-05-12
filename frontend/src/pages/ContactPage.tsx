@@ -42,10 +42,15 @@ export default function ContactPage() {
     <div className="min-h-screen bg-[#FAF3E0] dark:bg-[#030303] text-stone-900 dark:text-zinc-50 font-sans selection:bg-amber-500/30 dark:selection:bg-indigo-500/30 transition-colors duration-500 relative overflow-hidden">
       
       {/* Global Backgrounds */}
-      <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#030303]">
-        <div className="absolute top-[-20%] left-[10%] w-[60%] h-[60%] rounded-full bg-indigo-600/10 blur-[150px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[150px]"></div>
-        <div className="absolute inset-0 opacity-[0.02] mix-blend-screen" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+      <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#020617]">
+        {/* Sweeping Aurora Bands */}
+        <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[40%] rounded-[100%] bg-emerald-500/15 blur-[130px] animate-blob opacity-80" style={{ transform: 'rotate(-15deg)' }}></div>
+        <div className="absolute top-[20%] right-[-20%] w-[70%] h-[50%] rounded-[100%] bg-teal-400/10 blur-[150px] animate-blob" style={{ animationDelay: '3s', transform: 'rotate(25deg)' }}></div>
+        <div className="absolute bottom-[-20%] left-[10%] w-[90%] h-[40%] rounded-[100%] bg-indigo-600/15 blur-[140px] animate-blob" style={{ animationDelay: '5s', transform: 'rotate(-5deg)' }}></div>
+        <div className="absolute top-[30%] left-[30%] w-[60%] h-[30%] rounded-[100%] bg-cyan-400/10 blur-[120px] animate-blob" style={{ animationDelay: '7s' }}></div>
+        
+        {/* Ultra-subtle SVG Noise Texture */}
+        <div className="absolute inset-0 opacity-[0.03] mix-blend-screen" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       </div>
       
       <div className="dark:hidden fixed inset-0 z-0 pointer-events-none overflow-hidden">

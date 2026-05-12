@@ -4,6 +4,7 @@ import Logo from '../components/Logo';
 import { motion } from 'framer-motion';
 import { 
   MessageCircle, 
+  MessageSquare,
   QrCode, 
   TrendingUp, 
   ShieldCheck, 
@@ -46,12 +47,12 @@ export default function LandingPage() {
     }
   };
 
-  const fadeIn = {
+  const fadeIn: any = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
   };
 
-  const staggerContainer = {
+  const staggerContainer: any = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -64,19 +65,20 @@ export default function LandingPage() {
       
       {/* Global Backgrounds */}
 
-      {/* Dark Mode Ambient Aurora & Noise Background */}
-      <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#030303]">
-        {/* Spotlights for Hero & General Atmosphere */}
-        <div className="absolute top-[-20%] left-[10%] w-[60%] h-[60%] rounded-full bg-indigo-600/10 blur-[150px] animate-blob"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[150px] animate-blob" style={{ animationDelay: '4s' }}></div>
-        <div className="absolute top-[40%] left-[60%] w-[40%] h-[40%] rounded-full bg-fuchsia-600/5 blur-[150px] animate-blob" style={{ animationDelay: '2s' }}></div>
+      {/* Dark Mode Ambient Aurora Borealis & Noise Background */}
+      <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#020617]">
+        {/* Sweeping Aurora Bands */}
+        <div className="absolute top-[-10%] left-[-10%] w-[80%] h-[40%] rounded-[100%] bg-emerald-500/15 blur-[130px] animate-blob opacity-80" style={{ transform: 'rotate(-15deg)' }}></div>
+        <div className="absolute top-[20%] right-[-20%] w-[70%] h-[50%] rounded-[100%] bg-teal-400/10 blur-[150px] animate-blob" style={{ animationDelay: '3s', transform: 'rotate(25deg)' }}></div>
+        <div className="absolute bottom-[-20%] left-[10%] w-[90%] h-[40%] rounded-[100%] bg-indigo-600/15 blur-[140px] animate-blob" style={{ animationDelay: '5s', transform: 'rotate(-5deg)' }}></div>
+        <div className="absolute top-[30%] left-[30%] w-[60%] h-[30%] rounded-[100%] bg-cyan-400/10 blur-[120px] animate-blob" style={{ animationDelay: '7s' }}></div>
         
-        {/* Ultra-subtle SVG Noise Texture (Linear/Vercel style) */}
-        <div className="absolute inset-0 opacity-[0.02] mix-blend-screen" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+        {/* Ultra-subtle SVG Noise Texture */}
+        <div className="absolute inset-0 opacity-[0.03] mix-blend-screen" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       </div>
       
       {/* Light Mode Creative Background (Floating Gradient Blob & Texture) */}
-      <div className="dark:hidden fixed inset-0 z-0 pointer-events-none overflow-hidden">
+      <div className="dark:hidden fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#FAF3E0]">
         <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-200/40 to-amber-200/30 blur-3xl opacity-70 animate-blob"></div>
         <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-yellow-200/40 to-orange-100/30 blur-3xl opacity-70 animate-blob" style={{ animationDelay: '2s' }}></div>
         {/* Subtle SVG Noise Texture for Papyrus feel */}
