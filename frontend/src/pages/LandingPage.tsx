@@ -59,19 +59,19 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFCF8] dark:bg-[#09090b] text-stone-900 dark:text-zinc-50 font-sans selection:bg-amber-500/30 dark:selection:bg-indigo-500/30 transition-colors duration-500 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FFFCF8] dark:bg-[#030303] text-stone-900 dark:text-zinc-50 font-sans selection:bg-amber-500/30 dark:selection:bg-indigo-500/30 transition-colors duration-500 relative overflow-hidden">
       
       {/* Global Backgrounds */}
 
       {/* Dark Mode Ambient Aurora & Noise Background */}
-      <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#09090b]">
-        {/* Animated Orbs */}
-        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] rounded-full bg-indigo-900/20 blur-[120px] animate-blob"></div>
-        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-fuchsia-900/10 blur-[120px] animate-blob" style={{ animationDelay: '4s' }}></div>
-        <div className="absolute top-[40%] left-[60%] w-[50%] h-[50%] rounded-full bg-blue-900/10 blur-[100px] animate-blob" style={{ animationDelay: '2s' }}></div>
+      <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#030303]">
+        {/* Spotlights for Hero & General Atmosphere */}
+        <div className="absolute top-[-20%] left-[10%] w-[60%] h-[60%] rounded-full bg-indigo-600/10 blur-[150px] animate-blob"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[150px] animate-blob" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-[40%] left-[60%] w-[40%] h-[40%] rounded-full bg-fuchsia-600/5 blur-[150px] animate-blob" style={{ animationDelay: '2s' }}></div>
         
-        {/* Subtle SVG Noise Texture */}
-        <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+        {/* Ultra-subtle SVG Noise Texture (Linear/Vercel style) */}
+        <div className="absolute inset-0 opacity-[0.02] mix-blend-screen" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       </div>
       
       {/* Light Mode Creative Background (Floating Gradient Blob) */}
@@ -185,7 +185,10 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer} className="grid md:grid-cols-3 gap-12 relative">
-              <div className="hidden md:block absolute top-[44px] left-[15%] right-[15%] h-[1px] bg-amber-200 dark:bg-white/10 z-0"></div>
+              {/* Premium Glowing Progress Line */}
+              <div className="hidden md:block absolute top-[44px] left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-transparent via-amber-300 dark:via-indigo-500/50 to-transparent z-0">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white dark:via-indigo-400 to-transparent opacity-50 blur-[2px]"></div>
+              </div>
 
               {[
                 { step: "01", icon: QrCode, title: "Scan Physical QR", desc: "A beautiful, branded acrylic stand on their table prompts them to scan." },
@@ -193,7 +196,7 @@ export default function LandingPage() {
                 { step: "03", icon: Gift, title: "Automated Routing", desc: "1-3 stars are kept private. 4-5 stars are pushed to Google. All get a coupon." }
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeIn} className="relative z-10 flex flex-col items-center text-center group">
-                  <div className="w-24 h-24 rounded-3xl bg-[#FFFBF5] dark:bg-zinc-900/80 border border-amber-100 dark:border-white/10 shadow-xl shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] flex items-center justify-center mb-6 group-hover:-translate-y-2 transition-transform duration-500 backdrop-blur-md">
+                  <div className="w-24 h-24 rounded-3xl bg-[#FFFBF5] dark:bg-[#0A0A0A] border border-amber-100 dark:border-white/5 shadow-xl shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex items-center justify-center mb-6 group-hover:-translate-y-2 dark:group-hover:border-white/10 transition-all duration-500 backdrop-blur-md">
                     <item.icon className="w-10 h-10 text-amber-600 dark:text-indigo-400" strokeWidth={1.5} />
                   </div>
                   <div className="text-xs font-bold text-amber-600 dark:text-indigo-400 uppercase tracking-widest mb-2">Step {item.step}</div>
@@ -215,7 +218,7 @@ export default function LandingPage() {
 
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={staggerContainer} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
-              <motion.div variants={fadeIn} className="lg:col-span-2 p-8 md:p-12 rounded-[2rem] bg-white/80 dark:bg-zinc-900/60 backdrop-blur-xl border border-amber-100/50 dark:border-white/10 shadow-xl shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] flex flex-col justify-between group overflow-hidden relative min-h-[400px] hover:-translate-y-1 transition-transform duration-500">
+              <motion.div variants={fadeIn} className="lg:col-span-2 p-8 md:p-12 rounded-[2rem] bg-white/80 dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-100/50 dark:border-white/5 shadow-xl shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-between group overflow-hidden relative min-h-[400px] hover:-translate-y-1 dark:hover:border-white/10 transition-all duration-500">
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-transparent dark:from-indigo-500/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10 flex flex-col h-full justify-center">
                   <div className="w-16 h-16 rounded-2xl bg-[#FFF6EA] dark:bg-indigo-500/20 border border-amber-200/50 dark:border-indigo-500/30 flex items-center justify-center mb-8 text-amber-600 dark:text-indigo-300 group-hover:scale-110 transition-transform duration-500 shadow-sm">
@@ -229,7 +232,7 @@ export default function LandingPage() {
               </motion.div>
 
               <div className="flex flex-col gap-6">
-                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white/80 dark:bg-zinc-900/60 backdrop-blur-xl border border-amber-100/50 dark:border-white/10 shadow-lg shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] flex flex-col justify-center group hover:border-amber-300/50 dark:hover:border-indigo-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white/80 dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-100/50 dark:border-white/5 shadow-lg shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-center group hover:border-amber-300/50 dark:hover:border-white/10 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-transparent dark:from-indigo-500/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="relative z-10">
                     <ShieldCheck className="w-10 h-10 text-amber-600 dark:text-indigo-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
@@ -238,7 +241,7 @@ export default function LandingPage() {
                   </div>
                 </motion.div>
 
-                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white/80 dark:bg-zinc-900/60 backdrop-blur-xl border border-amber-100/50 dark:border-white/10 shadow-lg shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] flex flex-col justify-center group hover:border-amber-300/50 dark:hover:border-indigo-500/30 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white/80 dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-100/50 dark:border-white/5 shadow-lg shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-center group hover:border-amber-300/50 dark:hover:border-white/10 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-transparent dark:from-indigo-500/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="relative z-10">
                     <Gift className="w-10 h-10 text-amber-600 dark:text-indigo-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
@@ -260,7 +263,7 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeIn} className="max-w-lg mx-auto">
-              <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900/80 backdrop-blur-xl border border-amber-100 dark:border-white/10 shadow-2xl shadow-amber-900/10 dark:shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden relative transition-transform hover:-translate-y-1 duration-500">
+              <div className="rounded-[2.5rem] bg-white dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-100 dark:border-white/5 shadow-2xl shadow-amber-900/10 dark:shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden relative hover:-translate-y-1 dark:hover:border-white/10 transition-all duration-500">
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-400 to-amber-500 dark:from-indigo-500 dark:to-indigo-400"></div>
                 <div className="p-8 md:p-12">
                   <div className="flex justify-between items-center mb-8">
@@ -300,13 +303,19 @@ export default function LandingPage() {
 
         {/* CTA Section */}
         <section className="py-24 px-6 relative">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="max-w-5xl mx-auto rounded-[3rem] bg-amber-600 dark:bg-zinc-900/40 dark:backdrop-blur-xl border border-transparent dark:border-white/10 relative overflow-hidden shadow-2xl shadow-amber-900/20 dark:shadow-[inset_0_0_80px_rgba(79,70,229,0.15)] group">
+          {/* Note: We separate the light/dark backgrounds completely using hidden/block layers to prevent Tailwind opacity bleed */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="max-w-5xl mx-auto rounded-[3rem] relative overflow-hidden shadow-2xl shadow-amber-900/20 dark:shadow-[0_0_80px_rgba(79,70,229,0.07)] group border border-transparent dark:border-white/5 hover:dark:border-white/10 transition-colors duration-500">
             
-            {/* Light Mode Grid Overlay */}
-            <div className="absolute inset-0 dark:hidden bg-[linear-gradient(to_right,#ffffff15_1px,transparent_1px),linear-gradient(to_bottom,#ffffff15_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-            
-            {/* Dark Mode Animated Inner Glow */}
-            <div className="hidden dark:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-indigo-500/20 blur-[80px] rounded-full transition-opacity duration-700 opacity-50 group-hover:opacity-80 pointer-events-none"></div>
+            {/* Light Mode Background */}
+            <div className="absolute inset-0 bg-amber-600 dark:hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff15_1px,transparent_1px),linear-gradient(to_bottom,#ffffff15_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+            </div>
+
+            {/* Dark Mode Background */}
+            <div className="absolute inset-0 hidden dark:block bg-[#0A0A0A]">
+               {/* Dark Mode Animated Inner Glow */}
+               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-indigo-500/10 blur-[100px] rounded-full transition-opacity duration-700 opacity-50 group-hover:opacity-100 pointer-events-none"></div>
+            </div>
 
             <div className="relative z-10 px-6 py-20 md:py-24 text-center">
               <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Ready to transform your <br className="hidden sm:block"/> customer experience?</h2>
