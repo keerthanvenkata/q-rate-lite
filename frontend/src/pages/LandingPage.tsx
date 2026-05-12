@@ -59,7 +59,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFCF8] dark:bg-[#030303] text-stone-900 dark:text-zinc-50 font-sans selection:bg-amber-500/30 dark:selection:bg-indigo-500/30 transition-colors duration-500 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FAF3E0] dark:bg-[#030303] text-stone-900 dark:text-zinc-50 font-sans selection:bg-amber-500/30 dark:selection:bg-indigo-500/30 transition-colors duration-500 relative overflow-hidden">
       
       {/* Global Backgrounds */}
 
@@ -74,15 +74,17 @@ export default function LandingPage() {
         <div className="absolute inset-0 opacity-[0.02] mix-blend-screen" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       </div>
       
-      {/* Light Mode Creative Background (Floating Gradient Blob) */}
+      {/* Light Mode Creative Background (Floating Gradient Blob & Texture) */}
       <div className="dark:hidden fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-amber-200/40 to-orange-100/20 blur-3xl opacity-60 animate-blob"></div>
-        <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-amber-100/30 to-yellow-50/20 blur-3xl opacity-60 animate-blob" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-200/40 to-amber-200/30 blur-3xl opacity-70 animate-blob"></div>
+        <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-yellow-200/40 to-orange-100/30 blur-3xl opacity-70 animate-blob" style={{ animationDelay: '2s' }}></div>
+        {/* Subtle SVG Noise Texture for Papyrus feel */}
+        <div className="absolute inset-0 opacity-[0.35] mix-blend-multiply" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       </div>
 
       <div className="relative z-10">
         {/* Navigation */}
-        <nav className="fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-xl bg-white/60 dark:bg-zinc-950/60 border-b border-amber-100/50 dark:border-white/5">
+        <nav className="fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-xl bg-[#FAF3E0]/70 dark:bg-zinc-950/60 border-b border-amber-200/50 dark:border-white/5">
           <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-stone-900 dark:bg-white flex items-center justify-center shadow-sm transition-transform hover:scale-105">
@@ -162,7 +164,7 @@ export default function LandingPage() {
                   Start 14-Day Free Trial
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </a>
-                <a href="#how-it-works" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/50 dark:bg-white/5 backdrop-blur-md border border-amber-200/50 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 text-stone-900 dark:text-white font-semibold text-lg transition-colors shadow-sm">
+                <a href="#how-it-works" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#FFFDF8]/70 dark:bg-white/5 backdrop-blur-md border border-amber-200/80 dark:border-white/10 hover:bg-[#FFFDF8] dark:hover:bg-white/10 text-stone-900 dark:text-white font-semibold text-lg transition-colors shadow-sm">
                   See How It Works
                 </a>
               </motion.div>
@@ -177,7 +179,7 @@ export default function LandingPage() {
         </section>
 
         {/* How It Works Section */}
-        <section id="how-it-works" className="py-24 bg-white/50 dark:bg-zinc-900/30 backdrop-blur-lg border-y border-amber-100/50 dark:border-white/5 relative">
+        <section id="how-it-works" className="py-24 bg-[#FFFDF8]/40 dark:bg-zinc-900/30 backdrop-blur-lg border-y border-amber-200/50 dark:border-white/5 relative">
           <div className="max-w-7xl mx-auto px-6">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="text-center mb-20">
               <h2 className="text-3xl md:text-5xl font-bold mb-6 text-stone-900 dark:text-white tracking-tight">Zero friction workflow.</h2>
@@ -196,7 +198,7 @@ export default function LandingPage() {
                 { step: "03", icon: Gift, title: "Automated Routing", desc: "1-3 stars are kept private. 4-5 stars are pushed to Google. All get a coupon." }
               ].map((item, i) => (
                 <motion.div key={i} variants={fadeIn} className="relative z-10 flex flex-col items-center text-center group">
-                  <div className="w-24 h-24 rounded-3xl bg-[#FFFBF5] dark:bg-[#0A0A0A] border border-amber-100 dark:border-white/5 shadow-xl shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex items-center justify-center mb-6 group-hover:-translate-y-2 dark:group-hover:border-white/10 transition-all duration-500 backdrop-blur-md">
+                  <div className="w-24 h-24 rounded-3xl bg-[#FFFDF8] dark:bg-[#0A0A0A] border border-amber-200/60 dark:border-white/5 shadow-xl shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex items-center justify-center mb-6 group-hover:-translate-y-2 dark:group-hover:border-white/10 transition-all duration-500 backdrop-blur-md">
                     <item.icon className="w-10 h-10 text-amber-600 dark:text-indigo-400" strokeWidth={1.5} />
                   </div>
                   <div className="text-xs font-bold text-amber-600 dark:text-indigo-400 uppercase tracking-widest mb-2">Step {item.step}</div>
@@ -218,8 +220,8 @@ export default function LandingPage() {
 
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={staggerContainer} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
-              <motion.div variants={fadeIn} className="lg:col-span-2 p-8 md:p-12 rounded-[2rem] bg-white/80 dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-100/50 dark:border-white/5 shadow-xl shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-between group overflow-hidden relative min-h-[400px] hover:-translate-y-1 dark:hover:border-white/10 transition-all duration-500">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-transparent dark:from-indigo-500/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <motion.div variants={fadeIn} className="lg:col-span-2 p-8 md:p-12 rounded-[2rem] bg-[#FFFDF8]/70 dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-200/50 dark:border-white/5 shadow-xl shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-between group overflow-hidden relative min-h-[400px] hover:-translate-y-1 dark:hover:border-white/10 transition-all duration-500">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-100/50 to-transparent dark:from-indigo-500/10 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative z-10 flex flex-col h-full justify-center">
                   <div className="w-16 h-16 rounded-2xl bg-[#FFF6EA] dark:bg-indigo-500/20 border border-amber-200/50 dark:border-indigo-500/30 flex items-center justify-center mb-8 text-amber-600 dark:text-indigo-300 group-hover:scale-110 transition-transform duration-500 shadow-sm">
                     <TrendingUp className="w-8 h-8" />
@@ -232,8 +234,8 @@ export default function LandingPage() {
               </motion.div>
 
               <div className="flex flex-col gap-6">
-                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white/80 dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-100/50 dark:border-white/5 shadow-lg shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-center group hover:border-amber-300/50 dark:hover:border-white/10 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-transparent dark:from-indigo-500/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-[#FFFDF8]/70 dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-200/50 dark:border-white/5 shadow-lg shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-center group hover:border-amber-300/80 dark:hover:border-white/10 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-100/50 to-transparent dark:from-indigo-500/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="relative z-10">
                     <ShieldCheck className="w-10 h-10 text-amber-600 dark:text-indigo-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
                     <h3 className="text-xl font-bold mb-3 text-stone-900 dark:text-white">Private Damage Control</h3>
@@ -241,8 +243,8 @@ export default function LandingPage() {
                   </div>
                 </motion.div>
 
-                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-white/80 dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-100/50 dark:border-white/5 shadow-lg shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-center group hover:border-amber-300/50 dark:hover:border-white/10 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-amber-50/50 to-transparent dark:from-indigo-500/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <motion.div variants={fadeIn} className="flex-1 p-8 rounded-[2rem] bg-[#FFFDF8]/70 dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-200/50 dark:border-white/5 shadow-lg shadow-amber-900/5 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] flex flex-col justify-center group hover:border-amber-300/80 dark:hover:border-white/10 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-100/50 to-transparent dark:from-indigo-500/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                   <div className="relative z-10">
                     <Gift className="w-10 h-10 text-amber-600 dark:text-indigo-400 mb-6 group-hover:scale-110 transition-transform duration-500" />
                     <h3 className="text-xl font-bold mb-3 text-stone-900 dark:text-white">Automated Loyalty</h3>
@@ -255,7 +257,7 @@ export default function LandingPage() {
         </section>
 
         {/* Pricing Section */}
-        <section id="pricing" className="py-24 bg-white/50 dark:bg-zinc-900/30 backdrop-blur-lg border-y border-amber-100/50 dark:border-white/5 relative">
+        <section id="pricing" className="py-24 bg-[#FFFDF8]/40 dark:bg-zinc-900/30 backdrop-blur-lg border-y border-amber-200/50 dark:border-white/5 relative">
           <div className="max-w-7xl mx-auto px-6 relative z-10">
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="text-center mb-16">
               <h2 className="text-3xl md:text-5xl font-bold mb-6 text-stone-900 dark:text-white tracking-tight">Transparent pricing.</h2>
@@ -263,7 +265,7 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={fadeIn} className="max-w-lg mx-auto">
-              <div className="rounded-[2.5rem] bg-white dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-100 dark:border-white/5 shadow-2xl shadow-amber-900/10 dark:shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden relative hover:-translate-y-1 dark:hover:border-white/10 transition-all duration-500">
+              <div className="rounded-[2.5rem] bg-[#FFFDF8] dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-200/60 dark:border-white/5 shadow-2xl shadow-amber-900/10 dark:shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden relative hover:-translate-y-1 dark:hover:border-white/10 transition-all duration-500">
                 <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-400 to-amber-500 dark:from-indigo-500 dark:to-indigo-400"></div>
                 <div className="p-8 md:p-12">
                   <div className="flex justify-between items-center mb-8">
@@ -331,7 +333,7 @@ export default function LandingPage() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-amber-200/60 dark:border-white/5 py-12 px-6 bg-white dark:bg-zinc-950">
+        <footer className="border-t border-amber-200/60 dark:border-white/5 py-12 px-6 bg-[#FAF3E0] dark:bg-zinc-950">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-stone-500 dark:text-zinc-500">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-stone-900 dark:bg-white flex items-center justify-center group-hover:scale-105 transition-transform">
