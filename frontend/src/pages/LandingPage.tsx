@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Logo from '../components/Logo';
 import { motion } from 'framer-motion';
 import { 
   MessageCircle, 
@@ -86,12 +87,7 @@ export default function LandingPage() {
         {/* Navigation */}
         <nav className="fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-xl bg-[#FAF3E0]/70 dark:bg-zinc-950/60 border-b border-amber-200/50 dark:border-white/5">
           <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-stone-900 dark:bg-white flex items-center justify-center shadow-sm transition-transform hover:scale-105">
-                <MessageCircle className="w-5 h-5 text-[#FFFCF8] dark:text-zinc-900" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-stone-900 dark:text-white">Q-Rate <span className="text-stone-500 dark:text-zinc-400 font-normal">Lite</span></span>
-            </div>
+            <Logo />
 
             <div className="hidden md:flex items-center gap-8 text-sm font-medium text-stone-600 dark:text-zinc-300">
               <a href="#how-it-works" className="hover:text-stone-900 dark:hover:text-white transition-colors">How it Works</a>
@@ -303,10 +299,10 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="py-24 px-6 relative">
+        {/* CTA & Contact Section */}
+        <section className="py-24 px-6 relative max-w-7xl mx-auto grid lg:grid-cols-3 gap-8">
           {/* Note: We separate the light/dark backgrounds completely using hidden/block layers to prevent Tailwind opacity bleed */}
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="max-w-5xl mx-auto rounded-[3rem] relative overflow-hidden shadow-2xl shadow-amber-900/20 dark:shadow-[0_0_80px_rgba(79,70,229,0.07)] group border border-transparent dark:border-white/5 hover:dark:border-white/10 transition-colors duration-500">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="lg:col-span-2 rounded-[3rem] relative overflow-hidden shadow-2xl shadow-amber-900/20 dark:shadow-[0_0_80px_rgba(79,70,229,0.07)] group border border-transparent dark:border-white/5 hover:dark:border-white/10 transition-colors duration-500 h-full flex flex-col justify-center">
             
             {/* Light Mode Background */}
             <div className="absolute inset-0 bg-amber-600 dark:hidden">
@@ -319,7 +315,7 @@ export default function LandingPage() {
                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-indigo-500/10 blur-[100px] rounded-full transition-opacity duration-700 opacity-50 group-hover:opacity-100 pointer-events-none"></div>
             </div>
 
-            <div className="relative z-10 px-6 py-20 md:py-24 text-center">
+            <div className="relative z-10 px-6 py-20 text-center">
               <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">Ready to transform your <br className="hidden sm:block"/> customer experience?</h2>
               <p className="text-amber-100 dark:text-zinc-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
                 Join the smart cafés using Q-Rate Lite to protect their brand and turn every customer into a regular.
@@ -330,22 +326,28 @@ export default function LandingPage() {
               </button>
             </div>
           </motion.div>
+
+          {/* Contact Tile */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeIn} className="lg:col-span-1 rounded-[3rem] bg-[#FFFDF8]/80 dark:bg-[#0A0A0A] backdrop-blur-xl border border-amber-200/50 dark:border-white/5 shadow-2xl shadow-amber-900/5 dark:shadow-[0_0_40px_rgba(0,0,0,0.5)] p-10 relative overflow-hidden group hover:dark:border-white/10 transition-colors duration-500 flex flex-col items-center justify-center text-center h-full">
+            <div className="w-16 h-16 rounded-2xl bg-[#FAF3E0] dark:bg-white/5 flex items-center justify-center mb-6 shadow-sm border border-amber-200/60 dark:border-white/10">
+               <MessageSquare className="w-8 h-8 text-amber-600 dark:text-indigo-400" />
+            </div>
+            <h3 className="text-2xl font-bold text-stone-900 dark:text-white mb-3">Have Questions?</h3>
+            <p className="text-stone-600 dark:text-zinc-400 mb-8 leading-relaxed">We're here to help you get started, explore pricing, or customize a plan for your needs.</p>
+            <Link to="/contact" className="w-full py-4 rounded-xl bg-stone-900 dark:bg-white/10 text-white font-bold hover:bg-stone-800 dark:hover:bg-white/20 transition-colors flex items-center justify-center gap-2">
+              Get in Touch <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
         </section>
 
         {/* Footer */}
         <footer className="border-t border-amber-200/60 dark:border-white/5 py-12 px-6 bg-[#FAF3E0] dark:bg-zinc-950">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-stone-500 dark:text-zinc-500">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-stone-900 dark:bg-white flex items-center justify-center group-hover:scale-105 transition-transform">
-                <MessageCircle className="w-4 h-4 text-[#FFFCF8] dark:text-zinc-900" />
-              </div>
-              <span className="font-semibold text-stone-900 dark:text-zinc-300 text-base">Q-Rate Lite</span>
-            </div>
+            <Logo />
             <p>© {new Date().getFullYear()} TinKern Labs. All rights reserved.</p>
             <div className="flex gap-8 font-medium">
               <Link to="/privacy" className="hover:text-stone-900 dark:hover:text-white transition-colors">Privacy</Link>
               <Link to="/terms" className="hover:text-stone-900 dark:hover:text-white transition-colors">Terms</Link>
-              <Link to="/contact" className="hover:text-stone-900 dark:hover:text-white transition-colors">Contact</Link>
             </div>
           </div>
         </footer>

@@ -4,6 +4,8 @@ import { Mail, MessageSquare, Building2, User, Phone, ArrowRight, CheckCircle2 }
 import { submitContactMessage } from '../api';
 import { Link } from 'react-router-dom';
 
+import Logo from '../components/Logo';
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '',
@@ -55,12 +57,7 @@ export default function ContactPage() {
       <div className="relative z-10 flex flex-col min-h-screen">
         <nav className="w-full pt-8 pb-4">
           <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-9 h-9 rounded-xl bg-stone-900 dark:bg-white flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
-                <span className="text-white dark:text-zinc-900 font-bold text-xl leading-none">Q</span>
-              </div>
-              <span className="font-extrabold text-xl tracking-tight text-stone-900 dark:text-white">Q-Rate <span className="text-amber-500 dark:text-indigo-400 font-medium text-sm ml-1">Lite</span></span>
-            </Link>
+            <Logo />
           </div>
         </nav>
 
