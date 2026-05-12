@@ -18,4 +18,21 @@
   .animate-blob {
     animation: blob-float 20s ease-in-out infinite;
   }
+
+  @keyframes aurora-pan {
+    0%, 100% { transform: translate(-5%, 2%); }
+    50% { transform: translate(5%, -2%); }
+  }
+  .animate-aurora-1 {
+    animation: aurora-pan 15s ease-in-out infinite;
+  }
+  .animate-aurora-2 {
+    animation: aurora-pan 20s ease-in-out infinite reverse;
+  }
+  .animate-aurora-3 {
+    animation: aurora-pan 25s ease-in-out infinite;
+  }
+  .animate-aurora-4 {
+    animation: aurora-pan 30s ease-in-out infinite reverse;
+  }
 }
