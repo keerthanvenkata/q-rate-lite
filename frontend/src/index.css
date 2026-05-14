@@ -36,6 +36,23 @@
     50% { transform: translate(5%, -5%) rotate(3deg); }
   }
 
+  /* Papyrus Dunes & Rays */
+  
+  @keyframes papyrus-dune-1 {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-3%) rotate(1deg); }
+  }
+
+  @keyframes papyrus-dune-2 {
+    0%, 100% { transform: translateY(0) rotate(3deg); }
+    50% { transform: translateY(4%) rotate(-1deg); }
+  }
+
+  @keyframes papyrus-ray {
+    0%, 100% { transform: translateX(-20vw) rotate(35deg); opacity: 0.3; }
+    50% { transform: translateX(20vw) rotate(35deg); opacity: 0.7; }
+  }
+
   @keyframes noise-shift {
     0%, 100% { background-position: 0% 0%; }
     10% { background-position: -5% -5%; }

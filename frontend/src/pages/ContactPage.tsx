@@ -65,9 +65,22 @@ export default function ContactPage() {
         <div className="absolute inset-[-10%] opacity-[0.04] mix-blend-screen animate-noise-shift" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       </div>
       
-      <div className="dark:hidden fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-200/40 to-amber-200/30 blur-3xl opacity-70"></div>
-        <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-yellow-200/40 to-orange-100/30 blur-3xl opacity-70"></div>
+      {/* Light Mode Papyrus Background (Illuminated Dunes + God Rays) */}
+      <div className="dark:hidden fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#FAF3E0]">
+        
+        {/* Dune 1: Back Fold */}
+        <div className="absolute top-[-20%] left-[-10%] w-[120vw] h-[60vh] bg-[#FDF8EB] rounded-[100%] shadow-[0_40px_80px_rgba(180,83,9,0.05)] animate-[papyrus-dune-1_40s_ease-in-out_infinite]"></div>
+
+        {/* Dune 2: Front Fold */}
+        <div className="absolute top-[40%] left-[-20%] w-[140vw] h-[80vh] bg-[#FFFCF8] rounded-[100%] shadow-[0_-40px_80px_rgba(180,83,9,0.05)] animate-[papyrus-dune-2_45s_ease-in-out_infinite]"></div>
+
+        {/* God Ray 1 */}
+        <div className="absolute top-[-50%] left-[20%] w-[40vw] h-[200vh] bg-gradient-to-r from-transparent via-amber-200/20 to-transparent blur-[60px] mix-blend-overlay animate-[papyrus-ray_30s_ease-in-out_infinite]"></div>
+
+        {/* God Ray 2 */}
+        <div className="absolute top-[-50%] left-[60%] w-[30vw] h-[200vh] bg-gradient-to-r from-transparent via-orange-200/15 to-transparent blur-[80px] mix-blend-overlay animate-[papyrus-ray_35s_ease-in-out_infinite]" style={{ animationDelay: '-15s' }}></div>
+
+        {/* Subtle SVG Noise Texture for Papyrus feel */}
         <div className="absolute inset-0 opacity-[0.35] mix-blend-multiply" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       </div>
 
