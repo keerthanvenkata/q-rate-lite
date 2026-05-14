@@ -6,7 +6,7 @@ Q-Rate Lite is designed as a "boring," ultra-reliable monolithic application. It
 
 The system is split into two primary layers, both hosted within the same Git repository (`c:\dev\q-rate-lite`).
 
-*   **Frontend (SPA)**: A React Single Page Application built with Vite and Tailwind CSS.
+*   **Frontend (SPA)**: A React Single Page Application built with Vite and Tailwind CSS. Features a dynamic unified branding system (Light/Dark Aurora modes) spanning both marketing sites and product dashboards.
 *   **Backend (API)**: A Python FastAPI application providing RESTful JSON endpoints.
 *   **Database**: PostgreSQL (hosted on Supabase), managed via SQLAlchemy ORM and Alembic migrations.
 

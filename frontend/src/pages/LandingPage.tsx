@@ -66,13 +66,11 @@ export default function LandingPage() {
       {/* Global Backgrounds */}
 
       {/* Dark Mode Ambient Aurora Borealis & Noise Background */}
-      <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#020617]">
-        {/* Wavy Aurora Container - Softened & Desaturated */}
-        <div className="absolute inset-0 opacity-40 mix-blend-screen" style={{ transform: 'rotate(-10deg) scale(1.3)' }}>
-          <div className="absolute top-[10%] left-[-10%] w-[120%] h-[30%] rounded-[100%] bg-emerald-500/10 blur-[150px] animate-aurora-1"></div>
-          <div className="absolute top-[25%] right-[-10%] w-[120%] h-[25%] rounded-[100%] bg-teal-500/10 blur-[150px] animate-aurora-2"></div>
-          <div className="absolute top-[40%] left-[-10%] w-[120%] h-[30%] rounded-[100%] bg-indigo-500/10 blur-[150px] animate-aurora-3"></div>
-          <div className="absolute top-[55%] right-[-10%] w-[120%] h-[25%] rounded-[100%] bg-sky-500/10 blur-[150px] animate-aurora-4"></div>
+      <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none bg-[#020617]">
+        {/* Real CSS Aurora Curtains */}
+        <div className="absolute inset-0" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)', maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)' }}>
+          <div className="absolute inset-[-50%] aurora-layer-1 opacity-40"></div>
+          <div className="absolute inset-[-50%] aurora-layer-2 opacity-40"></div>
         </div>
         
         {/* Ultra-subtle SVG Noise Texture */}
