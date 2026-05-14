@@ -33,6 +33,28 @@ def create_razorpay_order(data: CreateOrderRequest, db: Session = Depends(get_db
         "key_id": "rzp_test_placeholder" # Provide real test key in frontend later
     }
 
+from fastapi.concurrency import run_in_threadpool
+
+def _process_webhook(cafe_id: str, plan: str, db: Session):
+    try:
+        cafe = db.query(Cafe).filter(Cafe.id == int(cafe_id)).first()
+        if cafe:
+            old_status = cafe.subscription_status
+            cafe.subscription_status = "active"
+            cafe.subscription_plan = plan
+            db.commit()
+            
+            log_audit(
+                db=db,
+                actor="system_razorpay",
+                action="SUBSCRIPTION_RENEWED",
+                target_cafe_id=cafe.id,
+                details={"old_status": old_status, "new_status": "active", "plan": plan}
+            )
+    except Exception as e:
+        db.rollback()
+        print(f"Failed to process webhook DB updates: {e}")
+
 @router.post("/webhook")
 async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
     # 1. In production, verify the x-razorpay-signature header here
@@ -47,19 +69,6 @@ async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
         plan = notes.get("plan", "monthly")
         
         if cafe_id:
-            cafe = db.query(Cafe).filter(Cafe.id == int(cafe_id)).first()
-            if cafe:
-                old_status = cafe.subscription_status
-                cafe.subscription_status = "active"
-                cafe.subscription_plan = plan
-                db.commit()
-                
-                log_audit(
-                    db=db,
-                    actor="system_razorpay",
-                    action="SUBSCRIPTION_RENEWED",
-                    target_cafe_id=cafe.id,
-                    details={"old_status": old_status, "new_status": "active", "plan": plan}
-                )
+            await run_in_threadpool(_process_webhook, cafe_id, plan, db)
     
     return {"status": "ok"}

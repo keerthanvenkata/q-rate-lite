@@ -30,7 +30,7 @@ class Feedback(Base):
     __tablename__ = "feedbacks"
 
     id = Column(Integer, primary_key=True, index=True)
-    cafe_id = Column(Integer, ForeignKey("cafes.id"), nullable=False)
+    cafe_id = Column(Integer, ForeignKey("cafes.id"), index=True, nullable=False)
     customer_phone = Column(String, index=True, nullable=False) # WhatsApp number
     rating = Column(Integer, nullable=False) # 1-5
     comment = Column(Text, nullable=True)
@@ -43,7 +43,7 @@ class Coupon(Base):
     __tablename__ = "coupons"
 
     id = Column(Integer, primary_key=True, index=True)
-    cafe_id = Column(Integer, ForeignKey("cafes.id"), nullable=False)
+    cafe_id = Column(Integer, ForeignKey("cafes.id"), index=True, nullable=False)
     code = Column(String, unique=True, index=True, nullable=False) # e.g., "ABCD-1234"
     customer_phone = Column(String, index=True, nullable=False)
     status = Column(String, default="issued") # issued, redeemed, expired
@@ -58,7 +58,7 @@ class AuditLog(Base):
     id = Column(Integer, primary_key=True, index=True)
     actor = Column(String, nullable=False) # e.g. "superadmin"
     action = Column(String, nullable=False) # e.g. "UPDATE_SUBSCRIPTION"
-    target_cafe_id = Column(Integer, nullable=True)
+    target_cafe_id = Column(Integer, index=True, nullable=True)
     details = Column(Text, nullable=True) # JSON dump of what changed
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
