@@ -41,29 +41,21 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-[#FAF3E0] dark:bg-[#030303] text-stone-900 dark:text-zinc-50 font-sans selection:bg-amber-500/30 dark:selection:bg-indigo-500/30 transition-colors duration-500 relative overflow-hidden">
       
-      {/* Dark Mode Cinematic Aurora & Noise Background */}
+      {/* Dark Mode Hardware-Accelerated Aurora Curtains & Noise Background */}
       <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none bg-[#020617] overflow-hidden">
         
-        {/* Far Layer: Atmospheric Depth */}
-        <div className="absolute top-[-20%] left-[-10%] w-[120%] h-[80%] rounded-[100%] bg-slate-900/60 blur-[150px]"></div>
+        {/* Far Layer: Deep Haze */}
+        <div className="absolute inset-0 bg-slate-900/60 blur-[100px]"></div>
 
-        {/* Mid Layer: Primary Organic Aurora Blobs */}
-        <div className="absolute inset-0 opacity-40 mix-blend-screen">
-          {/* Emerald horizontal drifter */}
-          <div className="absolute top-[10%] left-[-10%] w-[80%] h-[40%] rounded-[100%] bg-emerald-500/20 blur-[180px] animate-aurora-x"></div>
-          {/* Indigo vertical floater */}
-          <div className="absolute top-[30%] right-[-10%] w-[70%] h-[50%] rounded-[100%] bg-indigo-500/20 blur-[150px] animate-aurora-y"></div>
-          {/* Cyan diagonal drifter */}
-          <div className="absolute bottom-[-10%] left-[10%] w-[90%] h-[40%] rounded-[100%] bg-cyan-400/20 blur-[160px] animate-aurora-diagonal"></div>
+        {/* Mid Layer: Structured, Moving Aurora Lines */}
+        <div className="absolute inset-0 opacity-60" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)', maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)' }}>
+          {/* The curtain width must be massive (300vw) so the -50% translateX loop is seamless */}
+          <div className="absolute top-[-20%] left-0 w-[300vw] h-[100%] aurora-curtain-1"></div>
+          <div className="absolute top-[-10%] left-0 w-[300vw] h-[90%] aurora-curtain-2"></div>
         </div>
 
-        {/* Near Layer: Tighter Accents & Focal Bloom */}
-        <div className="absolute inset-0 opacity-30 mix-blend-screen hidden md:block">
-          {/* Center Focal Bloom (behind content) */}
-          <div className="absolute top-[30%] left-[50%] -translate-x-1/2 w-[60%] h-[30%] rounded-[100%] bg-teal-300/10 blur-[120px] animate-aurora-pulse"></div>
-          {/* Accent shimmer */}
-          <div className="absolute top-[40%] left-[20%] w-[30%] h-[20%] rounded-[100%] bg-emerald-300/10 blur-[80px] animate-aurora-shimmer"></div>
-        </div>
+        {/* Focal Bloom (keeps the area behind the content softly lit) */}
+        <div className="absolute top-[30%] left-[50%] -translate-x-1/2 w-[50%] h-[30%] rounded-[100%] bg-teal-300/10 blur-[100px]"></div>
         
         {/* Animated Film Grain */}
         <div className="absolute inset-[-10%] opacity-[0.04] mix-blend-screen animate-noise-shift" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>

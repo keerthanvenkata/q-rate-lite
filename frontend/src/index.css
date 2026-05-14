@@ -19,34 +19,50 @@
     animation: blob-float 20s ease-in-out infinite;
   }
 
-  /* Cinematic Aurora Suite */
+  /* Hardware Accelerated Aurora Curtains */
   
-  @keyframes aurora-drift-x {
-    0%, 100% { transform: translateX(-5%); }
-    50% { transform: translateX(5%); }
-  }
-  
-  @keyframes aurora-drift-y {
-    0%, 100% { transform: translateY(-5%); }
-    50% { transform: translateY(5%); }
+  @keyframes aurora-slide {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 
-  @keyframes aurora-drift-diagonal {
-    0%, 100% { transform: translate(-3%, -3%); }
-    50% { transform: translate(3%, 3%); }
+  .aurora-curtain-1 {
+    /* Angled repeating gradient creates vertical "rays" of light */
+    background: repeating-linear-gradient(
+      100deg,
+      transparent 0%,
+      transparent 5%,
+      rgba(16, 185, 129, 0.2) 10%, /* Emerald */
+      rgba(45, 212, 191, 0.2) 15%, /* Teal */
+      transparent 20%,
+      transparent 35%,
+      rgba(139, 92, 246, 0.15) 40%, /* Violet */
+      transparent 45%
+    );
+    background-size: 200% 100%;
+    animation: aurora-slide 40s linear infinite;
+    filter: blur(25px); /* Much lower blur for better performance and visible "lines" */
+    mix-blend-mode: screen;
   }
-  
-  @keyframes aurora-pulse {
-    0%, 100% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.05); opacity: 1; }
+
+  .aurora-curtain-2 {
+    background: repeating-linear-gradient(
+      80deg,
+      transparent 0%,
+      transparent 10%,
+      rgba(45, 212, 191, 0.15) 15%, /* Teal */
+      transparent 20%,
+      transparent 25%,
+      rgba(16, 185, 129, 0.15) 30%, /* Emerald */
+      rgba(14, 165, 233, 0.15) 35%, /* Sky Blue */
+      transparent 40%
+    );
+    background-size: 200% 100%;
+    animation: aurora-slide 30s linear infinite;
+    filter: blur(35px);
+    mix-blend-mode: screen;
   }
-  
-  @keyframes aurora-shimmer {
-    0%, 100% { opacity: 0.4; }
-    33% { opacity: 0.6; }
-    66% { opacity: 0.3; }
-  }
-  
+
   @keyframes noise-shift {
     0%, 100% { background-position: 0% 0%; }
     10% { background-position: -5% -5%; }
@@ -60,21 +76,6 @@
     90% { background-position: -10% 10%; }
   }
 
-  .animate-aurora-x {
-    animation: aurora-drift-x 25s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  }
-  .animate-aurora-y {
-    animation: aurora-drift-y 32s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  }
-  .animate-aurora-diagonal {
-    animation: aurora-drift-diagonal 28s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  }
-  .animate-aurora-pulse {
-    animation: aurora-pulse 18s ease-in-out infinite;
-  }
-  .animate-aurora-shimmer {
-    animation: aurora-shimmer 12s ease-in-out infinite;
-  }
   .animate-noise-shift {
     animation: noise-shift 8s steps(10) infinite;
   }
