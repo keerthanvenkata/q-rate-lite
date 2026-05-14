@@ -45,7 +45,20 @@ Your local `test.db` SQLite database is great for dev, but Vercel Serverless fun
 
 ---
 
-## 4. Code Deployment (Vercel)
+## 4. Run Database Initialization
+
+Your live Supabase database is currently empty. You need to create the tables.
+
+**Action Steps:**
+1. Go to your Supabase Project Dashboard.
+2. Navigate to the **SQL Editor** on the left sidebar.
+3. Open the file located at `supabase/migrations/0000_init_schema.sql` from your local codebase.
+4. Copy the entire contents of that file and paste it into the Supabase SQL Editor.
+5. Click **Run**. This will instantly build all your tables and indexes inside Supabase over the internet.
+
+---
+
+## 5. Code Deployment (Vercel)
 
 Vercel will host both your React Frontend and your FastAPI Backend for exactly ₹0/month.
 
@@ -64,7 +77,7 @@ Vercel will host both your React Frontend and your FastAPI Backend for exactly �
 
 ---
 
-## 5. Connecting the Dots (Webhooks)
+## 6. Connecting the Dots (Webhooks)
 
 Now that Vercel is live, we must tell Meta where to send inbound WhatsApp messages.
 
@@ -75,17 +88,5 @@ Now that Vercel is live, we must tell Meta where to send inbound WhatsApp messag
 4. **Verify Token**: Enter the exact `META_VERIFY_TOKEN` you saved in Vercel.
 5. Click **Verify and Save**. Meta will ping your live Vercel backend. Vercel will respond correctly, and the link will be established!
 6. Click **Manage Webhook Fields** and subscribe to the `messages` event.
-
----
-
-## 6. Run Database Migrations
-
-Your live Supabase database is currently empty. You need to create the tables.
-
-**Action Steps:**
-1. On your local computer, open the `.env` file and temporarily paste the Supabase `DATABASE_URL`.
-2. Open your terminal in the backend folder.
-3. Run `alembic upgrade head`. 
-4. This will instantly build all your tables inside Supabase over the internet.
 
 **🎉 DONE!** Your QR codes will now trigger real WhatsApp messages to real customers.
