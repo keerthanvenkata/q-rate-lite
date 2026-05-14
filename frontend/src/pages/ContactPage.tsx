@@ -49,13 +49,13 @@ export default function ContactPage() {
         {/* Mid Layer: Curved Hollow Ellipse Ribbons */}
         <div className="absolute inset-0 opacity-80 mix-blend-screen" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 30%, transparent 90%)', maskImage: 'linear-gradient(to bottom, black 30%, transparent 90%)' }}>
           {/* Ribbon 1: Primary Emerald Curve */}
-          <div className="absolute top-[-50%] left-[-20%] w-[140vw] h-[80vh] border-[60px] border-emerald-500/25 rounded-[100%] blur-[40px] animate-[ribbon-wave-1_25s_ease-in-out_infinite]"></div>
+          <div className="absolute top-[-60%] left-[-20%] w-[150vw] h-[120vh] border-[60px] border-emerald-500/25 rounded-[100%] blur-[40px] animate-[ribbon-wave-1_25s_ease-in-out_infinite]"></div>
           
           {/* Ribbon 2: Intersecting Teal Curve */}
-          <div className="absolute top-[-40%] left-[-10%] w-[120vw] h-[90vh] border-[40px] border-teal-400/20 rounded-[100%] blur-[50px] animate-[ribbon-wave-2_30s_ease-in-out_infinite]"></div>
+          <div className="absolute top-[-50%] left-[-10%] w-[140vw] h-[130vh] border-[40px] border-teal-400/20 rounded-[100%] blur-[50px] animate-[ribbon-wave-2_30s_ease-in-out_infinite]"></div>
           
           {/* Ribbon 3: Deep Indigo Curve */}
-          <div className="absolute top-[-60%] left-[10%] w-[160vw] h-[100vh] border-[80px] border-indigo-500/20 rounded-[100%] blur-[60px] animate-[ribbon-wave-3_35s_ease-in-out_infinite]"></div>
+          <div className="absolute top-[-70%] left-[0%] w-[160vw] h-[150vh] border-[80px] border-indigo-500/20 rounded-[100%] blur-[60px] animate-[ribbon-wave-3_35s_ease-in-out_infinite]"></div>
         </div>
 
         {/* Focal Bloom (keeps the area behind the content softly lit) */}
