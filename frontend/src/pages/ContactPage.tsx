@@ -40,24 +40,26 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-[#FAF3E0] dark:bg-[#030303] text-stone-900 dark:text-zinc-50 font-sans selection:bg-amber-500/30 dark:selection:bg-indigo-500/30 transition-colors duration-500 relative overflow-hidden">
       
-      {/* Authentic Dark Mode Aurora Ribbons & Noise Background */}
+      {/* Authentic Dark Mode Curved Aurora Ribbons & Noise Background */}
       <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none bg-[#020617] overflow-hidden">
         
         {/* Far Layer: Deep Haze */}
-        <div className="absolute inset-0 bg-slate-900/60 blur-[100px]"></div>
+        <div className="absolute inset-0 bg-slate-950/80 blur-[50px]"></div>
 
-        {/* Mid Layer: Authentic Intersecting Glowing Ribbons */}
-        <div className="absolute inset-0 opacity-70 mix-blend-screen" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)', maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)' }}>
-          {/* Ribbon 1: Fast Emerald */}
-          <div className="absolute top-[-20%] left-[10%] w-[15vw] h-[150vh] bg-indigo-500/20 blur-[80px] rounded-[100%] origin-top animate-ribbon-1"></div>
-          {/* Ribbon 2: Slow Teal */}
-          <div className="absolute top-[-20%] left-[30%] w-[20vw] h-[150vh] bg-purple-500/20 blur-[100px] rounded-[100%] origin-top animate-ribbon-2"></div>
-          {/* Ribbon 3: Deep Violet */}
-          <div className="absolute top-[-20%] left-[50%] w-[12vw] h-[150vh] bg-blue-500/20 blur-[90px] rounded-[100%] origin-top animate-ribbon-3"></div>
+        {/* Mid Layer: Curved Hollow Ellipse Ribbons */}
+        <div className="absolute inset-0 opacity-80 mix-blend-screen" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 30%, transparent 90%)', maskImage: 'linear-gradient(to bottom, black 30%, transparent 90%)' }}>
+          {/* Ribbon 1: Primary Emerald Curve */}
+          <div className="absolute top-[-50%] left-[-20%] w-[140vw] h-[80vh] border-[60px] border-emerald-500/25 rounded-[100%] blur-[40px] animate-[ribbon-wave-1_25s_ease-in-out_infinite]"></div>
+          
+          {/* Ribbon 2: Intersecting Teal Curve */}
+          <div className="absolute top-[-40%] left-[-10%] w-[120vw] h-[90vh] border-[40px] border-teal-400/20 rounded-[100%] blur-[50px] animate-[ribbon-wave-2_30s_ease-in-out_infinite]"></div>
+          
+          {/* Ribbon 3: Deep Indigo Curve */}
+          <div className="absolute top-[-60%] left-[10%] w-[160vw] h-[100vh] border-[80px] border-indigo-500/20 rounded-[100%] blur-[60px] animate-[ribbon-wave-3_35s_ease-in-out_infinite]"></div>
         </div>
 
         {/* Focal Bloom (keeps the area behind the content softly lit) */}
-        <div className="absolute top-[30%] left-[50%] -translate-x-1/2 w-[50%] h-[30%] rounded-[100%] bg-indigo-300/10 blur-[100px]"></div>
+        <div className="absolute top-[30%] left-[50%] -translate-x-1/2 w-[50%] h-[30%] rounded-[100%] bg-indigo-400/5 blur-[100px]"></div>
         
         {/* Animated Film Grain */}
         <div className="absolute inset-[-10%] opacity-[0.04] mix-blend-screen animate-noise-shift" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
