@@ -69,4 +69,25 @@
   .animate-noise-shift {
     animation: noise-shift 8s steps(10) infinite;
   }
+
+  /* Ultra-Minimalist Dashboard Theme Utilities */
+  .dashboard-bg {
+    @apply bg-white min-h-screen text-black font-sans;
+  }
+  
+  .dashboard-card {
+    @apply bg-white border border-neutral-200 rounded-xl shadow-sm overflow-hidden;
+  }
+  
+  .dashboard-input {
+    @apply w-full px-4 py-2 border border-neutral-200 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all;
+  }
+  
+  .dashboard-btn-primary {
+    @apply w-full px-4 py-2 bg-black text-white rounded-lg hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-all active:scale-[0.98] font-medium;
+  }
+
+  .dashboard-btn-secondary {
+    @apply w-full px-4 py-2 bg-white text-black border border-neutral-200 rounded-lg hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-all active:scale-[0.98] font-medium;
+  }
 }

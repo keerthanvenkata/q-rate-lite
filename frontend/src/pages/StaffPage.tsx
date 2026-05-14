@@ -41,8 +41,8 @@ export default function StaffPage() {
 
   if (result) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center max-w-sm w-full">
+      <div className="dashboard-bg flex items-center justify-center p-4">
+        <div className="dashboard-card p-8 text-center max-w-sm w-full">
           <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle size={32} />
           </div>
@@ -55,7 +55,7 @@ export default function StaffPage() {
 
           <button
             onClick={handleReset}
-            className="w-full py-3 px-4 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-colors"
+            className="dashboard-btn-primary py-3 px-4 font-semibold"
           >
             Redeem Another
           </button>
@@ -65,27 +65,27 @@ export default function StaffPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+    <div className="dashboard-bg flex flex-col items-center justify-center p-4">
       <div className="max-w-sm w-full">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Staff Portal</h1>
-          <p className="text-slate-500 mt-2">Enter coupon code to verify & redeem.</p>
+          <h1 className="text-3xl font-extrabold text-black tracking-tight">Staff Portal</h1>
+          <p className="text-neutral-500 mt-2">Enter coupon code to verify & redeem.</p>
         </div>
 
-        <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200">
+        <div className="dashboard-card p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             
             <div>
-              <label htmlFor="coupon" className="block text-sm font-semibold text-slate-700 mb-2">
+              <label htmlFor="coupon" className="block text-sm font-semibold text-neutral-700 mb-2">
                 Coupon Code
               </label>
               <div className="relative">
-                <Ticket className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <Ticket className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={20} />
                 <input
                   id="coupon"
                   type="text"
                   placeholder="e.g. ABCD45"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50 text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all uppercase placeholder:normal-case font-mono tracking-widest font-semibold"
+                  className="dashboard-input pl-10 uppercase placeholder:normal-case font-mono tracking-widest font-semibold"
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                 />
@@ -93,16 +93,16 @@ export default function StaffPage() {
             </div>
 
             <div>
-              <label htmlFor="passcode" className="block text-sm font-semibold text-slate-700 mb-2">
+              <label htmlFor="passcode" className="block text-sm font-semibold text-neutral-700 mb-2">
                 Staff Passcode
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={20} />
                 <input
                   id="passcode"
                   type="password"
                   placeholder="••••"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border-slate-200 bg-slate-50 text-slate-900 outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all"
+                  className="dashboard-input pl-10"
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
                 />
@@ -118,10 +118,10 @@ export default function StaffPage() {
             <button
               type="submit"
               disabled={isSubmitting || !couponCode || !passcode}
-              className={`w-full py-4 px-6 rounded-xl text-white font-bold text-lg transition-all mt-2 ${
+              className={`dashboard-btn-primary py-4 text-lg mt-2 ${
                 couponCode && passcode && !isSubmitting
-                  ? "bg-slate-900 hover:bg-slate-800 shadow-md transform hover:-translate-y-0.5"
-                  : "bg-slate-300 cursor-not-allowed"
+                  ? ""
+                  : "opacity-50 cursor-not-allowed"
               }`}
             >
               {isSubmitting ? "Verifying..." : "Redeem"}

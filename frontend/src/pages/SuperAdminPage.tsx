@@ -46,34 +46,34 @@ export default function SuperAdminPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-        <form onSubmit={handleLogin} className="bg-slate-800 p-8 rounded-xl max-w-sm w-full">
-          <ShieldAlert className="text-red-500 mx-auto mb-4" size={48} />
-          <h1 className="text-white text-center font-bold text-2xl mb-6">System Override</h1>
+      <div className="dashboard-bg flex items-center justify-center p-4">
+        <form onSubmit={handleLogin} className="dashboard-card p-8 max-w-sm w-full">
+          <ShieldAlert className="text-black mx-auto mb-4" size={48} />
+          <h1 className="text-black text-center font-bold text-2xl mb-6">System Override</h1>
           <input 
             type="password" 
             placeholder="SUDO PASSCODE" 
-            className="w-full p-3 rounded bg-slate-900 text-red-500 font-mono text-center mb-4 outline-none border border-slate-700 focus:border-red-500"
+            className="dashboard-input text-center mb-4 font-mono"
             value={passcode}
             onChange={e => setPasscode(e.target.value)}
           />
-          <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-bold p-3 rounded">AUTHORIZE</button>
+          <button type="submit" className="dashboard-btn-primary">AUTHORIZE</button>
         </form>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="dashboard-bg p-8">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-extrabold text-slate-900 flex items-center gap-3">
-            <Activity className="text-blue-600" /> Sudo Control
+          <h1 className="text-3xl font-extrabold text-black flex items-center gap-3">
+            <Activity className="text-black" /> Sudo Control
           </h1>
           <div className="flex gap-4">
-            <button onClick={() => setActiveTab("cafes")} className={`px-4 py-2 rounded-lg font-bold ${activeTab === 'cafes' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'}`}>Cafes</button>
-            <button onClick={() => setActiveTab("logs")} className={`px-4 py-2 rounded-lg font-bold ${activeTab === 'logs' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'}`}>Audit Logs</button>
-            <button onClick={() => setActiveTab("messages")} className={`px-4 py-2 rounded-lg font-bold flex items-center gap-2 ${activeTab === 'messages' ? 'bg-slate-900 text-white' : 'bg-slate-200 text-slate-700'}`}>
+            <button onClick={() => setActiveTab("cafes")} className={`px-4 py-2 rounded-lg font-bold border transition-colors ${activeTab === 'cafes' ? 'bg-black text-white border-black' : 'bg-white text-black border-neutral-200 hover:bg-neutral-50'}`}>Cafes</button>
+            <button onClick={() => setActiveTab("logs")} className={`px-4 py-2 rounded-lg font-bold border transition-colors ${activeTab === 'logs' ? 'bg-black text-white border-black' : 'bg-white text-black border-neutral-200 hover:bg-neutral-50'}`}>Audit Logs</button>
+            <button onClick={() => setActiveTab("messages")} className={`px-4 py-2 rounded-lg font-bold border transition-colors flex items-center gap-2 ${activeTab === 'messages' ? 'bg-black text-white border-black' : 'bg-white text-black border-neutral-200 hover:bg-neutral-50'}`}>
               Messages
               {messages.filter(m => m.status === 'unread').length > 0 && (
                 <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">{messages.filter(m => m.status === 'unread').length}</span>
@@ -83,20 +83,20 @@ export default function SuperAdminPage() {
         </div>
 
         {activeTab === "cafes" && (
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="dashboard-card overflow-hidden">
             <table className="w-full text-left">
-              <thead className="bg-slate-100 text-slate-600 text-sm">
+              <thead className="bg-neutral-50 text-neutral-600 text-sm border-b border-neutral-200">
                 <tr>
-                  <th className="p-4">ID</th>
-                  <th className="p-4">Cafe Name</th>
-                  <th className="p-4">Status</th>
-                  <th className="p-4">Plan</th>
-                  <th className="p-4">Actions</th>
+                  <th className="p-4 font-semibold">ID</th>
+                  <th className="p-4 font-semibold">Cafe Name</th>
+                  <th className="p-4 font-semibold">Status</th>
+                  <th className="p-4 font-semibold">Plan</th>
+                  <th className="p-4 font-semibold">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-neutral-200">
                 {cafes.map(cafe => (
-                  <tr key={cafe.id} className="border-t border-slate-100">
+                  <tr key={cafe.id} className="bg-white">
                     <td className="p-4 font-mono">{cafe.id}</td>
                     <td className="p-4 font-bold">{cafe.name}</td>
                     <td className="p-4">
@@ -106,9 +106,9 @@ export default function SuperAdminPage() {
                     </td>
                     <td className="p-4">{cafe.subscription_plan || 'N/A'}</td>
                     <td className="p-4 flex gap-2">
-                      <button onClick={() => handleSubChange(cafe.id, 'active', 'monthly')} className="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded font-semibold text-slate-700">Set Monthly</button>
-                      <button onClick={() => handleSubChange(cafe.id, 'active', 'annual')} className="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded font-semibold text-slate-700">Set Annual</button>
-                      <button onClick={() => handleSubChange(cafe.id, 'cancelled', '')} className="text-xs bg-red-50 hover:bg-red-100 px-3 py-1 rounded font-semibold text-red-600">Cancel</button>
+                      <button onClick={() => handleSubChange(cafe.id, 'active', 'monthly')} className="text-xs border border-neutral-200 hover:bg-neutral-50 px-3 py-1 rounded font-semibold text-black transition-colors">Set Monthly</button>
+                      <button onClick={() => handleSubChange(cafe.id, 'active', 'annual')} className="text-xs border border-neutral-200 hover:bg-neutral-50 px-3 py-1 rounded font-semibold text-black transition-colors">Set Annual</button>
+                      <button onClick={() => handleSubChange(cafe.id, 'cancelled', '')} className="text-xs bg-black text-white hover:bg-neutral-800 px-3 py-1 rounded font-semibold transition-colors">Cancel</button>
                     </td>
                   </tr>
                 ))}
@@ -118,41 +118,43 @@ export default function SuperAdminPage() {
         )}
 
         {activeTab === "logs" && (
-          <div className="bg-slate-900 rounded-xl shadow-sm overflow-hidden p-6 text-green-400 font-mono text-sm h-[600px] overflow-y-auto">
-            {auditLogs.map(log => (
-              <div key={log.id} className="mb-4 border-b border-slate-800 pb-4">
-                <p className="text-slate-500 mb-1">[{new Date(log.created_at).toISOString()}] <span className="text-blue-400">ACTOR:</span> {log.actor} <span className="text-amber-400">ACTION:</span> {log.action}</p>
-                {log.target_cafe_id && <p>Target Cafe: {log.target_cafe_id}</p>}
-                <p className="text-slate-300">Details: {log.details}</p>
-              </div>
-            ))}
-            {auditLogs.length === 0 && <p className="text-slate-500">No logs generated yet.</p>}
+          <div className="dashboard-card p-0">
+            <div className="bg-black p-6 text-green-400 font-mono text-sm h-[600px] overflow-y-auto">
+              {auditLogs.map(log => (
+                <div key={log.id} className="mb-4 border-b border-neutral-800 pb-4">
+                  <p className="text-neutral-400 mb-1">[{new Date(log.created_at).toISOString()}] <span className="text-blue-400">ACTOR:</span> {log.actor} <span className="text-amber-400">ACTION:</span> {log.action}</p>
+                  {log.target_cafe_id && <p>Target Cafe: {log.target_cafe_id}</p>}
+                  <p className="text-neutral-300">Details: {log.details}</p>
+                </div>
+              ))}
+              {auditLogs.length === 0 && <p className="text-neutral-500">No logs generated yet.</p>}
+            </div>
           </div>
         )}
 
         {activeTab === "messages" && (
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="dashboard-card overflow-hidden">
             {messages.length === 0 ? (
-              <div className="p-8 text-center text-slate-500 font-medium">No contact messages received.</div>
+              <div className="p-8 text-center text-neutral-500 font-medium">No contact messages received.</div>
             ) : (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-neutral-200">
                 {messages.map(msg => (
-                  <div key={msg.id} className={`p-6 hover:bg-slate-50 transition-colors ${msg.status === 'unread' ? 'bg-blue-50/50' : ''}`}>
+                  <div key={msg.id} className={`p-6 hover:bg-neutral-50 transition-colors ${msg.status === 'unread' ? 'bg-neutral-50' : ''}`}>
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="font-bold text-slate-900 text-lg flex items-center gap-2">
+                        <h3 className="font-bold text-black text-lg flex items-center gap-2">
                           {msg.name} 
-                          {msg.status === 'unread' && <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded uppercase font-bold">New</span>}
+                          {msg.status === 'unread' && <span className="bg-black text-white text-xs px-2 py-0.5 rounded uppercase font-bold">New</span>}
                         </h3>
-                        <p className="text-slate-500 text-sm">
-                          <a href={`mailto:${msg.email}`} className="text-blue-600 hover:underline">{msg.email}</a> 
+                        <p className="text-neutral-500 text-sm">
+                          <a href={`mailto:${msg.email}`} className="text-black hover:underline font-medium">{msg.email}</a> 
                           {msg.phone && <span className="ml-2">| {msg.phone}</span>}
                           {msg.company && <span className="ml-2">| {msg.company}</span>}
                         </p>
                       </div>
-                      <span className="text-slate-400 text-xs font-mono">{new Date(msg.created_at).toLocaleString()}</span>
+                      <span className="text-neutral-400 text-xs font-mono">{new Date(msg.created_at).toLocaleString()}</span>
                     </div>
-                    <div className="bg-slate-100 p-4 rounded-lg text-slate-700 whitespace-pre-wrap font-serif text-sm">
+                    <div className="bg-neutral-100 p-4 rounded-lg text-black whitespace-pre-wrap font-serif text-sm border border-neutral-200">
                       {msg.message}
                     </div>
                   </div>

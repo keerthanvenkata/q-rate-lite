@@ -55,73 +55,75 @@ export default function MarketingPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-indigo-50 flex items-center justify-center p-4">
-        <form onSubmit={handleLogin} className="bg-white shadow-xl p-8 rounded-xl max-w-sm w-full">
-          <Send className="text-indigo-600 mx-auto mb-4" size={48} />
-          <h1 className="text-slate-800 text-center font-bold text-2xl mb-6">Marketing Portal</h1>
+      <div className="dashboard-bg flex items-center justify-center p-4">
+        <form onSubmit={handleLogin} className="dashboard-card p-8 max-w-sm w-full">
+          <Send className="text-black mx-auto mb-4" size={48} />
+          <h1 className="text-black text-center font-bold text-2xl mb-6">Marketing Portal</h1>
           <input 
             type="password" 
             placeholder="Cafe Passcode" 
-            className="w-full p-3 rounded bg-slate-50 border border-slate-200 text-center mb-4 focus:ring-2 focus:ring-indigo-500 outline-none"
+            className="dashboard-input text-center mb-4"
             value={passcode}
             onChange={e => setPasscode(e.target.value)}
           />
-          <button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold p-3 rounded transition-colors">LOGIN</button>
+          <button type="submit" className="dashboard-btn-primary">LOGIN</button>
         </form>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="dashboard-bg p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-extrabold text-slate-900 flex items-center gap-3 mb-8">
-          <Send className="text-indigo-600" /> Broadcast Marketing
+        <h1 className="text-3xl font-extrabold text-black flex items-center gap-3 mb-8">
+          <Send className="text-black" /> Broadcast Marketing
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-            <div className="bg-blue-100 p-4 rounded-full text-blue-600">
+          <div className="dashboard-card p-6 flex items-center gap-4">
+            <div className="bg-neutral-100 p-4 rounded-full text-black border border-neutral-200">
               <Users size={32} />
             </div>
             <div>
-              <p className="text-sm text-slate-500 font-semibold uppercase">Opted-In Audience</p>
-              <p className="text-3xl font-black text-slate-800">{audienceSize}</p>
+              <p className="text-sm text-neutral-500 font-semibold uppercase">Opted-In Audience</p>
+              <p className="text-3xl font-black text-black">{audienceSize}</p>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-            <div className="bg-emerald-100 p-4 rounded-full text-emerald-600">
+          <div className="dashboard-card p-6 flex items-center gap-4">
+            <div className="bg-neutral-100 p-4 rounded-full text-black border border-neutral-200">
               <CreditCard size={32} />
             </div>
             <div>
-              <p className="text-sm text-slate-500 font-semibold uppercase">Available Credits</p>
-              <p className={`text-3xl font-black ${credits < audienceSize ? 'text-red-500' : 'text-slate-800'}`}>{credits}</p>
+              <p className="text-sm text-neutral-500 font-semibold uppercase">Available Credits</p>
+              <p className={`text-3xl font-black ${credits < audienceSize ? 'text-red-500' : 'text-black'}`}>{credits}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
-          <h2 className="text-xl font-bold text-slate-800 mb-6">Draft Campaign</h2>
+        <div className="dashboard-card p-8">
+          <h2 className="text-xl font-bold text-black mb-6">Draft Campaign</h2>
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-slate-600 mb-2">Approved Template Name</label>
+            <label className="block text-sm font-semibold text-neutral-600 mb-2">Approved Template Name</label>
             <input 
               type="text" 
               value={templateName}
               onChange={e => setTemplateName(e.target.value)}
-              className="w-full p-3 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none font-mono"
+              className="dashboard-input font-mono"
             />
-            <p className="text-xs text-slate-400 mt-2">This must match the exact template name approved in Meta Business Manager.</p>
+            <p className="text-xs text-neutral-400 mt-2">This must match the exact template name approved in Meta Business Manager.</p>
           </div>
           
           {result ? (
-            <div className="bg-green-50 text-green-700 p-4 rounded border border-green-200 mb-4 font-semibold">
+            <div className="bg-neutral-50 text-black p-4 rounded border border-neutral-200 mb-4 font-semibold">
               {result}
             </div>
           ) : (
             <button 
               onClick={handleBlast}
               disabled={isBlasting || audienceSize === 0 || credits < audienceSize}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-bold p-4 rounded-lg flex justify-center items-center gap-2 transition-colors"
+              className={`dashboard-btn-primary p-4 text-lg flex justify-center items-center gap-2 ${
+                isBlasting || audienceSize === 0 || credits < audienceSize ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
               {isBlasting ? "Sending Broadcast..." : "SEND BROADCAST NOW"}
             </button>

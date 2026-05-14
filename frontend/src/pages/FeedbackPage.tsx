@@ -17,9 +17,9 @@ export default function FeedbackPage() {
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white p-6 rounded-xl shadow-sm text-center max-w-md w-full">
-          <p className="text-gray-600">Invalid or missing session token. Please re-scan the QR code.</p>
+      <div className="dashboard-bg flex items-center justify-center p-4">
+        <div className="dashboard-card p-6 text-center max-w-md w-full">
+          <p className="text-neutral-600">Invalid or missing session token. Please re-scan the QR code.</p>
         </div>
       </div>
     );
@@ -51,23 +51,23 @@ export default function FeedbackPage() {
 
   if (result) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center max-w-md w-full animate-fade-in">
-          <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+      <div className="dashboard-bg flex flex-col items-center justify-center p-4">
+        <div className="dashboard-card p-8 text-center max-w-md w-full animate-fade-in">
+          <div className="w-16 h-16 bg-neutral-100 text-black rounded-full flex items-center justify-center mx-auto mb-4 border border-neutral-200">
             <Coffee size={32} />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Thank you!</h2>
-          <p className="text-gray-600 mb-6">{result.message}</p>
+          <h2 className="text-2xl font-bold text-black mb-2">Thank you!</h2>
+          <p className="text-neutral-600 mb-6">{result.message}</p>
           
           {result.redirect_url && (
-            <p className="text-sm text-gray-500 animate-pulse">Redirecting you to Google...</p>
+            <p className="text-sm text-neutral-500 animate-pulse">Redirecting you to Google...</p>
           )}
 
           {!result.redirect_url && result.coupon_code && (
-            <div className="bg-amber-50 p-4 rounded-lg border border-amber-100 mt-4">
-               <p className="text-sm font-semibold text-amber-800 uppercase tracking-wider mb-1">Your Next Visit Coupon</p>
-               <p className="text-3xl font-mono tracking-widest text-amber-600">{result.coupon_code}</p>
-               <p className="text-xs text-amber-700 mt-2">Show this to the staff on your next visit.</p>
+            <div className="bg-neutral-50 p-4 rounded-lg border border-neutral-200 mt-4">
+               <p className="text-sm font-semibold text-black uppercase tracking-wider mb-1">Your Next Visit Coupon</p>
+               <p className="text-3xl font-mono tracking-widest text-black">{result.coupon_code}</p>
+               <p className="text-xs text-neutral-500 mt-2">Show this to the staff on your next visit.</p>
             </div>
           )}
         </div>
@@ -76,15 +76,15 @@ export default function FeedbackPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 pt-12">
+    <div className="dashboard-bg flex flex-col items-center p-4 pt-12">
       <div className="max-w-md w-full">
         {/* Dynamic header could go here based on cafe info from token verification */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">How was your visit?</h1>
-          <p className="text-gray-500 mt-2">Your honest feedback helps us improve.</p>
+          <h1 className="text-3xl font-bold text-black tracking-tight">How was your visit?</h1>
+          <p className="text-neutral-500 mt-2">Your honest feedback helps us improve.</p>
         </div>
 
-        <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-gray-100">
+        <div className="dashboard-card p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             
             {/* Star Rating */}
@@ -101,8 +101,8 @@ export default function FeedbackPage() {
                   <Star
                     size={48}
                     className="transition-colors"
-                    fill={(hoverRating || rating) >= star ? "#fbbf24" : "transparent"}
-                    color={(hoverRating || rating) >= star ? "#fbbf24" : "#e5e7eb"}
+                    fill={(hoverRating || rating) >= star ? "#000000" : "transparent"}
+                    color={(hoverRating || rating) >= star ? "#000000" : "#e5e7eb"}
                   />
                 </button>
               ))}
@@ -110,13 +110,13 @@ export default function FeedbackPage() {
 
             {/* Comment Area */}
             <div className="animate-fade-in transition-all">
-              <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="comment" className="block text-sm font-medium text-neutral-700 mb-2">
                 Care to tell us more? (Optional)
               </label>
               <textarea
                 id="comment"
                 rows={3}
-                className="w-full rounded-xl border-gray-200 bg-gray-50 p-3 text-gray-700 outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all shadow-inner"
+                className="dashboard-input"
                 placeholder="What did you love? What could be better?"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
@@ -124,15 +124,15 @@ export default function FeedbackPage() {
             </div>
 
             {/* Opt-in Checkbox */}
-            <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-100">
+            <div className="flex items-center gap-3 bg-neutral-50 p-3 rounded-lg border border-neutral-100">
               <input
                 type="checkbox"
                 id="optIn"
-                className="w-5 h-5 rounded text-amber-600 focus:ring-amber-500 border-gray-300"
+                className="w-5 h-5 rounded text-black focus:ring-black border-neutral-300"
                 checked={optIn}
                 onChange={(e) => setOptIn(e.target.checked)}
               />
-              <label htmlFor="optIn" className="text-sm text-gray-600">
+              <label htmlFor="optIn" className="text-sm text-neutral-600">
                 Send me future offers and exclusive discounts from this cafe.
               </label>
             </div>
@@ -146,10 +146,10 @@ export default function FeedbackPage() {
             <button
               type="submit"
               disabled={isSubmitting || rating === 0}
-              className={`w-full py-4 px-6 rounded-xl text-white font-semibold text-lg transition-all ${
+              className={`dashboard-btn-primary py-4 text-lg mt-2 ${
                 rating > 0 && !isSubmitting
-                  ? "bg-amber-600 hover:bg-amber-700 shadow-md transform hover:-translate-y-0.5"
-                  : "bg-gray-300 cursor-not-allowed"
+                  ? ""
+                  : "opacity-50 cursor-not-allowed"
               }`}
             >
               {isSubmitting ? "Submitting..." : "Submit Feedback"}
