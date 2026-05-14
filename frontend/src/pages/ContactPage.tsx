@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, MessageSquare, Building2, User, Phone, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { submitContactMessage } from '../api';
+import Navbar from '../components/Navbar';
 import { Link } from 'react-router-dom';
-
-import Logo from '../components/Logo';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -41,21 +40,24 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-[#FAF3E0] dark:bg-[#030303] text-stone-900 dark:text-zinc-50 font-sans selection:bg-amber-500/30 dark:selection:bg-indigo-500/30 transition-colors duration-500 relative overflow-hidden">
       
-      {/* Dark Mode Hardware-Accelerated Aurora Curtains & Noise Background */}
+      {/* Authentic Dark Mode Aurora Ribbons & Noise Background */}
       <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none bg-[#020617] overflow-hidden">
         
         {/* Far Layer: Deep Haze */}
         <div className="absolute inset-0 bg-slate-900/60 blur-[100px]"></div>
 
-        {/* Mid Layer: Structured, Moving Aurora Lines */}
-        <div className="absolute inset-0 opacity-60" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)', maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)' }}>
-          {/* The curtain width must be massive (300vw) so the -50% translateX loop is seamless */}
-          <div className="absolute top-[-20%] left-0 w-[300vw] h-[100%] aurora-curtain-1"></div>
-          <div className="absolute top-[-10%] left-0 w-[300vw] h-[90%] aurora-curtain-2"></div>
+        {/* Mid Layer: Authentic Intersecting Glowing Ribbons */}
+        <div className="absolute inset-0 opacity-70 mix-blend-screen" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)', maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)' }}>
+          {/* Ribbon 1: Fast Emerald */}
+          <div className="absolute top-[-20%] left-[10%] w-[15vw] h-[150vh] bg-indigo-500/20 blur-[80px] rounded-[100%] origin-top animate-ribbon-1"></div>
+          {/* Ribbon 2: Slow Teal */}
+          <div className="absolute top-[-20%] left-[30%] w-[20vw] h-[150vh] bg-purple-500/20 blur-[100px] rounded-[100%] origin-top animate-ribbon-2"></div>
+          {/* Ribbon 3: Deep Violet */}
+          <div className="absolute top-[-20%] left-[50%] w-[12vw] h-[150vh] bg-blue-500/20 blur-[90px] rounded-[100%] origin-top animate-ribbon-3"></div>
         </div>
 
         {/* Focal Bloom (keeps the area behind the content softly lit) */}
-        <div className="absolute top-[30%] left-[50%] -translate-x-1/2 w-[50%] h-[30%] rounded-[100%] bg-teal-300/10 blur-[100px]"></div>
+        <div className="absolute top-[30%] left-[50%] -translate-x-1/2 w-[50%] h-[30%] rounded-[100%] bg-indigo-300/10 blur-[100px]"></div>
         
         {/* Animated Film Grain */}
         <div className="absolute inset-[-10%] opacity-[0.04] mix-blend-screen animate-noise-shift" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
@@ -68,11 +70,8 @@ export default function ContactPage() {
       </div>
 
       <div className="relative z-10 flex flex-col min-h-screen">
-        <nav className="w-full pt-8 pb-4">
-          <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-            <Logo />
-          </div>
-        </nav>
+        {/* Navigation */}
+        <Navbar />
 
         <main className="flex-grow flex items-center py-12 px-6">
           <div className="max-w-5xl mx-auto w-full grid md:grid-cols-2 gap-12 lg:gap-24">

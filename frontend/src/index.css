@@ -19,49 +19,32 @@
     animation: blob-float 20s ease-in-out infinite;
   }
 
-  /* Hardware Accelerated Aurora Curtains */
+  /* Authentic Intersecting Aurora Ribbons */
   
-  @keyframes aurora-slide {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+  @keyframes ribbon-drift-1 {
+    0%, 100% { transform: translateX(0) rotate(-15deg); }
+    50% { transform: translateX(10vw) rotate(-20deg); }
   }
 
-  .aurora-curtain-1 {
-    /* Angled repeating gradient creates vertical "rays" of light */
-    background: repeating-linear-gradient(
-      100deg,
-      transparent 0%,
-      transparent 5%,
-      rgba(16, 185, 129, 0.2) 10%, /* Emerald */
-      rgba(45, 212, 191, 0.2) 15%, /* Teal */
-      transparent 20%,
-      transparent 35%,
-      rgba(139, 92, 246, 0.15) 40%, /* Violet */
-      transparent 45%
-    );
-    background-size: 200% 100%;
-    animation: aurora-slide 40s linear infinite;
-    filter: blur(25px); /* Much lower blur for better performance and visible "lines" */
-    mix-blend-mode: screen;
+  @keyframes ribbon-drift-2 {
+    0%, 100% { transform: translateX(0) rotate(10deg); }
+    50% { transform: translateX(-15vw) rotate(15deg); }
   }
 
-  .aurora-curtain-2 {
-    background: repeating-linear-gradient(
-      80deg,
-      transparent 0%,
-      transparent 10%,
-      rgba(45, 212, 191, 0.15) 15%, /* Teal */
-      transparent 20%,
-      transparent 25%,
-      rgba(16, 185, 129, 0.15) 30%, /* Emerald */
-      rgba(14, 165, 233, 0.15) 35%, /* Sky Blue */
-      transparent 40%
-    );
-    background-size: 200% 100%;
-    animation: aurora-slide 30s linear infinite;
-    filter: blur(35px);
-    mix-blend-mode: screen;
+  @keyframes ribbon-drift-3 {
+    0%, 100% { transform: translateX(0) rotate(-25deg); }
+    50% { transform: translateX(20vw) rotate(-20deg); }
   }
+
+  @keyframes ribbon-drift-4 {
+    0%, 100% { transform: translateX(0) rotate(15deg); }
+    50% { transform: translateX(-10vw) rotate(10deg); }
+  }
+
+  .animate-ribbon-1 { animation: ribbon-drift-1 25s ease-in-out infinite; }
+  .animate-ribbon-2 { animation: ribbon-drift-2 30s ease-in-out infinite; }
+  .animate-ribbon-3 { animation: ribbon-drift-3 20s ease-in-out infinite; }
+  .animate-ribbon-4 { animation: ribbon-drift-4 35s ease-in-out infinite; }
 
   @keyframes noise-shift {
     0%, 100% { background-position: 0% 0%; }

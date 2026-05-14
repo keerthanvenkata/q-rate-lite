@@ -2,18 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
 import { ArrowLeft } from 'lucide-react';
+import Navbar from '../components/Navbar';
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-[#FFFCF8] dark:bg-zinc-950 text-stone-900 dark:text-zinc-50 font-sans flex flex-col">
-      <nav className="w-full pt-8 pb-4 border-b border-amber-200/50 dark:border-white/5 bg-[#FAF3E0]/70 dark:bg-zinc-950/60 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-6 flex items-center justify-between">
-          <Logo />
-          <Link to="/" className="text-sm font-bold text-stone-600 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-white flex items-center gap-2 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to Home
-          </Link>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-[#FFFCF8] dark:bg-zinc-950 text-stone-900 dark:text-zinc-50 font-sans flex flex-col pt-24">
+      <Navbar />
       
       <div className="flex-grow">
         <div className="max-w-3xl mx-auto mt-12 mb-24 p-8 md:p-12 bg-white dark:bg-zinc-900 rounded-3xl shadow-xl dark:shadow-none border border-amber-100 dark:border-zinc-800">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
+import Navbar from '../components/Navbar';
 import { motion } from 'framer-motion';
 import { 
   MessageCircle, 
@@ -19,34 +20,6 @@ import {
 } from 'lucide-react';
 
 export default function LandingPage() {
-  const [isDark, setIsDark] = useState(true);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      setIsDark(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      setIsDark(false);
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    if (isDark) {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      setIsDark(false);
-    } else {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setIsDark(true);
-    }
-  };
-
   const fadeIn: any = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
@@ -65,17 +38,22 @@ export default function LandingPage() {
       
       {/* Global Backgrounds */}
 
-      {/* Dark Mode Hardware-Accelerated Aurora Curtains & Noise Background */}
+      {/* Authentic Dark Mode Aurora Ribbons & Noise Background */}
       <div className="hidden dark:block fixed inset-0 z-0 pointer-events-none bg-[#020617] overflow-hidden">
         
         {/* Far Layer: Deep Haze */}
         <div className="absolute inset-0 bg-slate-900/60 blur-[100px]"></div>
 
-        {/* Mid Layer: Structured, Moving Aurora Lines */}
-        <div className="absolute inset-0 opacity-60" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)', maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)' }}>
-          {/* The curtain width must be massive (300vw) so the -50% translateX loop is seamless */}
-          <div className="absolute top-[-20%] left-0 w-[300vw] h-[100%] aurora-curtain-1"></div>
-          <div className="absolute top-[-10%] left-0 w-[300vw] h-[90%] aurora-curtain-2"></div>
+        {/* Mid Layer: Authentic Intersecting Glowing Ribbons */}
+        <div className="absolute inset-0 opacity-70 mix-blend-screen" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)', maskImage: 'linear-gradient(to bottom, black 20%, transparent 80%)' }}>
+          {/* Ribbon 1: Fast Emerald */}
+          <div className="absolute top-[-20%] left-[10%] w-[15vw] h-[150vh] bg-emerald-500/30 blur-[40px] rounded-[100%] origin-top animate-ribbon-1"></div>
+          {/* Ribbon 2: Slow Teal */}
+          <div className="absolute top-[-20%] left-[30%] w-[20vw] h-[150vh] bg-teal-400/20 blur-[50px] rounded-[100%] origin-top animate-ribbon-2"></div>
+          {/* Ribbon 3: Deep Violet */}
+          <div className="absolute top-[-20%] left-[50%] w-[12vw] h-[150vh] bg-indigo-500/30 blur-[45px] rounded-[100%] origin-top animate-ribbon-3"></div>
+          {/* Ribbon 4: Sweeping Cyan */}
+          <div className="absolute top-[-20%] left-[70%] w-[18vw] h-[150vh] bg-cyan-400/25 blur-[60px] rounded-[100%] origin-top animate-ribbon-4"></div>
         </div>
 
         {/* Focal Bloom (keeps the area behind the headline softly lit) */}
@@ -94,55 +72,7 @@ export default function LandingPage() {
       </div>
 
       <div className="relative z-10">
-        {/* Navigation */}
-        <nav className="fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-xl bg-[#FAF3E0]/70 dark:bg-zinc-950/60 border-b border-amber-200/50 dark:border-white/5">
-          <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
-            <Logo />
-
-            <div className="hidden md:flex items-center gap-8 text-sm font-medium text-stone-600 dark:text-zinc-300">
-              <a href="#how-it-works" className="hover:text-stone-900 dark:hover:text-white transition-colors">How it Works</a>
-              <a href="#features" className="hover:text-stone-900 dark:hover:text-white transition-colors">Features</a>
-              <a href="#pricing" className="hover:text-stone-900 dark:hover:text-white transition-colors">Pricing</a>
-            </div>
-
-            <div className="hidden md:flex items-center gap-6">
-              <button 
-                onClick={toggleTheme} 
-                className="p-2 rounded-full hover:bg-amber-100/50 dark:hover:bg-white/5 transition-colors text-stone-500 dark:text-zinc-400 focus:outline-none"
-                aria-label="Toggle Theme"
-              >
-                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-              <Link to="/staff" className="text-sm font-medium text-stone-600 dark:text-zinc-300 hover:text-stone-900 dark:hover:text-white transition-colors">
-                Staff Login
-              </Link>
-              <a href="#pricing" className="bg-stone-900 dark:bg-white text-[#FFFCF8] dark:text-zinc-900 px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-stone-800 dark:hover:bg-zinc-200 transition-all hover:-translate-y-0.5 active:translate-y-0 shadow-sm">
-                Get Started
-              </a>
-            </div>
-
-            <div className="md:hidden flex items-center gap-4">
-              <button onClick={toggleTheme} className="p-2 rounded-full text-stone-500 dark:text-zinc-400">
-                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-              <button className="p-2 text-stone-600 dark:text-zinc-300" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-          </div>
-        </nav>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="fixed inset-0 z-40 bg-[#FFFCF8] dark:bg-zinc-950 pt-24 px-6 md:hidden">
-            <div className="flex flex-col gap-6 text-lg font-medium">
-              <a href="#how-it-works" onClick={() => setIsMenuOpen(false)} className="text-stone-600 dark:text-zinc-300">How it Works</a>
-              <a href="#features" onClick={() => setIsMenuOpen(false)} className="text-stone-600 dark:text-zinc-300">Features</a>
-              <a href="#pricing" onClick={() => setIsMenuOpen(false)} className="text-stone-600 dark:text-zinc-300">Pricing</a>
-              <Link to="/staff" onClick={() => setIsMenuOpen(false)} className="text-stone-600 dark:text-zinc-300">Staff Login</Link>
-            </div>
-          </div>
-        )}
+        <Navbar />
 
         {/* Hero Section */}
         <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6">
