@@ -19,38 +19,63 @@
     animation: blob-float 20s ease-in-out infinite;
   }
 
-  @keyframes aurora-sweep {
-    0% { background-position: 0% 0%; }
-    100% { background-position: -200% 0%; }
+  /* Cinematic Aurora Suite */
+  
+  @keyframes aurora-drift-x {
+    0%, 100% { transform: translateX(-5%); }
+    50% { transform: translateX(5%); }
+  }
+  
+  @keyframes aurora-drift-y {
+    0%, 100% { transform: translateY(-5%); }
+    50% { transform: translateY(5%); }
   }
 
-  .aurora-layer-1 {
-    background-image: repeating-linear-gradient(
-      110deg,
-      rgba(16, 185, 129, 0.0) 0%,
-      rgba(52, 211, 153, 0.25) 20%, 
-      rgba(45, 212, 191, 0.25) 30%, 
-      rgba(168, 85, 247, 0.15) 40%, 
-      rgba(16, 185, 129, 0.0) 50%
-    );
-    background-size: 200% 100%;
-    animation: aurora-sweep 40s linear infinite;
-    filter: blur(60px);
-    mix-blend-mode: screen;
+  @keyframes aurora-drift-diagonal {
+    0%, 100% { transform: translate(-3%, -3%); }
+    50% { transform: translate(3%, 3%); }
+  }
+  
+  @keyframes aurora-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+  }
+  
+  @keyframes aurora-shimmer {
+    0%, 100% { opacity: 0.4; }
+    33% { opacity: 0.6; }
+    66% { opacity: 0.3; }
+  }
+  
+  @keyframes noise-shift {
+    0%, 100% { background-position: 0% 0%; }
+    10% { background-position: -5% -5%; }
+    20% { background-position: -10% 5%; }
+    30% { background-position: 5% -10%; }
+    40% { background-position: -5% 15%; }
+    50% { background-position: -10% 5%; }
+    60% { background-position: 15% 0%; }
+    70% { background-position: 0% 15%; }
+    80% { background-position: 3% 35%; }
+    90% { background-position: -10% 10%; }
   }
 
-  .aurora-layer-2 {
-    background-image: repeating-linear-gradient(
-      80deg,
-      rgba(16, 185, 129, 0.0) 0%,
-      rgba(16, 185, 129, 0.15) 15%, 
-      rgba(139, 92, 246, 0.2) 25%, 
-      rgba(45, 212, 191, 0.15) 35%, 
-      rgba(16, 185, 129, 0.0) 50%
-    );
-    background-size: 200% 100%;
-    animation: aurora-sweep 30s linear infinite reverse;
-    filter: blur(60px);
-    mix-blend-mode: screen;
+  .animate-aurora-x {
+    animation: aurora-drift-x 25s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  .animate-aurora-y {
+    animation: aurora-drift-y 32s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  .animate-aurora-diagonal {
+    animation: aurora-drift-diagonal 28s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  .animate-aurora-pulse {
+    animation: aurora-pulse 18s ease-in-out infinite;
+  }
+  .animate-aurora-shimmer {
+    animation: aurora-shimmer 12s ease-in-out infinite;
+  }
+  .animate-noise-shift {
+    animation: noise-shift 8s steps(10) infinite;
   }
 }
