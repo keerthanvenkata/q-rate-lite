@@ -5,14 +5,11 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 
+from dependencies import get_current_user
 from database import get_db
 from models import Cafe, Feedback
 
 router = APIRouter()
-
-class AdminAuthRequest(BaseModel):
-    cafe_id: int
-    passcode: str
 
 class FeedbackItem(BaseModel):
     id: int
@@ -26,25 +23,20 @@ class AdminDataResponse(BaseModel):
     average_rating: float
     recent_feedbacks: List[FeedbackItem]
 
-@router.post("/dashboard", response_model=AdminDataResponse)
-def get_admin_dashboard(data: AdminAuthRequest, db: Session = Depends(get_db)):
-    # 1. Simple Auth
-    cafe = db.query(Cafe).filter(Cafe.id == data.cafe_id).first()
-    if not cafe or cafe.hashed_password != data.passcode:
-        raise HTTPException(status_code=403, detail="Invalid admin passcode")
-
-    # 2. Get Analytics (Counts & Avg)
+@router.get("/dashboard", response_model=AdminDataResponse)
+def get_admin_dashboard(db: Session = Depends(get_db), cafe: Cafe = Depends(get_current_user)):
+    # 2. Get Analytics (Counts & Avg) using the authenticated cafe
     stats = db.query(
         func.count(Feedback.id).label("total"),
         func.avg(Feedback.rating).label("average")
-    ).filter(Feedback.cafe_id == data.cafe_id).first()
+    ).filter(Feedback.cafe_id == cafe.id).first()
 
     total_fb = stats.total or 0
     avg_fb = round(stats.average, 1) if stats.average else 0.0
 
     # 3. Get Recent Feedbacks (newest first)
     feedbacks = db.query(Feedback)\
-        .filter(Feedback.cafe_id == data.cafe_id)\
+        .filter(Feedback.cafe_id == cafe.id)\
         .order_by(Feedback.created_at.desc())\
         .limit(50)\
         .all()
