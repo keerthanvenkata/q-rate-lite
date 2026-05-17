@@ -110,10 +110,10 @@ export default function LandingPage() {
               </motion.p>
               
               <motion.div variants={fadeIn} className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-                <a href="#pricing" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-zinc-900 font-semibold text-lg hover:bg-stone-800 dark:hover:bg-zinc-100 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-stone-900/10 dark:shadow-white/5 group">
+                <Link to="/signup" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-zinc-900 font-semibold text-lg hover:bg-stone-800 dark:hover:bg-zinc-100 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-stone-900/10 dark:shadow-white/5 group">
                   Start 14-Day Free Trial
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </a>
+                </Link>
                 <a href="#how-it-works" className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#FFFDF8]/70 dark:bg-white/5 backdrop-blur-md border border-amber-200/80 dark:border-white/10 hover:bg-[#FFFDF8] dark:hover:bg-white/10 text-stone-900 dark:text-white font-semibold text-lg transition-colors shadow-sm">
                   See How It Works
                 </a>
@@ -243,9 +243,9 @@ export default function LandingPage() {
                       </li>
                     ))}
                   </ul>
-                  <button className="w-full py-4 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-lg hover:bg-stone-800 dark:hover:bg-zinc-200 transition-all shadow-md active:scale-[0.98]">
+                  <Link to="/signup" className="block text-center w-full py-4 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-lg hover:bg-stone-800 dark:hover:bg-zinc-200 transition-all shadow-md active:scale-[0.98]">
                     Start 14-Day Free Trial
-                  </button>
+                  </Link>
                   <p className="text-center text-xs text-stone-500 mt-4">No credit card required. Cancel anytime.</p>
                 </div>
               </div>
@@ -274,10 +274,10 @@ export default function LandingPage() {
               <p className="text-amber-100 dark:text-zinc-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
                 Join the smart cafés using Q-Rate Lite to protect their brand and turn every customer into a regular.
               </p>
-              <button className="px-8 py-4 rounded-xl bg-white text-amber-900 dark:text-indigo-900 font-bold text-lg hover:-translate-y-1 transition-transform shadow-xl flex items-center justify-center gap-2 mx-auto group/btn">
+              <Link to="/signup" className="px-8 py-4 rounded-xl bg-white text-amber-900 dark:text-indigo-900 font-bold text-lg hover:-translate-y-1 transition-transform shadow-xl flex items-center justify-center gap-2 mx-auto group/btn w-fit">
                 Get Started Now
                 <ArrowRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-              </button>
+              </Link>
             </div>
           </motion.div>
 
