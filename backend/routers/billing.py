@@ -6,17 +6,16 @@ from database import get_db
 from models import Cafe
 from audit import log_audit
 
+from dependencies import get_current_user
+
 router = APIRouter()
 
 class CreateOrderRequest(BaseModel):
-    cafe_id: int
     plan: str # "monthly" or "annual"
 
 @router.post("/create-order")
-def create_razorpay_order(data: CreateOrderRequest, db: Session = Depends(get_db)):
-    cafe = db.query(Cafe).filter(Cafe.id == data.cafe_id).first()
-    if not cafe:
-        raise HTTPException(status_code=404, detail="Cafe not found")
+def create_razorpay_order(data: CreateOrderRequest, db: Session = Depends(get_db), cafe: Cafe = Depends(get_current_user)):
+    # cafe is automatically fetched by get_current_user
 
     # In production, initialize Razorpay client and call order.create()
     # e.g. amount = 999 * 100 (in paise)

@@ -8,25 +8,16 @@ from models import Cafe, Feedback
 from routers.whatsapp import send_whatsapp_template
 from audit import log_audit
 
+from dependencies import get_current_user
+
 router = APIRouter()
 
-class MarketingAuth(BaseModel):
-    cafe_id: int
-    passcode: str
-
-class BlastRequest(MarketingAuth):
+class BlastRequest(BaseModel):
     template_name: str
     components: List[dict] = []
 
-def verify_cafe_owner(cafe_id: int, passcode: str, db: Session):
-    cafe = db.query(Cafe).filter(Cafe.id == cafe_id).first()
-    if not cafe or cafe.hashed_password != passcode:
-        raise HTTPException(status_code=403, detail="Invalid Cafe Auth")
-    return cafe
-
-@router.post("/audience")
-def get_marketing_audience(data: MarketingAuth, db: Session = Depends(get_db)):
-    cafe = verify_cafe_owner(data.cafe_id, data.passcode, db)
+@router.get("/audience")
+def get_marketing_audience(db: Session = Depends(get_db), cafe: Cafe = Depends(get_current_user)):
     
     opted_in_customers = db.query(Feedback.customer_phone).filter(
         Feedback.cafe_id == cafe.id,
@@ -43,8 +34,7 @@ def get_marketing_audience(data: MarketingAuth, db: Session = Depends(get_db)):
 
 from fastapi.concurrency import run_in_threadpool
 
-def _prepare_blast(data: BlastRequest, db: Session):
-    cafe = verify_cafe_owner(data.cafe_id, data.passcode, db)
+def _prepare_blast(data: BlastRequest, db: Session, cafe: Cafe):
     
     opted_in_customers = db.query(Feedback.customer_phone).filter(
         Feedback.cafe_id == cafe.id,
@@ -82,9 +72,9 @@ def _log_blast(cafe_id: int, success_count: int, template_name: str, db: Session
         print(f"Failed to log audit: {e}")
 
 @router.post("/blast")
-async def send_marketing_blast(data: BlastRequest, db: Session = Depends(get_db)):
+async def send_marketing_blast(data: BlastRequest, db: Session = Depends(get_db), cafe: Cafe = Depends(get_current_user)):
     # Run DB preparation in threadpool to avoid blocking event loop
-    cafe_id, remaining_credits, phones = await run_in_threadpool(_prepare_blast, data, db)
+    cafe_id, remaining_credits, phones = await run_in_threadpool(_prepare_blast, data, db, cafe)
     
     success_count = 0
     # Blast out templates
