@@ -9,8 +9,11 @@ class Cafe(Base):
     id = Column(Integer, primary_key=True, index=True)
     slug = Column(String, unique=True, index=True, nullable=False) # e.g., "blue-tokai-hyd"
     name = Column(String, nullable=False)
-    # Simple auth for staff/owners for now
-    hashed_password = Column(String, nullable=False) 
+    # Simple auth for staff/owners for now (Deprecated for Supabase Auth)
+    hashed_password = Column(String, nullable=True) 
+    
+    # Supabase Auth User ID
+    auth_id = Column(String, unique=True, index=True, nullable=True)
     
     # Metadata for Option 1 Flow
     google_maps_link = Column(String, nullable=True) # For 4-5 star redirect
