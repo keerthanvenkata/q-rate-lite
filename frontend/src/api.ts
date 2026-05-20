@@ -64,6 +64,25 @@ export interface AdminAuthData {
   passcode: string;
 }
 
+export interface BillingStatusResponse {
+  subscription_status: string;
+  subscription_plan: string | null;
+  plan_expiry: string | null;
+  marketing_credits: number;
+}
+
+export interface RazorpayOrderResponse {
+  status: string;
+  order_id: string;
+  amount: number;
+  currency: string;
+  key_id: string;
+}
+
+export interface WhatsappConfigResponse {
+  waba_phone_number: string;
+}
+
 export interface FeedbackItem {
   id: number;
   rating: number;
@@ -73,23 +92,75 @@ export interface FeedbackItem {
 }
 
 export interface AdminDataResponse {
+  cafe_id: number;
   total_feedback: number;
   average_rating: number;
   recent_feedbacks: FeedbackItem[];
 }
 
-export async function fetchAdminDashboard(data: AdminAuthData): Promise<AdminDataResponse> {
+export async function fetchAdminDashboard(token: string): Promise<AdminDataResponse> {
   const response = await fetch(`${API_BASE_URL}/admin/dashboard`, {
-    method: "POST",
+    method: "GET",
     headers: {
+      "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
   });
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
     throw new Error(err.detail || "Failed to fetch dashboard");
+  }
+
+  return response.json();
+}
+
+export async function fetchBillingStatus(token: string): Promise<BillingStatusResponse> {
+  const response = await fetch(`${API_BASE_URL}/billing/status`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to fetch billing status");
+  }
+
+  return response.json();
+}
+
+export async function createRazorpayOrder(token: string, plan: string): Promise<RazorpayOrderResponse> {
+  const response = await fetch(`${API_BASE_URL}/billing/create-order`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ plan }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to create order");
+  }
+
+  return response.json();
+}
+
+export async function fetchWhatsappConfig(): Promise<WhatsappConfigResponse> {
+  const response = await fetch(`${API_BASE_URL}/whatsapp/config`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to fetch whatsapp config");
   }
 
   return response.json();

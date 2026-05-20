@@ -19,6 +19,7 @@ class FeedbackItem(BaseModel):
     created_at: datetime
     
 class AdminDataResponse(BaseModel):
+    cafe_id: int
     total_feedback: int
     average_rating: float
     recent_feedbacks: List[FeedbackItem]
@@ -52,6 +53,7 @@ def get_admin_dashboard(db: Session = Depends(get_db), cafe: Cafe = Depends(get_
     ]
 
     return AdminDataResponse(
+        cafe_id=cafe.id,
         total_feedback=total_fb,
         average_rating=avg_fb,
         recent_feedbacks=fb_items

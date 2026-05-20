@@ -71,3 +71,12 @@ async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
             await run_in_threadpool(_process_webhook, cafe_id, plan, db)
     
     return {"status": "ok"}
+
+@router.get("/status")
+def get_billing_status(cafe: Cafe = Depends(get_current_user)):
+    return {
+        "subscription_status": cafe.subscription_status,
+        "subscription_plan": cafe.subscription_plan,
+        "plan_expiry": cafe.plan_expiry,
+        "marketing_credits": cafe.marketing_credits
+    }

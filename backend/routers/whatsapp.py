@@ -7,6 +7,16 @@ router = APIRouter()
 META_VERIFY_TOKEN = os.getenv("META_VERIFY_TOKEN", "qrate_verify_123")
 META_ACCESS_TOKEN = os.getenv("META_ACCESS_TOKEN", "dummy_token_replace_in_prod")
 META_PHONE_ID = os.getenv("META_PHONE_ID", "dummy_phone_id")
+WABA_PHONE_NUMBER = os.getenv("WABA_PHONE_NUMBER", "919999999999")
+
+@router.get("/config")
+def get_whatsapp_config():
+    """
+    Returns public config required by the frontend (like the WhatsApp bot phone number)
+    """
+    return {
+        "waba_phone_number": WABA_PHONE_NUMBER
+    }
 
 @router.get("/webhook")
 def verify_webhook(request: Request):
