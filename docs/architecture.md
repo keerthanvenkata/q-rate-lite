@@ -1,4 +1,4 @@
-# Q-Rate Lite: System Architecture
+# Q-Rate Lite: System Architecture & Technical Documentation
 
 Q-Rate Lite is designed as a "boring," ultra-reliable monolithic application. It eschews microservices in favor of a tightly coupled, highly maintainable frontend and backend that can be deployed entirely for free on serverless infrastructure.
 
@@ -32,18 +32,10 @@ The backend is modularized via FastAPI Routers:
 
 ## 3. Data Models (Entity-Relationship)
 
-*   **`Cafe` (The Tenant)**
-    *   Contains configuration (e.g., `google_maps_link`, `reward_text`).
-    *   Tracks billing (`subscription_status`, `marketing_credits`).
-*   **`Feedback`**
-    *   Linked to a `Cafe`.
-    *   Stores `customer_phone`, `rating`, `comment`, and `marketing_opt_in`.
-    *   *Constraint*: One feedback submission per customer per cafe (lifetime).
-*   **`Coupon`**
-    *   Linked to a `Cafe`.
-    *   Issued upon successful feedback. Has a `status` (`issued` or `redeemed`).
-*   **`AuditLog`**
-    *   A generic, append-only ledger tracking all high-level system actions (e.g., "Marketing Blast Sent", "Subscription Upgraded by Razorpay").
+- **Café**: The tenant. Contains configuration (e.g., `google_maps_link`, `reward_text`) and tracks billing.
+- **Feedback**: Linked to a `Cafe`. Stores `customer_phone`, `rating`, `comment`, and `marketing_opt_in`. Constraint: One feedback submission per customer per cafe (lifetime).
+- **Coupon**: Linked to a `Cafe`. Issued upon successful feedback. Has a `status` (`issued` or `redeemed`).
+- **AuditLog**: A generic, append-only ledger tracking all high-level system actions (e.g., "Marketing Blast Sent", "Subscription Upgraded by Razorpay").
 
 ## 4. The WhatsApp State Machine (Inbound Flow)
 
@@ -57,3 +49,9 @@ The backend is modularized via FastAPI Routers:
 *   **No Complex Passwords**: Cafe owners and staff use a simple `passcode` (hashed via bcrypt) to access their portals.
 *   **Stateless Sessions**: The customer flow relies entirely on short-lived JWT tokens passed in the URL. No cookies or sessions are stored on the customer's device.
 *   **Immutable Logging**: Every action taken by the system (Razorpay) or an admin (Super Admin overrides) is permanently recorded in the `AuditLog`.
+
+## 6. Code Standards
+
+- **Keep it Simple**: No abstract base classes unless absolutely necessary.
+- **Explicit**: Better to repeat a line of code than create a complex dependency.
+- **Monolith**: No microservices.
