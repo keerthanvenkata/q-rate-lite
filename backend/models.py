@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, Text
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, Text, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from database import Base
@@ -31,6 +31,7 @@ class Cafe(Base):
 
 class Feedback(Base):
     __tablename__ = "feedbacks"
+    __table_args__ = (UniqueConstraint('cafe_id', 'customer_phone', name='uix_cafe_customer_feedback'),)
 
     id = Column(Integer, primary_key=True, index=True)
     cafe_id = Column(Integer, ForeignKey("cafes.id"), index=True, nullable=False)
@@ -44,6 +45,7 @@ class Feedback(Base):
 
 class Coupon(Base):
     __tablename__ = "coupons"
+    __table_args__ = (UniqueConstraint('cafe_id', 'customer_phone', name='uix_cafe_customer_coupon'),)
 
     id = Column(Integer, primary_key=True, index=True)
     cafe_id = Column(Integer, ForeignKey("cafes.id"), index=True, nullable=False)

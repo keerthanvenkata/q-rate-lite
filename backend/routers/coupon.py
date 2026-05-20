@@ -15,7 +15,7 @@ class RedeemRequest(BaseModel):
 @router.post("/redeem")
 def redeem_coupon(data: RedeemRequest, db: Session = Depends(get_db)):
     # 1. Find Coupon
-    coupon = db.query(Coupon).filter(Coupon.code == data.coupon_code).first()
+    coupon = db.query(Coupon).filter(Coupon.code == data.coupon_code).with_for_update().first()
     if not coupon:
         raise HTTPException(status_code=404, detail="Invalid coupon code")
 

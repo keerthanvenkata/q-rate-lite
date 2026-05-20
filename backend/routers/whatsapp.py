@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Request, Response, HTTPException
 import os
 import httpx
+import hmac
+import hashlib
+
+META_APP_SECRET = os.getenv("META_APP_SECRET", "dummy_meta_secret")
 
 router = APIRouter()
 
@@ -41,6 +45,22 @@ async def receive_webhook(request: Request):
     """
     Receives inbound messages and delivery status updates from Meta.
     """
+    signature = request.headers.get("x-hub-signature-256")
+    body_bytes = await request.body()
+    
+    if not signature or not signature.startswith("sha256="):
+        raise HTTPException(status_code=403, detail="Invalid Meta signature format")
+        
+    actual_signature = signature.split("sha256=")[1]
+    expected_signature = hmac.new(
+        META_APP_SECRET.encode("utf-8"),
+        body_bytes,
+        hashlib.sha256
+    ).hexdigest()
+    
+    if not hmac.compare_digest(expected_signature, actual_signature):
+        raise HTTPException(status_code=403, detail="Invalid Meta signature")
+
     try:
         body = await request.json()
         

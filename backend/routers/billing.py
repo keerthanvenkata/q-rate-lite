@@ -1,6 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
+import hmac
+import hashlib
+import os
+
+RAZORPAY_WEBHOOK_SECRET = os.getenv("RAZORPAY_WEBHOOK_SECRET", "dummy_razorpay_secret")
 
 from database import get_db
 from models import Cafe
@@ -56,7 +61,18 @@ def _process_webhook(cafe_id: str, plan: str, db: Session):
 
 @router.post("/webhook")
 async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
-    # 1. In production, verify the x-razorpay-signature header here
+    signature = request.headers.get("x-razorpay-signature")
+    body_bytes = await request.body()
+    
+    expected_signature = hmac.new(
+        RAZORPAY_WEBHOOK_SECRET.encode("utf-8"),
+        body_bytes,
+        hashlib.sha256
+    ).hexdigest()
+    
+    if not signature or not hmac.compare_digest(expected_signature, signature):
+        raise HTTPException(status_code=403, detail="Invalid Razorpay signature")
+
     payload = await request.json()
     
     event = payload.get("event")

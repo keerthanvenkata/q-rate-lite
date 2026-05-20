@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel
 from typing import Optional
 import random
@@ -47,7 +48,7 @@ def submit_feedback(data: FeedbackSubmit, db: Session = Depends(get_db)):
     existing_feedback = db.query(Feedback).filter(
         Feedback.cafe_id == cafe_id,
         Feedback.customer_phone == phone
-    ).first()
+    ).with_for_update().first()
 
     cafe = db.query(Cafe).filter(Cafe.id == cafe_id).first()
     if not cafe:
@@ -92,6 +93,18 @@ def submit_feedback(data: FeedbackSubmit, db: Session = Depends(get_db)):
     
     try:
         db.commit()
+    except IntegrityError:
+        db.rollback()
+        existing_coupon = db.query(Coupon).filter(
+            Coupon.cafe_id == cafe_id,
+            Coupon.customer_phone == phone
+        ).first()
+        return {
+            "status": "exists",
+            "message": "You have already submitted feedback. Here is your coupon.",
+            "coupon_code": existing_coupon.code if existing_coupon else None,
+            "redirect_url": None
+        }
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail="Database error")
