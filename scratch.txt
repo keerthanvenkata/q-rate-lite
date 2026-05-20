@@ -1,0 +1,45 @@
+# Q-Rate Lite: System Trace
+
+## Flow 1: Customer Feedback & Coupon Generation
+1. Customer sends "RateMyVisit" to WhatsApp Business Number.
+2. Meta sends POST request to `/api/whatsapp/webhook`.
+3. `whatsapp.py` receives payload.
+   - **VULNERABILITY**: Missing `X-Hub-Signature-256` verification. Attackers can forge incoming WhatsApp messages.
+4. System parses phone number, assigns default `cafe_id = 1` (Hardcoded MVP logic).
+5. Generates JWT using `SECRET_KEY` (Custom local JWT, not Supabase).
+6. Sends WhatsApp text with feedback URL `http://frontend/feedback?token={jwt}` via `httpx`.
+7. Customer clicks link, opens React frontend.
+8. Frontend POSTs rating and token to `/api/feedback/submit`.
+9. `feedback.py` decodes token synchronously. 
+10. Queries DB for existing feedback.
+    - **RACE CONDITION**: Missing DB lock (`with_for_update()`) or Unique Constraint. Simultaneous POST requests can bypass the check and generate duplicate feedback/coupons for the same user.
+11. Creates `Feedback` record.
+12. Generates 6-character coupon and creates `Coupon` record.
+13. Returns coupon code and optional redirect URL (Google Maps).
+
+## Flow 2: Coupon Redemption (Staff)
+1. Customer shows Coupon Code to Staff.
+2. Staff enters Code and Passcode in Frontend UI.
+3. Frontend POSTs to `/api/coupon/redeem`.
+4. `coupon.py` fetches Coupon by code.
+5. Verifies Staff Passcode (checks `cafe.hashed_password`).
+6. Checks if `coupon.status == "redeemed"`.
+   - **RACE CONDITION**: Missing `with_for_update()` lock. A double-spend attack is possible if a malicious user scripts simultaneous redemption requests.
+7. Sets status to "redeemed", commits DB.
+8. Returns success.
+
+## Flow 3: Cafe Subscription (Razorpay)
+1. Cafe Owner logs into Dashboard (Supabase Auth).
+2. Clicks Subscribe. Frontend calls `/api/billing/create-order`.
+3. `billing.py` returns dummy order ID.
+4. Frontend simulates payment, Razorpay sends POST to `/api/billing/webhook`.
+5. `billing.py` receives payload.
+   - **CRITICAL VULNERABILITY**: Missing `x-razorpay-signature` validation. Anyone can ping this webhook with a forged `payment.captured` event to activate a cafe's subscription for free.
+6. Threadpool runs `_process_webhook` to update `cafe.subscription_status` to "active".
+7. Inserts `AuditLog` entry.
+
+## Flow 4: Superadmin Operations
+1. Superadmin POSTs to `/api/superadmin/*` with `passcode` in JSON body.
+2. `superadmin.py` verifies passcode against `SUDO_PASSWORD` env var.
+3. Queries or mutates tenant data (Cafes, AuditLogs, Subscriptions).
+   - **NOTE**: Passing the sudo passcode in plain JSON body is a slight security risk (prone to being logged by load balancers/APMs) compared to using standard Authorization headers.
