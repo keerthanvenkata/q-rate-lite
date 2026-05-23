@@ -1,10 +1,13 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, Text, UniqueConstraint
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, Text, UniqueConstraint, CheckConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from database import Base
 
 class Cafe(Base):
     __tablename__ = "cafes"
+    __table_args__ = (
+        CheckConstraint("subscription_status IN ('trial', 'active', 'cancelled', 'past_due')", name="check_valid_status"),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     slug = Column(String, unique=True, index=True, nullable=False) # e.g., "blue-tokai-hyd"
