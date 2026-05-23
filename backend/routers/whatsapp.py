@@ -4,6 +4,7 @@ import httpx
 import hmac
 import hashlib
 import re
+import logging
 from fastapi.concurrency import run_in_threadpool
 from database import SessionLocal
 from sqlalchemy.exc import IntegrityError
@@ -124,7 +125,7 @@ async def receive_webhook(request: Request):
                                 
         return {"status": "ok"}
     except Exception as e:
-        print(f"Webhook Error: {e}")
+        logging.error(f"Webhook Error: {e}")
         return {"status": "error"}
 
 async def send_whatsapp_text(to_phone: str, text_message: str):
@@ -152,7 +153,7 @@ async def send_whatsapp_text(to_phone: str, text_message: str):
     }
 
     if META_ACCESS_TOKEN == "dummy_token_replace_in_prod":
-        print(f"DUMMY MODE: Simulating WhatsApp Text to {to_phone}: {text_message}")
+        logging.info(f"DUMMY MODE: Simulating WhatsApp Text to {to_phone}: {text_message}")
         return {"simulated": True}
 
     async with httpx.AsyncClient() as client:
@@ -161,7 +162,7 @@ async def send_whatsapp_text(to_phone: str, text_message: str):
             resp.raise_for_status()
             return resp.json()
         except Exception as e:
-            print(f"Failed to send text: {e}")
+            logging.error(f"Failed to send text: {e}")
             return {"error": str(e)}
 
 async def send_whatsapp_template(to_phone: str, template_name: str, components: list):
@@ -194,7 +195,7 @@ async def send_whatsapp_template(to_phone: str, template_name: str, components: 
 
     # Don't actually hit the Meta API if we are just testing with dummy tokens
     if META_ACCESS_TOKEN == "dummy_token_replace_in_prod":
-        print(f"DUMMY MODE: Simulating WhatsApp Template '{template_name}' sent to {to_phone}")
+        logging.info(f"DUMMY MODE: Simulating WhatsApp Template '{template_name}' sent to {to_phone}")
         return {"messaging_product": "whatsapp", "simulated": True}
 
     async with httpx.AsyncClient() as client:
@@ -203,8 +204,8 @@ async def send_whatsapp_template(to_phone: str, template_name: str, components: 
             resp.raise_for_status()
             return resp.json()
         except httpx.HTTPStatusError as e:
-            print(f"Meta API Error: {e.response.text}")
+            logging.error(f"Meta API Error: {e.response.text}")
             return {"error": e.response.text}
         except Exception as e:
-            print(f"Request Error: {e}")
+            logging.error(f"Request Error: {e}")
             return {"error": str(e)}

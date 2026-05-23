@@ -78,7 +78,8 @@ def _log_blast(cafe_id: int, success_count: int, template_name: str):
         db.commit()
     except Exception as e:
         db.rollback()
-        print(f"Failed to log audit: {e}")
+        import logging
+        logging.error(f"Failed to log audit: {e}")
     finally:
         db.close()
 

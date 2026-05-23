@@ -77,7 +77,8 @@ def _process_webhook(payment_id: str, cafe_id: str, plan: str, amount: int):
             db.commit()
     except Exception as e:
         db.rollback()
-        print(f"Failed to process webhook DB updates: {e}")
+        import logging
+        logging.error(f"Failed to process webhook DB updates: {e}")
     finally:
         db.close()
 
