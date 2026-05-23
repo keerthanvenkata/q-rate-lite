@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAdminDashboard, type AdminDataResponse, type FeedbackItem } from '../api';
 import { LogOut, Star, MessageSquare } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -13,13 +13,7 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('overview');
 
-  useEffect(() => {
-    if (session?.access_token) {
-      loadDashboard();
-    }
-  }, [session]);
-
-  const loadDashboard = async () => {
+  const loadDashboard = useCallback(async () => {
     if (!session) return;
     try {
       const resp = await fetchAdminDashboard(session.access_token);
@@ -27,7 +21,13 @@ export default function AdminPage() {
     } catch (err: any) {
       setError(err.message || "Failed to load dashboard.");
     }
-  };
+  }, [session]);
+
+  useEffect(() => {
+    if (session?.access_token) {
+      loadDashboard();
+    }
+  }, [session, loadDashboard]);
 
   const handleLogout = async () => {
     await signOut();
