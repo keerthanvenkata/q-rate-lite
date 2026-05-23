@@ -78,3 +78,9 @@ class ContactMessage(Base):
     message = Column(Text, nullable=False)
     status = Column(String, server_default="unread", default="unread", nullable=False) # unread, read, archived
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+class ProcessedWebhook(Base):
+    __tablename__ = "processed_webhooks"
+
+    message_id = Column(String, primary_key=True, index=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
