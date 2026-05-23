@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 
-from dependencies import get_current_user
+from dependencies import get_current_user, require_active_subscription
 from database import get_db
 from models import Cafe, Feedback
 
@@ -25,7 +25,7 @@ class AdminDataResponse(BaseModel):
     recent_feedbacks: List[FeedbackItem]
 
 @router.get("/dashboard", response_model=AdminDataResponse)
-def get_admin_dashboard(db: Session = Depends(get_db), cafe: Cafe = Depends(get_current_user)):
+def get_admin_dashboard(db: Session = Depends(get_db), cafe: Cafe = Depends(require_active_subscription)):
     # 2. Get Analytics (Counts & Avg) using the authenticated cafe
     stats = db.query(
         func.count(Feedback.id).label("total"),
