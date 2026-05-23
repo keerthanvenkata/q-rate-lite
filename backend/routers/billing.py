@@ -82,7 +82,7 @@ def _process_webhook(payment_id: str, cafe_id: str, plan: str, amount: int):
         db.close()
 
 @router.post("/webhook")
-async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
+async def razorpay_webhook(request: Request):
     signature = request.headers.get("x-razorpay-signature")
     body_bytes = await request.body()
     
