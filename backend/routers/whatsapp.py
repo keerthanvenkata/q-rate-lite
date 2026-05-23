@@ -3,6 +3,11 @@ import os
 import httpx
 import hmac
 import hashlib
+import re
+from fastapi.concurrency import run_in_threadpool
+from database import SessionLocal
+from sqlalchemy.exc import IntegrityError
+from models import ProcessedWebhook
 
 META_APP_SECRET = os.getenv("META_APP_SECRET", "dummy_meta_secret")
 
@@ -41,6 +46,19 @@ from limiter import limiter
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
+def _check_webhook_replay(message_id: str) -> bool:
+    db = SessionLocal()
+    try:
+        new_webhook = ProcessedWebhook(message_id=message_id)
+        db.add(new_webhook)
+        db.commit()
+        return False
+    except IntegrityError:
+        db.rollback()
+        return True
+    finally:
+        db.close()
+
 @router.post("/webhook")
 @limiter.limit("100/minute")
 async def receive_webhook(request: Request):
@@ -74,17 +92,26 @@ async def receive_webhook(request: Request):
                     value = change.get("value", {})
                     if "messages" in value:
                         for msg in value.get("messages", []):
+                            message_id = msg.get("id")
+                            if message_id:
+                                is_replay = await run_in_threadpool(_check_webhook_replay, message_id)
+                                if is_replay:
+                                    continue
+                                    
                             phone_number = msg.get("from")
                             text_body = msg.get("text", {}).get("body", "").strip().lower()
                             
-                            # If customer sends "RateMyVisit" (or similar), auto-reply with feedback link
-                            # We assume cafe_id = 1 for the MVP since the wa.me link can't easily pass hidden context
-                            # In prod, we'd use dynamic wa.me text like "RateMyVisit Cafe=1"
-                            if "rate" in text_body or "visit" in text_body:
-                                cafe_id = 1 
+                            if "ratemyvisit" in text_body.replace(" ", "") or "rate" in text_body:
+                                match = re.search(r'\d+', text_body)
+                                cafe_id = int(match.group()) if match else 1
                                 
                                 # Generate Session Token
-                                token_data = {"sub": phone_number, "cafe_id": cafe_id}
+                                token_data = {
+                                    "sub": phone_number, 
+                                    "cafe_id": cafe_id,
+                                    "iss": "qrate-customer",
+                                    "aud": f"cafe-{cafe_id}"
+                                }
                                 token = create_access_token(token_data)
                                 feedback_url = f"{FRONTEND_URL}/feedback?token={token}"
                                 
