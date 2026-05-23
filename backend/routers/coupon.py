@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from datetime import datetime, timezone
+import bcrypt
 
 from database import get_db
 from models import Coupon, Cafe
@@ -23,7 +24,15 @@ def redeem_coupon(data: RedeemRequest, db: Session = Depends(get_db)):
     # in real app, we would check session/jwt of staff.
     # Here, we validate against the cafe's "hashed_password" (which we treat as a passcode for MVP)
     cafe = db.query(Cafe).filter(Cafe.id == coupon.cafe_id).first()
-    if not cafe or cafe.hashed_password != data.passcode:
+    if not cafe or not cafe.hashed_password:
+        raise HTTPException(status_code=403, detail="Invalid staff passcode")
+        
+    try:
+        is_valid = bcrypt.checkpw(data.passcode.encode('utf-8'), cafe.hashed_password.encode('utf-8'))
+    except ValueError:
+        is_valid = False
+        
+    if not is_valid:
         raise HTTPException(status_code=403, detail="Invalid staff passcode")
 
     # 3. Check Status

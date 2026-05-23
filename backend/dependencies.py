@@ -9,7 +9,7 @@ from models import Cafe
 
 security = HTTPBearer()
 
-SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET", "super-secret-jwt-token-with-at-least-32-characters-long")
+SUPABASE_JWT_SECRET = os.environ["SUPABASE_JWT_SECRET"]
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
