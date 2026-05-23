@@ -44,3 +44,13 @@ def get_current_user(
             detail="Cafe tenant not found for this user",
         )
     return cafe
+
+SUPERADMIN_AUTH_ID = os.getenv("SUPERADMIN_AUTH_ID", "")
+
+def get_super_admin(cafe: Cafe = Depends(get_current_user)) -> Cafe:
+    if not SUPERADMIN_AUTH_ID or cafe.auth_id != SUPERADMIN_AUTH_ID:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Super Admin access required",
+        )
+    return cafe

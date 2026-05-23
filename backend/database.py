@@ -19,14 +19,13 @@ else:
 # efficient connection args for sqlite, standard for postgres
 connect_args = {"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
 
+from sqlalchemy.pool import NullPool
+
 # Connection pooling configurations for production (PostgreSQL)
 pool_kwargs = {}
 if "sqlite" not in DATABASE_URL:
     pool_kwargs = {
-        "pool_size": 20,
-        "max_overflow": 10,
-        "pool_timeout": 30,
-        "pool_recycle": 1800, # Recycle connections after 30 minutes
+        "poolclass": NullPool,
     }
 
 engine = create_engine(

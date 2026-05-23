@@ -1,41 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { fetchAllCafes, updateCafeSubscription, fetchAuditLogs, fetchContactMessages } from '../api';
-import { ShieldAlert, Activity, Check, FileText, MessageSquare } from 'lucide-react';
+import { ShieldAlert, Activity, Check, FileText, MessageSquare, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function SuperAdminPage() {
-  const [passcode, setPasscode] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { session, signOut } = useAuth();
   const [cafes, setCafes] = useState<any[]>([]);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<"cafes" | "logs" | "messages">("cafes");
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (session?.access_token) {
+      loadData();
+    }
+  }, [session]);
+
+  const loadData = async () => {
+    if (!session) return;
     try {
-      // Fetch both to verify passcode
       const [cafeResp, logsResp, msgResp] = await Promise.all([
-        fetchAllCafes(passcode),
-        fetchAuditLogs(passcode),
-        fetchContactMessages(passcode)
+        fetchAllCafes(session.access_token),
+        fetchAuditLogs(session.access_token),
+        fetchContactMessages(session.access_token)
       ]);
       setCafes(cafeResp.cafes);
       setAuditLogs(logsResp.logs);
       setMessages(msgResp.messages);
-      setIsAuthenticated(true);
     } catch (err) {
-      alert("Invalid Sudo Passcode");
+      alert("Failed to load superadmin data. Unauthorized access.");
     }
   };
 
   const handleSubChange = async (cafeId: number, status: string, plan: string) => {
     if (!confirm(`Change cafe ${cafeId} to ${status} - ${plan}?`)) return;
+    if (!session) return;
     try {
-      await updateCafeSubscription(cafeId, passcode, status, plan);
+      await updateCafeSubscription(cafeId, session.access_token, status, plan);
       // Refresh
       const [cafeResp, logsResp] = await Promise.all([
-        fetchAllCafes(passcode),
-        fetchAuditLogs(passcode)
+        fetchAllCafes(session.access_token),
+        fetchAuditLogs(session.access_token)
       ]);
       setCafes(cafeResp.cafes);
       setAuditLogs(logsResp.logs);
@@ -44,21 +49,13 @@ export default function SuperAdminPage() {
     }
   };
 
-  if (!isAuthenticated) {
+  if (!session) {
     return (
-      <div className="dashboard-bg flex items-center justify-center p-4">
-        <form onSubmit={handleLogin} className="dashboard-card p-8 max-w-sm w-full">
-          <ShieldAlert className="text-black mx-auto mb-4" size={48} />
-          <h1 className="text-black text-center font-bold text-2xl mb-6">System Override</h1>
-          <input 
-            type="password" 
-            placeholder="SUDO PASSCODE" 
-            className="dashboard-input text-center mb-4 font-mono"
-            value={passcode}
-            onChange={e => setPasscode(e.target.value)}
-          />
-          <button type="submit" className="dashboard-btn-primary">AUTHORIZE</button>
-        </form>
+      <div className="dashboard-bg flex flex-col items-center justify-center h-screen p-4">
+        <ShieldAlert className="text-black mx-auto mb-4" size={48} />
+        <h1 className="text-black text-center font-bold text-2xl mb-6">System Override</h1>
+        <p className="text-neutral-500 mb-4">Please log in to access Sudo Control.</p>
+        <button onClick={() => window.location.href = '/'} className="dashboard-btn-primary">Return Home</button>
       </div>
     );
   }
@@ -70,7 +67,10 @@ export default function SuperAdminPage() {
           <h1 className="text-3xl font-extrabold text-black flex items-center gap-3">
             <Activity className="text-black" /> Sudo Control
           </h1>
-          <div className="flex gap-4">
+          <button onClick={() => signOut()} className="text-sm dashboard-btn-secondary flex items-center gap-2 max-w-[120px] justify-center ml-4">
+            <LogOut size={16} /> Logout
+          </button>
+          <div className="flex gap-4 ml-auto">
             <button onClick={() => setActiveTab("cafes")} className={`px-4 py-2 rounded-lg font-bold border transition-colors ${activeTab === 'cafes' ? 'bg-black text-white border-black' : 'bg-white text-black border-neutral-200 hover:bg-neutral-50'}`}>Cafes</button>
             <button onClick={() => setActiveTab("logs")} className={`px-4 py-2 rounded-lg font-bold border transition-colors ${activeTab === 'logs' ? 'bg-black text-white border-black' : 'bg-white text-black border-neutral-200 hover:bg-neutral-50'}`}>Audit Logs</button>
             <button onClick={() => setActiveTab("messages")} className={`px-4 py-2 rounded-lg font-bold border transition-colors flex items-center gap-2 ${activeTab === 'messages' ? 'bg-black text-white border-black' : 'bg-white text-black border-neutral-200 hover:bg-neutral-50'}`}>

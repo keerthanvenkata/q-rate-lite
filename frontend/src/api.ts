@@ -168,31 +168,32 @@ export async function fetchWhatsappConfig(): Promise<WhatsappConfigResponse> {
 
 // --- Super Admin API ---
 
-export async function fetchAllCafes(passcode: string) {
+export async function fetchAllCafes(token: string) {
   const response = await fetch(`${API_BASE_URL}/superadmin/cafes`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ passcode }),
+    method: "GET",
+    headers: { "Authorization": `Bearer ${token}` },
   });
   if (!response.ok) throw new Error("Failed to load cafes");
   return response.json();
 }
 
-export async function updateCafeSubscription(cafeId: number, passcode: string, status: string, plan: string) {
+export async function updateCafeSubscription(cafeId: number, token: string, status: string, plan: string) {
   const response = await fetch(`${API_BASE_URL}/superadmin/cafes/${cafeId}/subscription`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ passcode, subscription_status: status, subscription_plan: plan }),
+    headers: { 
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json" 
+    },
+    body: JSON.stringify({ subscription_status: status, subscription_plan: plan }),
   });
   if (!response.ok) throw new Error("Failed to update subscription");
   return response.json();
 }
 
-export async function fetchAuditLogs(passcode: string) {
+export async function fetchAuditLogs(token: string) {
   const response = await fetch(`${API_BASE_URL}/superadmin/audit-logs`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ passcode }),
+    method: "GET",
+    headers: { "Authorization": `Bearer ${token}` },
   });
   if (!response.ok) throw new Error("Failed to load audit logs");
   return response.json();
@@ -216,11 +217,10 @@ export async function submitContactMessage(data: ContactMessageData) {
   return response.json();
 }
 
-export async function fetchContactMessages(passcode: string) {
+export async function fetchContactMessages(token: string) {
   const response = await fetch(`${API_BASE_URL}/superadmin/messages`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ passcode }),
+    method: "GET",
+    headers: { "Authorization": `Bearer ${token}` },
   });
   if (!response.ok) throw new Error("Failed to load messages");
   return response.json();

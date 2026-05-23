@@ -7,38 +7,25 @@ import os
 from database import get_db
 from models import Cafe, AuditLog
 from audit import log_audit
+from dependencies import get_super_admin
 
 router = APIRouter()
 
-SUDO_PASSWORD = os.getenv("SUDO_PASSWORD", "dev_sudo")
-
 # --- Dependencies & Schemas ---
-def verify_sudo(passcode: str):
-    if passcode != SUDO_PASSWORD:
-        raise HTTPException(status_code=403, detail="Invalid Super Admin Passcode")
-    return True
-
-class SudoAuthRequest(BaseModel):
-    passcode: str
 
 class UpdateSubRequest(BaseModel):
-    passcode: str
     subscription_status: str
     subscription_plan: Optional[str]
 
 # --- Endpoints ---
 
-@router.post("/cafes")
-def list_all_cafes(data: SudoAuthRequest, db: Session = Depends(get_db)):
-    verify_sudo(data.passcode)
-    
+@router.get("/cafes")
+def list_all_cafes(db: Session = Depends(get_db), admin: Cafe = Depends(get_super_admin)):
     cafes = db.query(Cafe).order_by(Cafe.id.desc()).all()
     return {"status": "success", "cafes": cafes}
 
 @router.post("/cafes/{cafe_id}/subscription")
-def update_cafe_subscription(cafe_id: int, data: UpdateSubRequest, db: Session = Depends(get_db)):
-    verify_sudo(data.passcode)
-    
+def update_cafe_subscription(cafe_id: int, data: UpdateSubRequest, db: Session = Depends(get_db), admin: Cafe = Depends(get_super_admin)):
     cafe = db.query(Cafe).filter(Cafe.id == cafe_id).first()
     if not cafe:
         raise HTTPException(status_code=404, detail="Cafe not found")
@@ -68,18 +55,14 @@ def update_cafe_subscription(cafe_id: int, data: UpdateSubRequest, db: Session =
 
     return {"status": "success", "message": f"Cafe {cafe_id} updated successfully"}
 
-@router.post("/audit-logs")
-def get_audit_logs(data: SudoAuthRequest, db: Session = Depends(get_db)):
-    verify_sudo(data.passcode)
-    
+@router.get("/audit-logs")
+def get_audit_logs(db: Session = Depends(get_db), admin: Cafe = Depends(get_super_admin)):
     logs = db.query(AuditLog).order_by(AuditLog.id.desc()).limit(100).all()
     return {"status": "success", "logs": logs}
 
 from models import ContactMessage
 
-@router.post("/messages")
-def get_contact_messages(data: SudoAuthRequest, db: Session = Depends(get_db)):
-    verify_sudo(data.passcode)
-    
+@router.get("/messages")
+def get_contact_messages(db: Session = Depends(get_db), admin: Cafe = Depends(get_super_admin)):
     messages = db.query(ContactMessage).order_by(ContactMessage.id.desc()).all()
     return {"status": "success", "messages": messages}
