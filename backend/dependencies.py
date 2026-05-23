@@ -33,9 +33,11 @@ def get_current_user(
                 detail="Could not validate credentials",
             )
     except JWTError as e:
+        import logging
+        logging.error(f"JWT validation failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Could not validate credentials: {str(e)}",
+            detail="Could not validate credentials",
         )
 
     cafe = db.query(Cafe).filter(Cafe.auth_id == auth_id).first()

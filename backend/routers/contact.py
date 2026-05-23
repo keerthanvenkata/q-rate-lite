@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from database import get_db
 from models import ContactMessage
 from limiter import limiter
@@ -9,7 +9,7 @@ router = APIRouter()
 
 class ContactMessageCreate(BaseModel):
     name: str
-    email: str
+    email: EmailStr
     message: str
     company: str | None = None
     phone: str | None = None

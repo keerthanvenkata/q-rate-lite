@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException, Depends, status, Request
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 import random
 import string
+import secrets
 
 from database import get_db
 from models import Feedback, Coupon, Cafe
@@ -15,7 +16,7 @@ router = APIRouter()
 
 class FeedbackSubmit(BaseModel):
     token: str
-    rating: int # 1-5
+    rating: int = Field(..., ge=1, le=5)
     comment: Optional[str] = None
     marketing_opt_in: bool = True
 
@@ -26,7 +27,7 @@ class FeedbackResponse(BaseModel):
     redirect_url: Optional[str] = None
 
 def generate_coupon_code():
-    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    return secrets.token_hex(4).upper()
 
 @router.post("/submit", response_model=FeedbackResponse)
 @limiter.limit("5/minute")
