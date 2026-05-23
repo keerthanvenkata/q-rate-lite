@@ -7,9 +7,10 @@ import os
 
 RAZORPAY_WEBHOOK_SECRET = os.getenv("RAZORPAY_WEBHOOK_SECRET", "dummy_razorpay_secret")
 
-from database import get_db
-from models import Cafe
+from database import get_db, SessionLocal
+from models import Cafe, AuditLog
 from audit import log_audit
+from datetime import datetime, timedelta, timezone
 
 from dependencies import get_current_user
 
@@ -39,25 +40,46 @@ def create_razorpay_order(data: CreateOrderRequest, db: Session = Depends(get_db
 
 from fastapi.concurrency import run_in_threadpool
 
-def _process_webhook(cafe_id: str, plan: str, db: Session):
+def _process_webhook(payment_id: str, cafe_id: str, plan: str, amount: int):
+    db = SessionLocal()
     try:
+        # 1. Idempotency: Check if this payment was already processed
+        existing = db.query(AuditLog).filter(
+            AuditLog.details.contains(payment_id)
+        ).first()
+        if existing:
+            return  # Already processed
+
+        # 2. Verify amount matches plan
+        expected = 99900 if plan == "monthly" else 999900
+        if amount != expected:
+            log_audit(db, "system", "PAYMENT_AMOUNT_MISMATCH", target_cafe_id=int(cafe_id), details={"payment_id": payment_id, "amount": amount, "expected": expected})
+            db.commit()
+            return
+
+        # 3. Update subscription with proper expiry
         cafe = db.query(Cafe).filter(Cafe.id == int(cafe_id)).first()
         if cafe:
             old_status = cafe.subscription_status
             cafe.subscription_status = "active"
             cafe.subscription_plan = plan
-            db.commit()
+            cafe.plan_expiry = datetime.now(timezone.utc) + timedelta(
+                days=30 if plan == "monthly" else 365
+            )
             
             log_audit(
                 db=db,
                 actor="system_razorpay",
                 action="SUBSCRIPTION_RENEWED",
                 target_cafe_id=cafe.id,
-                details={"old_status": old_status, "new_status": "active", "plan": plan}
+                details={"old_status": old_status, "new_status": "active", "plan": plan, "payment_id": payment_id}
             )
+            db.commit()
     except Exception as e:
         db.rollback()
         print(f"Failed to process webhook DB updates: {e}")
+    finally:
+        db.close()
 
 @router.post("/webhook")
 async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
@@ -79,12 +101,15 @@ async def razorpay_webhook(request: Request, db: Session = Depends(get_db)):
     
     if event == "payment.captured":
         # Extract metadata (notes) we passed during order creation
-        notes = payload.get("payload", {}).get("payment", {}).get("entity", {}).get("notes", {})
+        payment_entity = payload.get("payload", {}).get("payment", {}).get("entity", {})
+        notes = payment_entity.get("notes", {})
         cafe_id = notes.get("cafe_id")
         plan = notes.get("plan", "monthly")
+        amount = payment_entity.get("amount")
+        payment_id = payment_entity.get("id")
         
-        if cafe_id:
-            await run_in_threadpool(_process_webhook, cafe_id, plan, db)
+        if cafe_id and payment_id and amount is not None:
+            await run_in_threadpool(_process_webhook, payment_id, cafe_id, plan, amount)
     
     return {"status": "ok"}
 
