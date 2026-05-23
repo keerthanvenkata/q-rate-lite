@@ -37,10 +37,12 @@ def verify_webhook(request: Request):
 
 
 from routers.auth import create_access_token
+from limiter import limiter
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 @router.post("/webhook")
+@limiter.limit("100/minute")
 async def receive_webhook(request: Request):
     """
     Receives inbound messages and delivery status updates from Meta.

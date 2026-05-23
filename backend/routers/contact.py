@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from database import get_db
 from models import ContactMessage
+from limiter import limiter
 
 router = APIRouter()
 
@@ -14,7 +15,8 @@ class ContactMessageCreate(BaseModel):
     phone: str | None = None
 
 @router.post("/")
-def submit_contact_message(message: ContactMessageCreate, db: Session = Depends(get_db)):
+@limiter.limit("3/hour")
+def submit_contact_message(message: ContactMessageCreate, request: Request, db: Session = Depends(get_db)):
     db_message = ContactMessage(
         name=message.name,
         email=message.email,

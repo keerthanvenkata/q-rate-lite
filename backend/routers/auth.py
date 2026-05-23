@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, Request
 from pydantic import BaseModel
 from auth import create_access_token, decode_access_token
 from typing import Optional
@@ -13,11 +13,13 @@ class TokenResponse(BaseModel):
 
 from routers.whatsapp import send_whatsapp_template
 import os
+from limiter import limiter
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 @router.post("/request-feedback-link", response_model=TokenResponse)
-async def request_feedback_link(phone: str, cafe_id: int):
+@limiter.limit("10/minute")
+async def request_feedback_link(phone: str, cafe_id: int, request: Request):
     """
     Called when a user scans the QR code or staff enters their number.
     Generates a token and sends the feedback link via Meta WhatsApp Cloud API.

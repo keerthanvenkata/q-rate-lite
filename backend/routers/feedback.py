@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Request
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel
@@ -9,6 +9,7 @@ import string
 from database import get_db
 from models import Feedback, Coupon, Cafe
 from routers.auth import verify_session # Reuse the verification logic
+from limiter import limiter
 
 router = APIRouter()
 
@@ -28,7 +29,8 @@ def generate_coupon_code():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
 
 @router.post("/submit", response_model=FeedbackResponse)
-def submit_feedback(data: FeedbackSubmit, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def submit_feedback(data: FeedbackSubmit, request: Request, db: Session = Depends(get_db)):
     # 1. Verify User
     # We call the logic from auth directly or use the dependency?
     # For simplicity, let's just decode here or rely on specific endpoints.
