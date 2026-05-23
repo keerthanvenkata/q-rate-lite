@@ -3,6 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 import os
+from datetime import datetime, timezone
 
 from database import get_db
 from models import Cafe
@@ -52,5 +53,18 @@ def get_super_admin(cafe: Cafe = Depends(get_current_user)) -> Cafe:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Super Admin access required",
+        )
+    return cafe
+
+def require_active_subscription(cafe: Cafe = Depends(get_current_user)) -> Cafe:
+    if cafe.subscription_status not in ["active", "trial"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Active subscription required",
+        )
+    if cafe.plan_expiry and cafe.plan_expiry < datetime.now(timezone.utc):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Subscription expired",
         )
     return cafe
