@@ -20,7 +20,26 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 
 def decode_access_token(token: str):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        # Decode without verification to extract cafe_id
+        unverified_payload = jwt.decode(
+            token, 
+            SECRET_KEY, 
+            algorithms=[ALGORITHM], 
+            options={"verify_signature": False, "verify_aud": False, "verify_iss": False, "verify_exp": False}
+        )
+        cafe_id = unverified_payload.get("cafe_id")
+        
+        if cafe_id:
+            # Enforce scoping if cafe_id is present (customer token)
+            payload = jwt.decode(
+                token, 
+                SECRET_KEY, 
+                algorithms=[ALGORITHM], 
+                audience=f"cafe-{cafe_id}", 
+                issuer="qrate-customer"
+            )
+        else:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except JWTError:
         return None
