@@ -1,32 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Send, Users, CreditCard } from 'lucide-react';
 import { API_BASE_URL } from '../api';
+import { useAuth } from '../context/AuthContext';
 
 export default function MarketingPage() {
-  const [passcode, setPasscode] = useState("");
-  const [cafeId, setCafeId] = useState("1"); // Hardcoded for demo
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { session } = useAuth();
   const [audienceSize, setAudienceSize] = useState(0);
   const [credits, setCredits] = useState(0);
   const [templateName, setTemplateName] = useState("promo_10_off");
   const [isBlasting, setIsBlasting] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (session?.access_token) {
+      loadAudience();
+    }
+  }, [session]);
+
+  const loadAudience = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/marketing/audience`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cafe_id: parseInt(cafeId), passcode })
+        headers: { "Authorization": `Bearer ${session?.access_token}` }
       });
-      if (!response.ok) throw new Error("Invalid Auth");
+      if (!response.ok) throw new Error("Failed to load audience data");
       const data = await response.json();
       setAudienceSize(data.audience_size);
       setCredits(data.marketing_credits);
-      setIsAuthenticated(true);
-    } catch (err) {
-      alert("Invalid Cafe Passcode");
+    } catch (err: any) {
+      setError(err.message);
     }
   };
 
@@ -39,11 +41,14 @@ export default function MarketingPage() {
     try {
       const response = await fetch(`${API_BASE_URL}/marketing/blast`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cafe_id: parseInt(cafeId), passcode, template_name: templateName, components: [] })
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session?.access_token}`
+        },
+        body: JSON.stringify({ template_name: templateName, components: [] })
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.detail);
+      if (!response.ok) throw new Error(data.detail || "Failed to send broadcast");
       setResult(data.message);
       setCredits(data.credits_remaining);
     } catch (err: any) {
@@ -53,21 +58,18 @@ export default function MarketingPage() {
     }
   };
 
-  if (!isAuthenticated) {
+  if (error) {
     return (
-      <div className="dashboard-bg flex items-center justify-center p-4">
-        <form onSubmit={handleLogin} className="dashboard-card p-8 max-w-sm w-full">
-          <Send className="text-black mx-auto mb-4" size={48} />
-          <h1 className="text-black text-center font-bold text-2xl mb-6">Marketing Portal</h1>
-          <input 
-            type="password" 
-            placeholder="Cafe Passcode" 
-            className="dashboard-input text-center mb-4"
-            value={passcode}
-            onChange={e => setPasscode(e.target.value)}
-          />
-          <button type="submit" className="dashboard-btn-primary">LOGIN</button>
-        </form>
+      <div className="dashboard-bg p-8 flex items-center justify-center h-[50vh]">
+        <p className="text-red-500 mb-4">{error}</p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="dashboard-bg p-8 flex items-center justify-center h-[50vh]">
+        <p className="text-neutral-500">Loading dashboard...</p>
       </div>
     );
   }

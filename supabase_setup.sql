@@ -28,7 +28,7 @@ BEGIN
     v_cafe_name,
     NULL, -- No longer using legacy password
     NEW.id, -- Link to Supabase auth.users
-    'trialing',
+    'trial',
     NOW() + INTERVAL '14 days',
     0
   );

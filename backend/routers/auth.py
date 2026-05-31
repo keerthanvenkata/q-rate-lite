@@ -28,7 +28,7 @@ async def request_feedback_link(phone: str, cafe_id: int, request: Request):
         raise HTTPException(status_code=400, detail="Phone and Cafe ID required")
     
     # Create the session token
-    token_data = {"sub": phone, "cafe_id": cafe_id}
+    token_data = {"sub": phone, "cafe_id": cafe_id, "iss": "qrate-customer", "aud": f"cafe-{cafe_id}"}
     token = create_access_token(token_data)
     
     feedback_url = f"{FRONTEND_URL}/feedback?token={token}"
