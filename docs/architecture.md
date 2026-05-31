@@ -44,9 +44,16 @@ The backend is modularized via FastAPI Routers:
 3.  **Parsing**: The router intercepts the text. If it contains "Rate" or "Visit", it generates a JWT token for that phone number.
 4.  **Auto-Reply**: The router calls Meta's `/messages` API to send a "Service Reply" (which is free) containing the secure `https://qrate-lite.vercel.app/feedback?token=XYZ` link.
 
-## 5. Security Principles
+## 5. User Roles & Access
 
-*   **No Complex Passwords**: Cafe owners and staff use a simple `passcode` (hashed via bcrypt) to access their portals.
+The system enforces a strict 4-tier role hierarchy:
+1. **Super Admin**: Bound by the `SUPERADMIN_EMAIL` environment variable. Grants god-mode access to view all tenants, override subscriptions, and view immutable audit logs.
+2. **Admin (Café Owner/Manager)**: Authenticated via Supabase. Grants full access to a specific tenant's dashboard, including real-time analytics and customer feedback.
+3. **Staff**: Restricted access to the staff page. Staff can only verify and redeem customer coupons.
+4. **Customer**: Interacts solely via WhatsApp and the unauthenticated, token-secured feedback web page. No traditional accounts are created.
+
+## 6. Security Principles
+
 *   **Stateless Sessions**: The customer flow relies entirely on short-lived JWT tokens passed in the URL. No cookies or sessions are stored on the customer's device.
 *   **Immutable Logging**: Every action taken by the system (Razorpay) or an admin (Super Admin overrides) is permanently recorded in the `AuditLog`.
 

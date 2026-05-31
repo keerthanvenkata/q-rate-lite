@@ -69,7 +69,7 @@ Vercel will host both your React Frontend and your FastAPI Backend for exactly â
 4. **CRITICAL:** Before clicking Deploy, open the **Environment Variables** section and add the following:
    - `DATABASE_URL` = (Your Supabase Connection String)
    - `FRONTEND_URL` = (The Vercel URL you are about to get, e.g., `https://qrate-lite.vercel.app`)
-   - `SUDO_PASSWORD` = (Pick a strong password for your SuperAdmin dashboard)
+   - `SUPERADMIN_EMAIL` = (Your email address, e.g., keerthanvenkata@gmail.com, to lock the SuperAdmin dashboard exclusively to you)
    - `META_VERIFY_TOKEN` = (Make up a random password, e.g., `qrate_secret_123`)
    - `META_ACCESS_TOKEN` = (The Permanent Token from Meta)
    - `META_PHONE_ID` = (The Phone Number ID from the Meta Dashboard)

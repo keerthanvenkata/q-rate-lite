@@ -48,10 +48,27 @@ def get_current_user(
         )
     return cafe
 
-SUPERADMIN_AUTH_ID = os.getenv("SUPERADMIN_AUTH_ID", "")
+SUPERADMIN_EMAIL = os.getenv("SUPERADMIN_EMAIL", "keerthanvenkata@gmail.com")
 
-def get_super_admin(cafe: Cafe = Depends(get_current_user)) -> Cafe:
-    if not SUPERADMIN_AUTH_ID or cafe.auth_id != SUPERADMIN_AUTH_ID:
+def get_super_admin(
+    cafe: Cafe = Depends(get_current_user),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+) -> Cafe:
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(
+            token, 
+            SUPABASE_JWT_SECRET, 
+            algorithms=["HS256"], 
+            options={"verify_aud": False}
+        )
+        email = payload.get("email")
+        if not SUPERADMIN_EMAIL or email != SUPERADMIN_EMAIL:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Super Admin access required",
+            )
+    except JWTError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Super Admin access required",

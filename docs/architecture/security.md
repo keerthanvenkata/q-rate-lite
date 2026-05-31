@@ -8,7 +8,7 @@ The system uses two distinct authentication methodologies depending on the actor
 
 - **B2B Tenants (Café Owners)**: Authenticated via **Supabase Auth**. The frontend passes a secure, Supabase-signed JWT in the `Authorization: Bearer` header. The backend validates this token in `dependencies.py` via `python-jose` (using `SUPABASE_JWT_SECRET`) and extracts the `sub` to map it to the `Cafe` tenant record.
 - **B2C End-Users (Customers)**: Because we want a frictionless flow, customers do not create accounts. Instead, when they trigger the WhatsApp webhook, the backend generates a short-lived, locally-signed JWT (using a separate `SECRET_KEY`) embedding their phone number and the `cafe_id`. This token is passed via the URL query string to the React PWA.
-- **Super Admins**: Protected via a strictly enforced `SUDO_PASSWORD` environment variable.
+- **Super Admins**: Protected via a strictly enforced `SUPERADMIN_EMAIL` environment variable verified against the decoded Supabase JWT email claim.
 
 ## 2. Webhook Integrity (Hardened)
 
