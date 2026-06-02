@@ -6,14 +6,13 @@ This document is your step-by-step master plan for taking Q-Rate Lite from your 
 
 ## 1. The SIM Card Strategy
 
-**Why I suggested BSNL:**
-In India, telecom operators permanently deactivate and recycle your phone number if you do not recharge it for 90 days. If your number gets recycled, you lose your WhatsApp Business account entirely.
-- **Airtel / Jio**: Force you to pay ~₹189 to ₹199 every 28 days just to keep incoming SMS active. 
-- **BSNL**: Still offers traditional "validity extension" plans (e.g., ₹107 for 35 days, or long-term plans like ₹797 for a whole year of validity). 
-**Verdict:** If you want a "set it and forget it" top-up style SIM, BSNL is the cheapest way to keep the number alive strictly for receiving the occasional OTP. *However, if BSNL network coverage is terrible in your area, just get Airtel and set up a ₹199/month auto-pay.*
+You need a dedicated phone number for the WhatsApp Business API.
+
+**Recommendation:** We strongly recommend buying an **Airtel SIM** to be used as a secondary phone/Meta API number.
+Airtel offers reliable network coverage, ensuring you will promptly receive the SMS OTPs required by Meta for verification. You can set up a basic ~₹199/month auto-pay plan to keep incoming SMS active indefinitely, preventing your number from being recycled by the operator.
 
 **Action Steps:**
-1. Buy a new SIM card. Put it in a spare phone.
+1. Buy a new Airtel SIM card. Put it in a spare phone.
 2. Ensure it can receive SMS (you need this to verify the number with Meta).
 
 ---
@@ -21,6 +20,9 @@ In India, telecom operators permanently deactivate and recycle your phone number
 ## 2. Meta WhatsApp Cloud API Setup
 
 You will bypass expensive middle-men by plugging directly into Meta's servers.
+
+**Development / Bypass Note:**
+*If you are delaying Meta API approval or don't have the keys yet, the app can be deployed without them right now. If `META_ACCESS_TOKEN` is left as a dummy string, the backend will safely simulate WhatsApp messages in the server logs without crashing.*
 
 **Action Steps:**
 1. Go to [developers.facebook.com](https://developers.facebook.com/) and log in with your Facebook account.
@@ -58,6 +60,19 @@ Your live Supabase database is currently empty. You need to create the tables.
 
 ---
 
+## 5. Google Auth Configuration
+
+To enable the `/login` flow in your application, you must configure Google Authentication in Supabase.
+
+**Action Steps:**
+1. Go to your Supabase Project Dashboard.
+2. Navigate to **Authentication > Providers > Google**.
+3. Enable the Google provider.
+4. Paste in your **Google Cloud Client ID** and **Google Cloud Client Secret** (obtained from your Google Cloud Console).
+5. Save the configuration.
+
+---
+
 ## 5. Code Deployment (Vercel)
 
 Vercel will host both your React Frontend and your FastAPI Backend for exactly ₹0/month.
@@ -66,13 +81,26 @@ Vercel will host both your React Frontend and your FastAPI Backend for exactly �
 1. Go to [vercel.com](https://vercel.com/) and log in with your GitHub account.
 2. Click **Add New > Project** and import your `q-rate-lite` GitHub repository.
 3. Vercel will automatically detect the settings based on the `vercel.json` we wrote.
-4. **CRITICAL:** Before clicking Deploy, open the **Environment Variables** section and add the following:
-   - `DATABASE_URL` = (Your Supabase Connection String)
-   - `FRONTEND_URL` = (The Vercel URL you are about to get, e.g., `https://qrate-lite.vercel.app`)
-   - `SUPERADMIN_EMAIL` = (Your email address, e.g., keerthanvenkata@gmail.com, to lock the SuperAdmin dashboard exclusively to you)
-   - `META_VERIFY_TOKEN` = (Make up a random password, e.g., `qrate_secret_123`)
-   - `META_ACCESS_TOKEN` = (The Permanent Token from Meta)
-   - `META_PHONE_ID` = (The Phone Number ID from the Meta Dashboard)
+4. **CRITICAL:** Before clicking Deploy, open the **Environment Variables** section and add the following master list of variables:
+
+**Environment Variable Master List:**
+*Frontend (Vite)*
+- `VITE_SUPABASE_URL`: Your Supabase connection URL.
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase public anonymous key.
+- `VITE_API_URL`: Usually blank, or the Vercel URL (e.g. `https://qrate-lite.vercel.app/api`).
+
+*Backend (FastAPI)*
+- `DATABASE_URL`: Your Supabase Postgres connection string.
+- `SECRET_KEY`: A secure random string for JWT.
+- `SUPABASE_JWT_SECRET`: Your Supabase JWT secret.
+- `SUPERADMIN_EMAIL`: Your email address to lock the SuperAdmin dashboard exclusively to you.
+- `FRONTEND_URL`: `https://qrate-lite.vercel.app` (The Vercel URL you are about to get).
+- `META_VERIFY_TOKEN`: Random password (e.g., `qrate_secret_123` or dummy).
+- `META_ACCESS_TOKEN`: Permanent Token from Meta (or dummy).
+- `META_PHONE_ID`: Phone Number ID (or dummy).
+- `META_APP_SECRET`: Meta App Secret (or dummy).
+- `RAZORPAY_WEBHOOK_SECRET`: Secret for Razorpay webhooks (or dummy).
+
 5. Click **Deploy**. Vercel will build the React app and package the Python backend.
 
 ---
