@@ -51,9 +51,8 @@ def get_current_user(
 SUPERADMIN_EMAIL = os.getenv("SUPERADMIN_EMAIL", "keerthanvenkata@gmail.com")
 
 def get_super_admin(
-    cafe: Cafe = Depends(get_current_user),
     credentials: HTTPAuthorizationCredentials = Depends(security)
-) -> Cafe:
+) -> dict:
     token = credentials.credentials
     try:
         payload = jwt.decode(
@@ -73,7 +72,7 @@ def get_super_admin(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Super Admin access required",
         )
-    return cafe
+    return payload
 
 def require_active_subscription(cafe: Cafe = Depends(get_current_user)) -> Cafe:
     if cafe.subscription_status not in ["active", "trial"]:
