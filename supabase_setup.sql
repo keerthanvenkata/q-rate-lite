@@ -7,13 +7,19 @@ RETURNS TRIGGER AS $$
 DECLARE
   v_cafe_name text;
 BEGIN
-  -- Extract name from metadata if it exists, otherwise use email prefix or default
-  v_cafe_name := COALESCE(
-    NEW.raw_user_meta_data->>'full_name',
-    NEW.raw_user_meta_data->>'name', 
-    split_part(NEW.email, '@', 1),
-    'My Cafe'
-  );
+  -- Safely extract name from metadata or fallback
+  v_cafe_name := 'My Cafe'; -- Default
+  IF NEW.raw_user_meta_data IS NOT NULL THEN
+    IF NEW.raw_user_meta_data->>'full_name' IS NOT NULL THEN
+      v_cafe_name := NEW.raw_user_meta_data->>'full_name';
+    ELSIF NEW.raw_user_meta_data->>'name' IS NOT NULL THEN
+      v_cafe_name := NEW.raw_user_meta_data->>'name';
+    END IF;
+  END IF;
+
+  IF v_cafe_name = 'My Cafe' AND NEW.email IS NOT NULL THEN
+    v_cafe_name := split_part(NEW.email, '@', 1);
+  END IF;
 
   INSERT INTO public.cafes (
     slug, 
@@ -25,18 +31,23 @@ BEGIN
     marketing_credits
   )
   VALUES (
-    'cafe-' || NEW.id, -- temporary unique slug based on UUID
+    'cafe-' || NEW.id::text,
     v_cafe_name,
-    NULL, -- No longer using legacy password
-    NEW.id, -- Link to Supabase auth.users
+    NULL,
+    NEW.id::text,
     'trial',
     NOW() + INTERVAL '14 days',
     0
   );
   
   RETURN NEW;
+EXCEPTION
+  WHEN OTHERS THEN
+    -- If it fails, log the error but don't abort the user signup
+    RAISE LOG 'Error in handle_new_user: %', SQLERRM;
+    RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- 2. Create the trigger on auth.users
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
