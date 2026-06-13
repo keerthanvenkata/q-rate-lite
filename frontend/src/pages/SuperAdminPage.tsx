@@ -27,8 +27,8 @@ export default function SuperAdminPage() {
       setCafes(cafeResp.cafes);
       setAuditLogs(logsResp.logs);
       setMessages(msgResp.messages);
-    } catch (err) {
-      alert("Failed to load superadmin data. Unauthorized access.");
+    } catch (err: any) {
+      alert(`Failed to load superadmin data: ${err.message || 'Unauthorized access'}`);
     }
   };
 

@@ -173,7 +173,10 @@ export async function fetchAllCafes(token: string) {
     method: "GET",
     headers: { "Authorization": `Bearer ${token}` },
   });
-  if (!response.ok) throw new Error("Failed to load cafes");
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to load cafes");
+  }
   return response.json();
 }
 
@@ -195,7 +198,10 @@ export async function fetchAuditLogs(token: string) {
     method: "GET",
     headers: { "Authorization": `Bearer ${token}` },
   });
-  if (!response.ok) throw new Error("Failed to load audit logs");
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to load audit logs");
+  }
   return response.json();
 }
 
@@ -222,6 +228,9 @@ export async function fetchContactMessages(token: string) {
     method: "GET",
     headers: { "Authorization": `Bearer ${token}` },
   });
-  if (!response.ok) throw new Error("Failed to load messages");
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to load messages");
+  }
   return response.json();
 }
