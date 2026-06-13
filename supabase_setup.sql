@@ -9,6 +9,7 @@ DECLARE
 BEGIN
   -- Extract name from metadata if it exists, otherwise use email prefix or default
   v_cafe_name := COALESCE(
+    NEW.raw_user_meta_data->>'full_name',
     NEW.raw_user_meta_data->>'name', 
     split_part(NEW.email, '@', 1),
     'My Cafe'
