@@ -65,12 +65,12 @@ def get_super_admin(
         if not SUPERADMIN_EMAIL or email != SUPERADMIN_EMAIL:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Super Admin access required",
+                detail=f"Superadmin mismatch. Env: {SUPERADMIN_EMAIL}, Token email: {email}",
             )
-    except JWTError:
+    except JWTError as e:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Super Admin access required",
+            detail=f"JWT Decode Error: {str(e)}",
         )
     return payload
 
