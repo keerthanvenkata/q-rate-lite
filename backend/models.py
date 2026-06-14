@@ -28,6 +28,7 @@ class Cafe(Base):
     razorpay_customer_id = Column(String, nullable=True)
     plan_expiry = Column(DateTime, nullable=True)
     marketing_credits = Column(Integer, server_default="0", default=0, nullable=False)
+    onboarding_completed = Column(Boolean, server_default="0", default=False, nullable=False)
 
     feedbacks = relationship("Feedback", back_populates="cafe")
     coupons = relationship("Coupon", back_populates="cafe")
