@@ -21,19 +21,15 @@ class UpdateSubRequest(BaseModel):
 
 @router.get("/cafes")
 def list_all_cafes(db: Session = Depends(get_db), admin: dict = Depends(get_super_admin)):
-    try:
-        cafes = db.query(Cafe).order_by(Cafe.id.desc()).all()
-        cafe_list = [{
-            "id": c.id, "slug": c.slug, "name": c.name,
-            "subscription_status": c.subscription_status,
-            "subscription_plan": c.subscription_plan,
-            "plan_expiry": str(c.plan_expiry) if c.plan_expiry else None,
-            "marketing_credits": c.marketing_credits
-        } for c in cafes]
-        return {"status": "success", "cafes": cafe_list}
-    except Exception as e:
-        import traceback
-        raise HTTPException(status_code=500, detail=f"Error in list_all_cafes: {str(e)}\n{traceback.format_exc()}")
+    cafes = db.query(Cafe).order_by(Cafe.id.desc()).all()
+    cafe_list = [{
+        "id": c.id, "slug": c.slug, "name": c.name,
+        "subscription_status": c.subscription_status,
+        "subscription_plan": c.subscription_plan,
+        "plan_expiry": str(c.plan_expiry) if c.plan_expiry else None,
+        "marketing_credits": c.marketing_credits
+    } for c in cafes]
+    return {"status": "success", "cafes": cafe_list}
 
 @router.post("/cafes/{cafe_id}/subscription")
 def update_cafe_subscription(cafe_id: int, data: UpdateSubRequest, db: Session = Depends(get_db), admin: dict = Depends(get_super_admin)):
@@ -62,37 +58,29 @@ def update_cafe_subscription(cafe_id: int, data: UpdateSubRequest, db: Session =
         )
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Database update failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Database update failed")
 
     return {"status": "success", "message": f"Cafe {cafe_id} updated successfully"}
 
 @router.get("/audit-logs")
 def get_audit_logs(db: Session = Depends(get_db), admin: dict = Depends(get_super_admin)):
-    try:
-        logs = db.query(AuditLog).order_by(AuditLog.id.desc()).limit(100).all()
-        log_list = [{
-            "id": l.id, "actor": l.actor, "action": l.action,
-            "target_cafe_id": l.target_cafe_id, "details": l.details,
-            "created_at": str(l.created_at) if l.created_at else None
-        } for l in logs]
-        return {"status": "success", "logs": log_list}
-    except Exception as e:
-        import traceback
-        raise HTTPException(status_code=500, detail=f"Error in get_audit_logs: {str(e)}\n{traceback.format_exc()}")
+    logs = db.query(AuditLog).order_by(AuditLog.id.desc()).limit(100).all()
+    log_list = [{
+        "id": l.id, "actor": l.actor, "action": l.action,
+        "target_cafe_id": l.target_cafe_id, "details": l.details,
+        "created_at": str(l.created_at) if l.created_at else None
+    } for l in logs]
+    return {"status": "success", "logs": log_list}
 
 from models import ContactMessage
 
 @router.get("/messages")
 def get_contact_messages(db: Session = Depends(get_db), admin: dict = Depends(get_super_admin)):
-    try:
-        messages = db.query(ContactMessage).order_by(ContactMessage.id.desc()).all()
-        msg_list = [{
-            "id": m.id, "name": m.name, "email": m.email,
-            "company": m.company, "phone": m.phone,
-            "message": m.message, "status": m.status,
-            "created_at": str(m.created_at) if m.created_at else None
-        } for m in messages]
-        return {"status": "success", "messages": msg_list}
-    except Exception as e:
-        import traceback
-        raise HTTPException(status_code=500, detail=f"Error in get_contact_messages: {str(e)}\n{traceback.format_exc()}")
+    messages = db.query(ContactMessage).order_by(ContactMessage.id.desc()).all()
+    msg_list = [{
+        "id": m.id, "name": m.name, "email": m.email,
+        "company": m.company, "phone": m.phone,
+        "message": m.message, "status": m.status,
+        "created_at": str(m.created_at) if m.created_at else None
+    } for m in messages]
+    return {"status": "success", "messages": msg_list}

@@ -53,29 +53,26 @@ SUPERADMIN_EMAIL = os.getenv("SUPERADMIN_EMAIL", "keerthanvenkata@gmail.com")
 def get_super_admin(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ) -> dict:
+    token = credentials.credentials
     try:
-        token = credentials.credentials
         payload = jwt.decode(
             token, 
             SUPABASE_JWT_SECRET, 
             algorithms=["HS256"], 
             options={"verify_aud": False}
         )
-        email = payload.get("email") if isinstance(payload, dict) else None
+        email = payload.get("email")
         if not SUPERADMIN_EMAIL or email != SUPERADMIN_EMAIL:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Superadmin mismatch. Env: {SUPERADMIN_EMAIL}, Token email: {email}",
             )
-        return payload
-    except HTTPException:
-        raise
-    except Exception as e:
-        import traceback
+    except JWTError as e:
         raise HTTPException(
-            status_code=500,
-            detail=f"Error in get_super_admin: {str(e)}\n{traceback.format_exc()}"
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"JWT Decode Error: {str(e)}",
         )
+    return payload
 
 def require_active_subscription(cafe: Cafe = Depends(get_current_user)) -> Cafe:
     if cafe.subscription_status not in ["active", "trial"]:
