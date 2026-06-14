@@ -58,3 +58,26 @@ def get_admin_dashboard(db: Session = Depends(get_db), cafe: Cafe = Depends(requ
         average_rating=avg_fb,
         recent_feedbacks=fb_items
     )
+
+class OnboardingRequest(BaseModel):
+    name: str
+
+@router.get("/me")
+def get_me(cafe: Cafe = Depends(get_current_user)):
+    return {
+        "id": cafe.id,
+        "name": cafe.name,
+        "slug": cafe.slug,
+        "onboarding_completed": cafe.onboarding_completed,
+        "subscription_status": cafe.subscription_status
+    }
+
+@router.patch("/me/onboarding")
+def update_onboarding(data: OnboardingRequest, db: Session = Depends(get_db), cafe: Cafe = Depends(get_current_user)):
+    if cafe.onboarding_completed:
+        raise HTTPException(status_code=400, detail="Onboarding already completed")
+    
+    cafe.name = data.name
+    cafe.onboarding_completed = True
+    db.commit()
+    return {"status": "success", "message": "Onboarding completed", "name": cafe.name}
