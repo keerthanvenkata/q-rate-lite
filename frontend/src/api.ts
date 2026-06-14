@@ -115,6 +115,49 @@ export async function fetchAdminDashboard(token: string): Promise<AdminDataRespo
   return response.json();
 }
 
+export interface MeData {
+  id: number;
+  name: string;
+  slug: string;
+  onboarding_completed: boolean;
+  subscription_status: string;
+}
+
+export async function fetchMe(token: string): Promise<MeData> {
+  const response = await fetch(`${API_BASE_URL}/admin/me`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to fetch me data");
+  }
+
+  return response.json();
+}
+
+export async function updateOnboarding(token: string, name: string): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/admin/me/onboarding`, {
+    method: "PATCH",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to update onboarding");
+  }
+
+  return response.json();
+}
+
 export async function fetchBillingStatus(token: string): Promise<BillingStatusResponse> {
   const response = await fetch(`${API_BASE_URL}/billing/status`, {
     method: "GET",
