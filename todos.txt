@@ -1,0 +1,1 @@
+- [ ] Add an onboarding pop-up to capture Cafe Name for users who sign up via Google OAuth (since it currently defaults to their Google account name).
