@@ -79,3 +79,13 @@ CREATE TABLE IF NOT EXISTS public.processed_webhooks (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 CREATE INDEX IF NOT EXISTS ix_processed_webhooks_message_id ON public.processed_webhooks (message_id);
+
+-- 4. Enable Row Level Security (RLS) on all tables
+-- This ensures that the frontend (Anon Key) cannot query or modify the database directly.
+-- Because the Python FastAPI backend uses raw SQL, it inherently bypasses RLS, so no policies are needed.
+ALTER TABLE public.cafes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.feedbacks ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.processed_webhooks ENABLE ROW LEVEL SECURITY;
