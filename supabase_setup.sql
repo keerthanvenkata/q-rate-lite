@@ -54,3 +54,28 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+
+-- 3. Schema Additions & Missing Tables
+-- Add auth_id to cafes if it doesn't exist (added for Google OAuth)
+ALTER TABLE public.cafes ADD COLUMN IF NOT EXISTS auth_id TEXT UNIQUE;
+CREATE INDEX IF NOT EXISTS ix_cafes_auth_id ON public.cafes (auth_id);
+
+-- Create contact_messages table (for landing page contact form)
+CREATE TABLE IF NOT EXISTS public.contact_messages (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    company TEXT,
+    phone TEXT,
+    message TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'unread',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
+);
+CREATE INDEX IF NOT EXISTS ix_contact_messages_id ON public.contact_messages (id);
+
+-- Create processed_webhooks table (for WhatsApp integration deduplication)
+CREATE TABLE IF NOT EXISTS public.processed_webhooks (
+    message_id TEXT PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
+);
+CREATE INDEX IF NOT EXISTS ix_processed_webhooks_message_id ON public.processed_webhooks (message_id);
