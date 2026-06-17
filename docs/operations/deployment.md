@@ -73,7 +73,7 @@ To enable the `/login` flow in your application, you must configure Google Authe
 
 ---
 
-## 5. Code Deployment (Vercel)
+## 6. Code Deployment (Vercel)
 
 Vercel will host both your React Frontend and your FastAPI Backend for exactly ₹0/month.
 
@@ -105,7 +105,7 @@ Vercel will host both your React Frontend and your FastAPI Backend for exactly �
 
 ---
 
-## 6. Connecting the Dots (Webhooks)
+## 7. Connecting the Dots (Webhooks)
 
 Now that Vercel is live, we must tell Meta where to send inbound WhatsApp messages.
 
@@ -118,3 +118,4 @@ Now that Vercel is live, we must tell Meta where to send inbound WhatsApp messag
 6. Click **Manage Webhook Fields** and subscribe to the `messages` event.
 
 **🎉 DONE!** Your QR codes will now trigger real WhatsApp messages to real customers.
+
