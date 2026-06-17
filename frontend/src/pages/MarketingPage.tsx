@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Send, Users, CreditCard } from 'lucide-react';
-import { API_BASE_URL } from '../api';
+import { fetchMarketingAudience, sendMarketingBlast } from '../api';
 import { useAuth } from '../context/AuthContext';
 
 export default function MarketingPage() {
@@ -20,11 +20,8 @@ export default function MarketingPage() {
 
   const loadAudience = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/marketing/audience`, {
-        headers: { "Authorization": `Bearer ${session?.access_token}` }
-      });
-      if (!response.ok) throw new Error("Failed to load audience data");
-      const data = await response.json();
+      if (!session?.access_token) return;
+      const data = await fetchMarketingAudience(session.access_token);
       setAudienceSize(data.audience_size);
       setCredits(data.marketing_credits);
     } catch (err: any) {
@@ -39,16 +36,11 @@ export default function MarketingPage() {
 
     setIsBlasting(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/marketing/blast`, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${session?.access_token}`
-        },
-        body: JSON.stringify({ template_name: templateName, components: [] })
+      if (!session?.access_token) throw new Error("Not authenticated");
+      const data = await sendMarketingBlast(session.access_token, {
+        template_name: templateName,
+        components: []
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.detail || "Failed to send broadcast");
       setResult(data.message);
       setCredits(data.credits_remaining);
     } catch (err: any) {

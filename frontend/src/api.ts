@@ -277,3 +277,48 @@ export async function fetchContactMessages(token: string) {
   }
   return response.json();
 }
+
+// --- Marketing API ---
+
+export interface AudienceDataResponse {
+  audience_size: number;
+  marketing_credits: number;
+}
+
+export async function fetchMarketingAudience(token: string): Promise<AudienceDataResponse> {
+  const response = await fetch(`${API_BASE_URL}/marketing/audience`, {
+    method: "GET",
+    headers: { "Authorization": `Bearer ${token}` },
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to load audience data");
+  }
+  return response.json();
+}
+
+export interface BlastData {
+  template_name: string;
+  components?: any[];
+}
+
+export interface BlastResponse {
+  message: string;
+  credits_remaining: number;
+}
+
+export async function sendMarketingBlast(token: string, data: BlastData): Promise<BlastResponse> {
+  const response = await fetch(`${API_BASE_URL}/marketing/blast`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to send broadcast");
+  }
+  return response.json();
+}
