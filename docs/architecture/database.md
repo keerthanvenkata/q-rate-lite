@@ -128,6 +128,7 @@ When a user completes Google OAuth signup via Supabase Auth, a PostgreSQL trigge
    - `subscription_status`: `trial`
    - `plan_expiry`: `NOW() + 14 days`
    - `marketing_credits`: `0`
+   - `onboarding_completed`: `false`
 3. **Error-safe**: The `EXCEPTION` block catches any failure and logs it, but does **not** abort the user signup. The user is always created even if tenant provisioning fails.
 
 This means **zero manual onboarding step** is needed to create a tenant — signup is the trigger.
