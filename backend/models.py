@@ -26,7 +26,7 @@ class Cafe(Base):
     subscription_status = Column(String, server_default="trial", default="trial", nullable=False) # trial, active, past_due, cancelled
     subscription_plan = Column(String, nullable=True) # monthly, annual
     razorpay_customer_id = Column(String, nullable=True)
-    plan_expiry = Column(DateTime, nullable=True)
+    plan_expiry = Column(DateTime(timezone=True), nullable=True)
     marketing_credits = Column(Integer, server_default="0", default=0, nullable=False)
     onboarding_completed = Column(Boolean, server_default="0", default=False, nullable=False)
 
@@ -43,7 +43,7 @@ class Feedback(Base):
     rating = Column(Integer, nullable=False) # 1-5
     comment = Column(Text, nullable=True)
     marketing_opt_in = Column(Boolean, server_default="1", default=True, nullable=False)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     cafe = relationship("Cafe", back_populates="feedbacks")
 
@@ -56,8 +56,8 @@ class Coupon(Base):
     code = Column(String, unique=True, index=True, nullable=False) # e.g., "ABCD-1234"
     customer_phone = Column(String, index=True, nullable=False)
     status = Column(String, default="issued") # issued, redeemed, expired
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-    redeemed_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    redeemed_at = Column(DateTime(timezone=True), nullable=True)
 
     cafe = relationship("Cafe", back_populates="coupons")
 
@@ -69,7 +69,7 @@ class AuditLog(Base):
     action = Column(String, nullable=False) # e.g. "UPDATE_SUBSCRIPTION"
     target_cafe_id = Column(Integer, index=True, nullable=True)
     details = Column(Text, nullable=True) # JSON dump of what changed
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 class ContactMessage(Base):
     __tablename__ = "contact_messages"
@@ -81,10 +81,10 @@ class ContactMessage(Base):
     phone = Column(String, nullable=True)
     message = Column(Text, nullable=False)
     status = Column(String, server_default="unread", default="unread", nullable=False) # unread, read, archived
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 class ProcessedWebhook(Base):
     __tablename__ = "processed_webhooks"
 
     message_id = Column(String, primary_key=True, index=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))

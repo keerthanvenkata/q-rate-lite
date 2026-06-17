@@ -5,7 +5,7 @@ CREATE TABLE audit_logs (
 	action VARCHAR NOT NULL, 
 	target_cafe_id INTEGER, 
 	details TEXT, 
-	created_at TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITH TIME ZONE, 
 	PRIMARY KEY (id)
 )
 
@@ -23,7 +23,7 @@ CREATE TABLE cafes (
 	subscription_status VARCHAR DEFAULT 'trial' NOT NULL, 
 	subscription_plan VARCHAR, 
 	razorpay_customer_id VARCHAR, 
-	plan_expiry TIMESTAMP WITHOUT TIME ZONE, 
+	plan_expiry TIMESTAMP WITH TIME ZONE, 
 	marketing_credits INTEGER DEFAULT '0' NOT NULL, 
 	PRIMARY KEY (id)
 )
@@ -40,7 +40,7 @@ CREATE TABLE contact_messages (
 	phone VARCHAR, 
 	message TEXT NOT NULL, 
 	status VARCHAR DEFAULT 'unread' NOT NULL, 
-	created_at TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITH TIME ZONE, 
 	PRIMARY KEY (id)
 )
 
@@ -53,8 +53,8 @@ CREATE TABLE coupons (
 	code VARCHAR NOT NULL, 
 	customer_phone VARCHAR NOT NULL, 
 	status VARCHAR, 
-	created_at TIMESTAMP WITHOUT TIME ZONE, 
-	redeemed_at TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITH TIME ZONE, 
+	redeemed_at TIMESTAMP WITH TIME ZONE, 
 	PRIMARY KEY (id), 
 	FOREIGN KEY(cafe_id) REFERENCES cafes (id)
 )
@@ -72,7 +72,7 @@ CREATE TABLE feedbacks (
 	rating INTEGER NOT NULL, 
 	comment TEXT, 
 	marketing_opt_in BOOLEAN DEFAULT '1' NOT NULL, 
-	created_at TIMESTAMP WITHOUT TIME ZONE, 
+	created_at TIMESTAMP WITH TIME ZONE, 
 	PRIMARY KEY (id), 
 	FOREIGN KEY(cafe_id) REFERENCES cafes (id)
 )
