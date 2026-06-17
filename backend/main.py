@@ -1,21 +1,22 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-import traceback
+import logging
 from routers import auth, feedback, coupon, admin, superadmin, billing, whatsapp, marketing, contact
 from limiter import limiter
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
+logger = logging.getLogger(__name__)
+
 app = FastAPI(title="Q-Rate Lite")
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled exception on {request.url.path}: {exc}", exc_info=True)
     return JSONResponse(
         status_code=500,
         content={
-            "detail": "Internal Server Error", 
-            "error_message": str(exc),
-            "traceback": traceback.format_exc()
+            "detail": "Internal Server Error"
         }
     )
 
