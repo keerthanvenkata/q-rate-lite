@@ -47,10 +47,12 @@ See [docs/](docs/) for detailed guides.
 - [Database](docs/architecture/database.md) — Schema, models, triggers, and connection management.
 - [Frontend](docs/architecture/frontend.md) — React app structure and design systems.
 - [Security](docs/architecture/security.md) — Auth layers, token lifecycle, and threat model.
+- [API Reference](docs/architecture/api-reference.md) — All endpoints, request/response schemas, and error codes.
 
 ### Operations
 - [Deployment Guide](docs/operations/deployment.md) — Step-by-step production setup.
 - [Runbook](docs/operations/runbook.md) — Incident response, monitoring, and daily ops.
+- [Keep-Alive Edge Function](docs/operations/keep-alive.md) — Supabase DB keep-alive cron setup.
 
 ### Design
 - [Aurora Design](docs/design/aurora-design.md) — Dark-mode cinematic theme spec.
