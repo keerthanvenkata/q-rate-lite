@@ -13,4 +13,4 @@ def log_audit(db: Session, actor: str, action: str, target_cafe_id: int = None, 
         details=json.dumps(details) if details else None
     )
     db.add(log_entry)
-    db.commit()
+    # Commit deferred to caller

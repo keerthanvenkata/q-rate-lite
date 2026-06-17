@@ -43,7 +43,6 @@ def update_cafe_subscription(cafe_id: int, data: UpdateSubRequest, db: Session =
     try:
         cafe.subscription_status = data.subscription_status
         cafe.subscription_plan = data.subscription_plan
-        db.commit()
 
         # Immutable Audit Log
         log_audit(
@@ -56,6 +55,7 @@ def update_cafe_subscription(cafe_id: int, data: UpdateSubRequest, db: Session =
                 "old_plan": old_plan, "new_plan": data.subscription_plan
             }
         )
+        db.commit()
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail="Database update failed")
