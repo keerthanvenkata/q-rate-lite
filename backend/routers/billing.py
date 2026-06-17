@@ -5,6 +5,11 @@ import hmac
 import hashlib
 import os
 
+import httpx
+import logging
+
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "")
+RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
 RAZORPAY_WEBHOOK_SECRET = os.getenv("RAZORPAY_WEBHOOK_SECRET", "dummy_razorpay_secret")
 
 from database import get_db, SessionLocal
@@ -21,21 +26,40 @@ class CreateOrderRequest(BaseModel):
 
 @router.post("/create-order")
 def create_razorpay_order(data: CreateOrderRequest, db: Session = Depends(get_db), cafe: Cafe = Depends(get_current_user)):
-    # cafe is automatically fetched by get_current_user
-
-    # In production, initialize Razorpay client and call order.create()
-    # e.g. amount = 999 * 100 (in paise)
     amount_paise = 99900 if data.plan == "monthly" else 999900
 
-    # For Phase 2 dev, we return a dummy order ID to wire up the frontend
-    dummy_order_id = f"order_dummy_{cafe.id}_{data.plan}"
+    if not RAZORPAY_KEY_ID or not RAZORPAY_KEY_SECRET:
+        raise HTTPException(status_code=500, detail="Razorpay credentials not configured")
+
+    payload = {
+        "amount": amount_paise,
+        "currency": "INR",
+        "receipt": f"receipt_{cafe.id}_{data.plan}",
+        "notes": {
+            "cafe_id": str(cafe.id),
+            "plan": data.plan
+        }
+    }
+
+    try:
+        response = httpx.post(
+            "https://api.razorpay.com/v1/orders",
+            json=payload,
+            auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET),
+            timeout=10.0
+        )
+        response.raise_for_status()
+        order_data = response.json()
+    except Exception as e:
+        logging.error(f"Razorpay order creation failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create payment order")
 
     return {
         "status": "success",
-        "order_id": dummy_order_id,
+        "order_id": order_data["id"],
         "amount": amount_paise,
         "currency": "INR",
-        "key_id": "rzp_test_placeholder" # Provide real test key in frontend later
+        "key_id": RAZORPAY_KEY_ID
     }
 
 from fastapi.concurrency import run_in_threadpool
