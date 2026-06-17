@@ -41,5 +41,21 @@ npm run dev
 
 See [docs/](docs/) for detailed guides.
 
-- [Manual](docs/manual.md): Operational guide.
-- [Technical Docs](docs/documentation.md): Architecture and patterns.
+### Architecture
+- [System Overview](docs/architecture.md) — High-level topology, flows, and roles.
+- [Backend](docs/architecture/backend.md) — FastAPI structure, serverless conventions, and router map.
+- [Database](docs/architecture/database.md) — Schema, models, triggers, and connection management.
+- [Frontend](docs/architecture/frontend.md) — React app structure and design systems.
+- [Security](docs/architecture/security.md) — Auth layers, token lifecycle, and threat model.
+
+### Operations
+- [Deployment Guide](docs/operations/deployment.md) — Step-by-step production setup.
+- [Runbook](docs/operations/runbook.md) — Incident response, monitoring, and daily ops.
+
+### Design
+- [Aurora Design](docs/design/aurora-design.md) — Dark-mode cinematic theme spec.
+- [Papyrus Design](docs/design/papyrus-design.md) — Light-mode theme spec.
+- [Minimalist Dashboard](docs/design/minimalist-design.md) — Dashboard UI spec.
+
+### Legal
+- [Compliance](docs/legal/compliance.md) — Privacy, WhatsApp policy, and legal checklist.
