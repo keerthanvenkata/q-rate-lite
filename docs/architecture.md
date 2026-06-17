@@ -57,8 +57,9 @@ The system enforces a strict 4-tier role hierarchy:
 *   **Stateless Sessions**: The customer flow relies entirely on short-lived JWT tokens passed in the URL. No cookies or sessions are stored on the customer's device.
 *   **Immutable Logging**: Every action taken by the system (Razorpay) or an admin (Super Admin overrides) is permanently recorded in the `AuditLog`.
 
-## 6. Code Standards
+## 7. Code Standards
 
 - **Keep it Simple**: No abstract base classes unless absolutely necessary.
 - **Explicit**: Better to repeat a line of code than create a complex dependency.
 - **Monolith**: No microservices.
+
