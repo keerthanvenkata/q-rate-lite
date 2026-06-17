@@ -16,6 +16,7 @@ const MarketingPage = lazy(() => import('./pages/MarketingPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="/sudo" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
             <Route path="/superadmin" element={<ProtectedRoute><SuperAdminPage /></ProtectedRoute>} />
             <Route path="/marketing" element={<ProtectedRoute><MarketingPage /></ProtectedRoute>} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
