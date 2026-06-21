@@ -13,7 +13,7 @@ The application logic is heavily modularized into distinct FastAPI routers:
 1. **`whatsapp.py`**: The core ingress point for the Meta Cloud API. It receives webhook payloads, parses inbound `wa.me` texts, generates short-lived customer JWTs, and fires automated service replies.
 2. **`feedback.py`**: The customer-facing endpoint. Validates the JWT, logs the 1-5 star rating, and issues a 6-character coupon code.
 3. **`coupon.py`**: The staff-facing endpoint. Validates the staff passcode and executes the redemption state change.
-4. **`billing.py`**: Handles Razorpay checkout session generation and processes asynchronous `payment.captured` webhooks to automatically renew subscriptions.
+4. **`billing.py`**: Handles Razorpay checkout session generation, synchronous signature verification (`verify-payment`), and asynchronous `payment.captured` webhooks to automatically renew subscriptions securely.
 5. **`auth.py`**: Handles local JWT generation for the temporary customer feedback flow.
 6. **`admin.py` & `superadmin.py`**: Secure endpoints for retrieving tenant analytics and performing god-mode operations.
 7. **`marketing.py`**: Processes bulk template dispatch logic against the Meta API.
