@@ -62,6 +62,30 @@ def create_razorpay_order(data: CreateOrderRequest, db: Session = Depends(get_db
         "key_id": RAZORPAY_KEY_ID
     }
 
+class VerifyPaymentRequest(BaseModel):
+    razorpay_order_id: str
+    razorpay_payment_id: str
+    razorpay_signature: str
+
+@router.post("/verify-payment")
+def verify_razorpay_payment(data: VerifyPaymentRequest, db: Session = Depends(get_db), cafe: Cafe = Depends(get_current_user)):
+    try:
+        generated_signature = hmac.new(
+            RAZORPAY_KEY_SECRET.encode("utf-8"),
+            f"{data.razorpay_order_id}|{data.razorpay_payment_id}".encode("utf-8"),
+            hashlib.sha256
+        ).hexdigest()
+        
+        if not hmac.compare_digest(generated_signature, data.razorpay_signature):
+            raise HTTPException(status_code=400, detail="Invalid signature")
+            
+        return {"status": "success"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Signature verification failed: {e}")
+        raise HTTPException(status_code=400, detail="Signature verification failed")
+
 from fastapi.concurrency import run_in_threadpool
 
 def _process_webhook(payment_id: str, cafe_id: str, plan: str, amount: int):
