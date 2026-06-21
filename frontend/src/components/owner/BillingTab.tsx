@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { fetchBillingStatus, createRazorpayOrder, type BillingStatusResponse } from '../../api';
+import { fetchBillingStatus, createRazorpayOrder, verifyRazorpayPayment, type BillingStatusResponse } from '../../api';
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 interface BillingTabProps {
   token: string;
@@ -28,12 +34,51 @@ export default function BillingTab({ token }: BillingTabProps) {
     setError(null);
     try {
       const order = await createRazorpayOrder(token, "monthly");
-      // Dummy flow: we just alert the order was created for MVP.
-      alert(`Razorpay Order Created: ${order.order_id} for ₹${order.amount / 100}`);
-      await loadStatus(); // Refresh status
+      
+      const options = {
+        key: order.key_id,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Q-Rate Lite",
+        description: "Pro License Upgrade",
+        order_id: order.order_id,
+        handler: async function (response: any) {
+          setIsLoading(true); // Restart loading while verifying
+          try {
+            await verifyRazorpayPayment(token, {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            // We give the webhook a slight head start before refreshing
+            setTimeout(() => {
+              loadStatus();
+              setIsLoading(false);
+            }, 1500);
+          } catch (verifyErr: any) {
+            setError(verifyErr.message || "Payment verification failed");
+            setIsLoading(false);
+          }
+        },
+        modal: {
+          ondismiss: function() {
+            setIsLoading(false);
+          }
+        },
+        theme: {
+          color: "#0f172a"
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response: any){
+        setError(`Payment failed: ${response.error.description}`);
+        setIsLoading(false);
+      });
+      rzp.open();
+
     } catch (err: any) {
       setError(err.message || "Failed to initiate upgrade");
-    } finally {
       setIsLoading(false);
     }
   };

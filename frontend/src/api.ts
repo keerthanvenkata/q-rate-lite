@@ -193,6 +193,30 @@ export async function createRazorpayOrder(token: string, plan: string): Promise<
   return response.json();
 }
 
+export interface VerifyPaymentData {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+export async function verifyRazorpayPayment(token: string, data: VerifyPaymentData): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/billing/verify-payment`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to verify payment");
+  }
+
+  return response.json();
+}
+
 export async function fetchWhatsappConfig(): Promise<WhatsappConfigResponse> {
   const response = await fetch(`${API_BASE_URL}/whatsapp/config`, {
     method: "GET",
