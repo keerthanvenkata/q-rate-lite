@@ -1,16 +1,18 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
+from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 import hmac
 import hashlib
 import os
-
 import httpx
 import logging
 
+logger = logging.getLogger(__name__)
+
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
-RAZORPAY_WEBHOOK_SECRET = os.getenv("RAZORPAY_WEBHOOK_SECRET", "dummy_razorpay_secret")
+RAZORPAY_WEBHOOK_SECRET = os.getenv("RAZORPAY_WEBHOOK_SECRET", "")
 
 from database import get_db, SessionLocal
 from models import Cafe, AuditLog
@@ -66,27 +68,65 @@ class VerifyPaymentRequest(BaseModel):
     razorpay_order_id: str
     razorpay_payment_id: str
     razorpay_signature: str
+    plan: str = "monthly"  # Pass the plan through for immediate activation
 
 @router.post("/verify-payment")
-def verify_razorpay_payment(data: VerifyPaymentRequest, db: Session = Depends(get_db), cafe: Cafe = Depends(get_current_user)):
+def verify_razorpay_payment(
+    data: VerifyPaymentRequest,
+    db: Session = Depends(get_db),
+    cafe: Cafe = Depends(get_current_user)
+):
+    """
+    Verifies the Razorpay payment signature and immediately activates the
+    subscription. The webhook (POST /billing/webhook) will also fire and
+    is idempotent — it becomes a no-op if the audit log already records
+    this payment_id.
+    """
+    # 1. Verify signature
     try:
         generated_signature = hmac.new(
             RAZORPAY_KEY_SECRET.encode("utf-8"),
             f"{data.razorpay_order_id}|{data.razorpay_payment_id}".encode("utf-8"),
-            hashlib.sha256
+            hashlib.sha256,
         ).hexdigest()
-        
+
         if not hmac.compare_digest(generated_signature, data.razorpay_signature):
-            raise HTTPException(status_code=400, detail="Invalid signature")
-            
-        return {"status": "success"}
+            raise HTTPException(status_code=400, detail="Invalid payment signature")
     except HTTPException:
         raise
     except Exception as e:
-        logging.error(f"Signature verification failed: {e}")
+        logger.error(f"Signature verification failed: {e}", exc_info=True)
         raise HTTPException(status_code=400, detail="Signature verification failed")
 
-from fastapi.concurrency import run_in_threadpool
+    # 2. Activate subscription immediately (optimistic)
+    # The webhook is the authoritative source; this prevents the UX gap where
+    # the user sees 'payment successful' but their subscription is still 'trial'.
+    plan = data.plan if data.plan in ("monthly", "annual") else "monthly"
+    days = 30 if plan == "monthly" else 365
+    old_status = cafe.subscription_status
+    cafe.subscription_status = "active"
+    cafe.subscription_plan = plan
+    cafe.plan_expiry = datetime.now(timezone.utc) + timedelta(days=days)
+    log_audit(
+        db=db,
+        actor=f"cafe_{cafe.id}",
+        action="SUBSCRIPTION_ACTIVATED_VERIFY",
+        target_cafe_id=cafe.id,
+        details={
+            "old_status": old_status,
+            "plan": plan,
+            "payment_id": data.razorpay_payment_id,
+            "order_id": data.razorpay_order_id,
+        },
+    )
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        logger.error("Failed to activate subscription on verify-payment", exc_info=True)
+        raise HTTPException(status_code=500, detail="Payment verified but failed to activate subscription. Please contact support.")
+
+    return {"status": "success", "subscription_status": "active", "plan": plan}
 
 def _process_webhook(payment_id: str, cafe_id: str, plan: str, amount: int):
     db = SessionLocal()
