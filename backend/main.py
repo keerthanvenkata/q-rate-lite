@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from routers import auth, feedback, coupon, admin, superadmin, billing, whatsapp, marketing, contact
+from routers import auth, feedback, coupon, admin, superadmin, billing, whatsapp, marketing, contact, sync
 from limiter import limiter
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -93,6 +93,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 # Routers
 # ---------------------------------------------------------------------------
 app.include_router(auth.router,       prefix="/api/auth",       tags=["auth"])
+app.include_router(sync.router,       prefix="/api/auth",       tags=["auth"])
 app.include_router(feedback.router,   prefix="/api/feedback",   tags=["feedback"])
 app.include_router(coupon.router,     prefix="/api/coupon",     tags=["coupon"])
 app.include_router(admin.router,      prefix="/api/admin",      tags=["admin"])

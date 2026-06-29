@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useNavigate, Link } from 'react-router-dom';
+import { syncUser } from '../api';
+import { PENDING_CAFE_NAME_KEY } from './SignupPage';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -14,7 +16,7 @@ const LoginPage = () => {
     setLoading(true);
     setError(null);
     
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -23,6 +25,20 @@ const LoginPage = () => {
       setError(error.message);
       setLoading(false);
     } else {
+      // Sync user into the backend on every login (idempotent).
+      // This also handles accounts that may have been created via the old
+      // Supabase trigger path and haven't been synced to the new backend yet.
+      const token = data.session?.access_token;
+      if (token) {
+        try {
+          // Pick up any cafe name that was stored before a Google OAuth redirect
+          const pendingName = localStorage.getItem(PENDING_CAFE_NAME_KEY) || undefined;
+          localStorage.removeItem(PENDING_CAFE_NAME_KEY);
+          await syncUser(token, pendingName);
+        } catch (syncErr: any) {
+          console.warn('Sync on login failed (will retry via ProtectedRoute):', syncErr.message);
+        }
+      }
       navigate('/sudo');
     }
   };

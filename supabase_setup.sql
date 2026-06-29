@@ -1,91 +1,90 @@
 -- Q-Rate Lite: Supabase Authentication Setup Script
--- Run this script in the Supabase SQL Editor to automatically provision Cafe tenants when a user signs up.
+-- Last updated: 2026-06-29
+--
+-- ARCHITECTURE NOTE (IMPORTANT):
+-- Cafe tenant creation is now handled exclusively by the FastAPI backend
+-- via POST /api/auth/sync. The Supabase trigger approach has been retired
+-- for the following reasons:
+--
+--   1. It was broken in local development (Supabase creates records in its
+--      own PostgreSQL; the backend was talking to a local SQLite).
+--   2. It bypassed all backend domain logic (audit logs, slug generation,
+--      trial setup, welcome emails, etc.).
+--   3. It created two competing sources of truth for Cafe records.
+--
+-- HOW TO MIGRATE (one-time):
+--   1. Run the DROP TRIGGER and DROP FUNCTION statements below to remove
+--      the old trigger from your Supabase project.
+--   2. Ensure your frontend calls POST /api/auth/sync after every
+--      successful Supabase Auth signup or login.
 
--- 1. Create the function that will insert into the `cafes` table
-CREATE OR REPLACE FUNCTION public.handle_new_user() 
+-- ==========================================================================
+-- 1. Remove the old trigger-based user provisioning
+-- ==========================================================================
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+
+-- Replace the function with a no-op stub so any accidental re-run of older
+-- migration scripts doesn't recreate the trigger silently.
+CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
-DECLARE
-  v_cafe_name text;
 BEGIN
-  -- Safely extract name from metadata or fallback
-  v_cafe_name := 'My Cafe'; -- Default
-  IF NEW.raw_user_meta_data IS NOT NULL THEN
-    IF NEW.raw_user_meta_data->>'full_name' IS NOT NULL THEN
-      v_cafe_name := NEW.raw_user_meta_data->>'full_name';
-    ELSIF NEW.raw_user_meta_data->>'name' IS NOT NULL THEN
-      v_cafe_name := NEW.raw_user_meta_data->>'name';
-    END IF;
-  END IF;
-
-  IF v_cafe_name = 'My Cafe' AND NEW.email IS NOT NULL THEN
-    v_cafe_name := split_part(NEW.email, '@', 1);
-  END IF;
-
-  INSERT INTO public.cafes (
-    slug, 
-    name, 
-    hashed_password, 
-    auth_id,
-    subscription_status, 
-    plan_expiry, 
-    marketing_credits
-  )
-  VALUES (
-    'cafe-' || NEW.id::text,
-    v_cafe_name,
-    NULL,
-    NEW.id::text,
-    'trial',
-    NOW() + INTERVAL '14 days',
-    0
-  );
-  
+  -- DEPRECATED: Cafe creation is now handled by POST /api/auth/sync.
+  -- This function intentionally does nothing.
+  RAISE LOG 'handle_new_user trigger called but is a no-op. Use POST /api/auth/sync instead.';
   RETURN NEW;
-EXCEPTION
-  WHEN OTHERS THEN
-    -- If it fails, log the error but don't abort the user signup
-    RAISE LOG 'Error in handle_new_user: %', SQLERRM;
-    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
--- 2. Create the trigger on auth.users
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+-- ==========================================================================
+-- 2. Schema: ensure all required columns and indexes exist
+-- ==========================================================================
 
--- 3. Schema Additions & Missing Tables
--- Add auth_id to cafes if it doesn't exist (added for Google OAuth)
+-- auth_id column on cafes (needed for Supabase Auth <-> backend mapping)
 ALTER TABLE public.cafes ADD COLUMN IF NOT EXISTS auth_id TEXT UNIQUE;
 CREATE INDEX IF NOT EXISTS ix_cafes_auth_id ON public.cafes (auth_id);
 
--- Create contact_messages table (for landing page contact form)
+-- onboarding_completed flag
+ALTER TABLE public.cafes ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- contact_messages table (landing page contact form)
 CREATE TABLE IF NOT EXISTS public.contact_messages (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    company TEXT,
-    phone TEXT,
-    message TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'unread',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
+    id          SERIAL PRIMARY KEY,
+    name        TEXT NOT NULL,
+    email       TEXT NOT NULL,
+    company     TEXT,
+    phone       TEXT,
+    message     TEXT NOT NULL,
+    status      TEXT NOT NULL DEFAULT 'unread',
+    created_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 CREATE INDEX IF NOT EXISTS ix_contact_messages_id ON public.contact_messages (id);
 
--- Create processed_webhooks table (for WhatsApp integration deduplication)
+-- processed_webhooks table (WhatsApp message deduplication)
 CREATE TABLE IF NOT EXISTS public.processed_webhooks (
-    message_id TEXT PRIMARY KEY,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
+    message_id  TEXT PRIMARY KEY,
+    created_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
 );
 CREATE INDEX IF NOT EXISTS ix_processed_webhooks_message_id ON public.processed_webhooks (message_id);
 
--- 4. Enable Row Level Security (RLS) on all tables
--- This ensures that the frontend (Anon Key) cannot query or modify the database directly.
--- Because the Python FastAPI backend uses raw SQL, it inherently bypasses RLS, so no policies are needed.
-ALTER TABLE public.cafes ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.feedbacks ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.processed_webhooks ENABLE ROW LEVEL SECURITY;
+-- audit_logs table (if not created by SQLAlchemy migration)
+CREATE TABLE IF NOT EXISTS public.audit_logs (
+    id             SERIAL PRIMARY KEY,
+    actor          TEXT NOT NULL,
+    action         TEXT NOT NULL,
+    target_cafe_id INTEGER,
+    details        TEXT,
+    created_at     TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', now())
+);
+CREATE INDEX IF NOT EXISTS ix_audit_logs_target_cafe_id ON public.audit_logs (target_cafe_id);
+
+-- ==========================================================================
+-- 3. Enable Row Level Security (RLS) on all tables
+-- The frontend uses only the anon key, so RLS prevents direct DB access.
+-- The FastAPI backend connects with the service role key and bypasses RLS.
+-- ==========================================================================
+ALTER TABLE public.cafes               ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.feedbacks           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.coupons             ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.audit_logs          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.contact_messages    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.processed_webhooks  ENABLE ROW LEVEL SECURITY;

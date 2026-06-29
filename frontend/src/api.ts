@@ -1,5 +1,41 @@
 export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
+// ---------------------------------------------------------------------------
+// Auth Sync
+// ---------------------------------------------------------------------------
+
+export interface SyncResponse {
+  status: "created" | "exists";
+  cafe_id: number;
+  name: string;
+}
+
+/**
+ * Syncs the Supabase-authenticated user into the backend Cafe table.
+ * Safe to call on every login — idempotent.
+ *
+ * @param token   Supabase access_token (Bearer)
+ * @param cafeName  Optional: cafe name typed by the user before OAuth redirect
+ */
+export async function syncUser(token: string, cafeName?: string): Promise<SyncResponse> {
+  const response = await fetch(`${API_BASE_URL}/auth/sync`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ cafe_name: cafeName || null }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to sync user account");
+  }
+
+  return response.json();
+}
+
+
 export interface FeedbackData {
   token: string;
   rating: number;
