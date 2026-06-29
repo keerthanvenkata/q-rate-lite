@@ -1,3 +1,4 @@
+import logging
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -5,12 +6,14 @@ from jose import jwt, JWTError
 import os
 from datetime import datetime, timezone
 
+logger = logging.getLogger(__name__)
+
 from database import get_db
 from models import Cafe
 
 security = HTTPBearer()
 
-SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET", "missing_secret")
+SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET", "")
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
@@ -63,14 +66,19 @@ def get_super_admin(
         )
         email = payload.get("email")
         if not SUPERADMIN_EMAIL or email != SUPERADMIN_EMAIL:
+            # Log mismatch server-side only — never expose email to the client
+            logger.warning(
+                f"Superadmin access denied. Expected email does not match token email: {email!r}"
+            )
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"Superadmin mismatch. Env: {SUPERADMIN_EMAIL}, Token email: {email}",
+                detail="Access denied.",
             )
     except JWTError as e:
+        logger.warning(f"Superadmin JWT decode error: {e}")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"JWT Decode Error: {str(e)}",
+            detail="Access denied.",
         )
     return payload
 
@@ -80,9 +88,14 @@ def require_active_subscription(cafe: Cafe = Depends(get_current_user)) -> Cafe:
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Active subscription required",
         )
-    if cafe.plan_expiry and cafe.plan_expiry < datetime.now(timezone.utc):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Subscription expired",
-        )
+    if cafe.plan_expiry:
+        expiry = cafe.plan_expiry
+        # SQLite stores timezone-naive datetimes; normalise to UTC before comparing
+        if expiry.tzinfo is None:
+            expiry = expiry.replace(tzinfo=timezone.utc)
+        if expiry < datetime.now(timezone.utc):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Subscription expired",
+            )
     return cafe

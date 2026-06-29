@@ -1,11 +1,15 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from datetime import datetime, timezone
 import bcrypt
+import logging
 
 from database import get_db
 from models import Coupon, Cafe
+from limiter import limiter
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -14,7 +18,8 @@ class RedeemRequest(BaseModel):
     passcode: str # Simple staff pin/password
 
 @router.post("/redeem")
-def redeem_coupon(data: RedeemRequest, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def redeem_coupon(data: RedeemRequest, request: Request, db: Session = Depends(get_db)):
     # 1. Find Coupon
     coupon = db.query(Coupon).filter(Coupon.code == data.coupon_code).with_for_update().first()
     if not coupon:
@@ -43,9 +48,14 @@ def redeem_coupon(data: RedeemRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=f"Coupon is {coupon.status}")
 
     # 4. Redeem
-    coupon.status = "redeemed"
-    coupon.redeemed_at = datetime.now(timezone.utc)
-    db.commit()
+    try:
+        coupon.status = "redeemed"
+        coupon.redeemed_at = datetime.now(timezone.utc)
+        db.commit()
+    except Exception:
+        db.rollback()
+        logger.error("Failed to redeem coupon", exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to redeem coupon")
 
     return {
         "status": "success", 
