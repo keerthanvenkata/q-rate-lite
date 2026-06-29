@@ -33,7 +33,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/feedback" element={<FeedbackPage />} />
-            <Route path="/staff" element={<ProtectedRoute><StaffPage /></ProtectedRoute>} />
+            <Route path="/staff" element={<StaffPage />} />
             <Route path="/sudo" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
             <Route path="/superadmin" element={<ProtectedRoute><SuperAdminPage /></ProtectedRoute>} />
             <Route path="/marketing" element={<ProtectedRoute><MarketingPage /></ProtectedRoute>} />
