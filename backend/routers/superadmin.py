@@ -2,6 +2,9 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List, Optional
+from enum import Enum
+from datetime import datetime, timezone, timedelta
+import logging
 import os
 
 from database import get_db
@@ -9,13 +12,22 @@ from models import Cafe, AuditLog
 from audit import log_audit
 from dependencies import get_super_admin
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter()
 
-# --- Dependencies & Schemas ---
+# --- Enums & Schemas ---
+
+class SubscriptionStatus(str, Enum):
+    trial = "trial"
+    active = "active"
+    cancelled = "cancelled"
+    past_due = "past_due"
 
 class UpdateSubRequest(BaseModel):
-    subscription_status: str
-    subscription_plan: Optional[str]
+    subscription_status: SubscriptionStatus
+    subscription_plan: Optional[str] = None
+    extend_days: Optional[int] = None  # Optionally set a new expiry
 
 # --- Endpoints ---
 
@@ -32,7 +44,12 @@ def list_all_cafes(db: Session = Depends(get_db), admin: dict = Depends(get_supe
     return {"status": "success", "cafes": cafe_list}
 
 @router.post("/cafes/{cafe_id}/subscription")
-def update_cafe_subscription(cafe_id: int, data: UpdateSubRequest, db: Session = Depends(get_db), admin: dict = Depends(get_super_admin)):
+def update_cafe_subscription(
+    cafe_id: int,
+    data: UpdateSubRequest,
+    db: Session = Depends(get_db),
+    admin: dict = Depends(get_super_admin)
+):
     cafe = db.query(Cafe).filter(Cafe.id == cafe_id).first()
     if not cafe:
         raise HTTPException(status_code=404, detail="Cafe not found")
@@ -41,23 +58,30 @@ def update_cafe_subscription(cafe_id: int, data: UpdateSubRequest, db: Session =
     old_plan = cafe.subscription_plan
 
     try:
-        cafe.subscription_status = data.subscription_status
+        cafe.subscription_status = data.subscription_status.value
         cafe.subscription_plan = data.subscription_plan
 
-        # Immutable Audit Log
+        if data.extend_days:
+            base = cafe.plan_expiry or datetime.now(timezone.utc)
+            if base.tzinfo is None:
+                base = base.replace(tzinfo=timezone.utc)
+            cafe.plan_expiry = base + timedelta(days=data.extend_days)
+
         log_audit(
-            db=db, 
-            actor="superadmin", 
-            action="UPDATE_SUBSCRIPTION", 
-            target_cafe_id=cafe.id, 
+            db=db,
+            actor="superadmin",
+            action="UPDATE_SUBSCRIPTION",
+            target_cafe_id=cafe.id,
             details={
-                "old_status": old_status, "new_status": data.subscription_status,
-                "old_plan": old_plan, "new_plan": data.subscription_plan
+                "old_status": old_status, "new_status": data.subscription_status.value,
+                "old_plan": old_plan, "new_plan": data.subscription_plan,
+                "extend_days": data.extend_days,
             }
         )
         db.commit()
-    except Exception as e:
+    except Exception:
         db.rollback()
+        logger.error(f"Failed to update subscription for cafe {cafe_id}", exc_info=True)
         raise HTTPException(status_code=500, detail="Database update failed")
 
     return {"status": "success", "message": f"Cafe {cafe_id} updated successfully"}
@@ -72,7 +96,7 @@ def get_audit_logs(db: Session = Depends(get_db), admin: dict = Depends(get_supe
     } for l in logs]
     return {"status": "success", "logs": log_list}
 
-from models import ContactMessage
+from models import ContactMessage, ProcessedWebhook
 
 @router.get("/messages")
 def get_contact_messages(db: Session = Depends(get_db), admin: dict = Depends(get_super_admin)):
@@ -84,3 +108,47 @@ def get_contact_messages(db: Session = Depends(get_db), admin: dict = Depends(ge
         "created_at": str(m.created_at) if m.created_at else None
     } for m in messages]
     return {"status": "success", "messages": msg_list}
+
+
+@router.delete("/cleanup-webhooks")
+def cleanup_processed_webhooks(
+    days: int = 7,
+    db: Session = Depends(get_db),
+    admin: dict = Depends(get_super_admin),
+):
+    """
+    Deletes processed_webhooks records older than `days` days.
+    The table grows indefinitely otherwise since WhatsApp fires one row
+    per inbound message for deduplication.
+
+    Recommended: call this periodically (e.g., weekly via a cron or the
+    superadmin dashboard) to keep the table lean.
+    """
+    if days < 1:
+        raise HTTPException(status_code=400, detail="days must be >= 1")
+    if days > 365:
+        raise HTTPException(status_code=400, detail="days must be <= 365")
+
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    try:
+        deleted = (
+            db.query(ProcessedWebhook)
+            .filter(ProcessedWebhook.created_at < cutoff)
+            .delete(synchronize_session=False)
+        )
+        db.commit()
+    except Exception:
+        db.rollback()
+        logger.error("Failed to cleanup processed_webhooks", exc_info=True)
+        raise HTTPException(status_code=500, detail="Cleanup failed")
+
+    log_audit(
+        db=db,
+        actor="superadmin",
+        action="CLEANUP_WEBHOOKS",
+        target_cafe_id=None,
+        details={"deleted_rows": deleted, "older_than_days": days},
+    )
+    db.commit()
+
+    return {"status": "success", "deleted_rows": deleted, "older_than_days": days}
