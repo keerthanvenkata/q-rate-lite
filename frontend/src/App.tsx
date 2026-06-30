@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { SuperAdminRoute } from './components/SuperAdminRoute';
 import ScrollToTop from './components/ScrollToTop';
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
@@ -35,7 +36,7 @@ function App() {
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/staff" element={<StaffPage />} />
             <Route path="/sudo" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
-            <Route path="/superadmin" element={<ProtectedRoute><SuperAdminPage /></ProtectedRoute>} />
+            <Route path="/superadmin" element={<SuperAdminRoute><SuperAdminPage /></SuperAdminRoute>} />
             <Route path="/marketing" element={<ProtectedRoute><MarketingPage /></ProtectedRoute>} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
