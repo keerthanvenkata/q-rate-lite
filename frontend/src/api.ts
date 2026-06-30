@@ -157,6 +157,9 @@ export interface MeData {
   slug: string;
   onboarding_completed: boolean;
   subscription_status: string;
+  plan_expiry: string | null;
+  google_maps_link: string | null;
+  reward_text: string | null;
 }
 
 export async function fetchMe(token: string): Promise<MeData> {
@@ -176,14 +179,22 @@ export async function fetchMe(token: string): Promise<MeData> {
   return response.json();
 }
 
-export async function updateOnboarding(token: string, name: string): Promise<any> {
+
+export interface OnboardingData {
+  name: string;
+  google_maps_link?: string;
+  reward_text?: string;
+  staff_passcode?: string;
+}
+
+export async function updateOnboarding(token: string, data: OnboardingData): Promise<any> {
   const response = await fetch(`${API_BASE_URL}/admin/me/onboarding`, {
     method: "PATCH",
     headers: {
       "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name }),
+    body: JSON.stringify(data),
   });
 
   if (!response.ok) {
@@ -193,6 +204,32 @@ export async function updateOnboarding(token: string, name: string): Promise<any
 
   return response.json();
 }
+
+export interface SettingsData {
+  name?: string;
+  google_maps_link?: string;
+  reward_text?: string;
+  staff_passcode?: string;
+}
+
+export async function updateSettings(token: string, data: SettingsData): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/admin/me/settings`, {
+    method: "PATCH",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Failed to save settings");
+  }
+
+  return response.json();
+}
+
 
 export async function fetchBillingStatus(token: string): Promise<BillingStatusResponse> {
   const response = await fetch(`${API_BASE_URL}/billing/status`, {
