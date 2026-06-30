@@ -42,7 +42,8 @@ class Feedback(Base):
     customer_phone = Column(String, index=True, nullable=False) # WhatsApp number
     rating = Column(Integer, nullable=False) # 1-5
     comment = Column(Text, nullable=True)
-    marketing_opt_in = Column(Boolean, server_default="1", default=True, nullable=False)
+    # COMPLIANCE: Default is False — marketing opt-in must be explicit per DPDP Act.
+    marketing_opt_in = Column(Boolean, server_default="0", default=False, nullable=False)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     cafe = relationship("Cafe", back_populates="feedbacks")

@@ -10,7 +10,8 @@ export default function FeedbackPage() {
   const [rating, setRating] = useState<number>(0);
   const [hoverRating, setHoverRating] = useState<number>(0);
   const [comment, setComment] = useState("");
-  const [optIn, setOptIn] = useState<boolean>(true);
+  // COMPLIANCE: Default to unchecked — opt-in must be explicit per DPDP Act
+  const [optIn, setOptIn] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<FeedbackResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +44,12 @@ export default function FeedbackPage() {
         }, 2000);
       }
     } catch (err: any) {
-      setError(err.message || "Something went wrong.");
+      // Improve the 401 UX — the most common cause is an expired token
+      if (err.message?.includes('401') || err.message?.toLowerCase().includes('session expired')) {
+        setError('Your session has expired. Please re-scan the QR code to submit feedback.');
+      } else {
+        setError(err.message || 'Something went wrong. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
