@@ -270,6 +270,7 @@ export interface VerifyPaymentData {
   razorpay_order_id: string;
   razorpay_payment_id: string;
   razorpay_signature: string;
+  plan?: string;
 }
 
 export async function verifyRazorpayPayment(token: string, data: VerifyPaymentData): Promise<any> {

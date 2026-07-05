@@ -49,6 +49,7 @@ export default function BillingTab({ token }: BillingTabProps) {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
+              plan: "monthly",
             });
             // We give the webhook a slight head start before refreshing
             setTimeout(() => {
