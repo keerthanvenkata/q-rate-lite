@@ -47,16 +47,31 @@ Your local `test.db` SQLite database is great for dev, but Vercel Serverless fun
 
 ---
 
-## 4. Run Database Initialization
+## 4. Run Database Initialization (Alembic)
 
-Your live Supabase database is currently empty. You need to create the tables.
+Your live Supabase database is currently empty. We use **Alembic** to build all the tables and manage schema changes over time.
 
 **Action Steps:**
-1. Go to your Supabase Project Dashboard.
-2. Navigate to the **SQL Editor** on the left sidebar.
-3. Open the file located at `supabase/migrations/0000_init_schema.sql` from your local codebase.
-4. Copy the entire contents of that file and paste it into the Supabase SQL Editor.
-5. Click **Run**. This will instantly build all your tables and indexes inside Supabase over the internet.
+1. Open your local `backend/.env` file.
+2. Temporarily comment out your local SQLite database URL and paste in your Supabase connection string:
+   ```env
+   # DATABASE_URL=sqlite:///./test.db
+   DATABASE_URL=postgresql://postgres.xxx:[YOUR-PASSWORD]@aws-0-eu-central-1.pooler.supabase.com:6543/postgres
+   ```
+3. Open your terminal, navigate to the `backend` folder, and run:
+   ```bash
+   .\venv\Scripts\python.exe -m alembic upgrade head
+   ```
+   *(This will automatically connect to Supabase and execute all the correct PostgreSQL commands to build your tables).*
+4. **CRITICAL:** Revert your `backend/.env` file back to SQLite (`sqlite:///./test.db`) so your local development environment keeps working.
+
+**Fallback Method (Raw SQL):**
+If you ever run into a strict network issue running Alembic against production, you can generate the raw PostgreSQL commands locally and paste them into the Supabase SQL Editor:
+1. In your local terminal, temporarily set the environment variable:
+   `$env:DATABASE_URL="postgresql://dummy:dummy@localhost/dummy"`
+2. Run: `.\venv\Scripts\python.exe -m alembic upgrade head --sql`
+3. Copy the output and run it in the Supabase SQL Editor.
+4. Unset the variable: `$env:DATABASE_URL="sqlite:///./test.db"`
 
 ---
 
