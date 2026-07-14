@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Response, HTTPException
+from fastapi import APIRouter, Request, Response, HTTPException, Depends
 import os
 import httpx
 import hmac
@@ -62,18 +62,16 @@ def _check_webhook_replay(message_id: str) -> bool:
     finally:
         db.close()
 
-@router.post("/webhook")
-@limiter.limit("100/minute")
-async def receive_webhook(request: Request):
+async def verify_meta_signature(request: Request):
     """
-    Receives inbound messages and delivery status updates from Meta.
+    Dependency to verify Meta's webhook signature.
+    Reads the body and validates the HMAC SHA-256 signature against META_APP_SECRET.
     """
     signature = request.headers.get("x-hub-signature-256")
-    body_bytes = await request.body()
-    
     if not signature or not signature.startswith("sha256="):
         raise HTTPException(status_code=403, detail="Invalid Meta signature format")
         
+    body_bytes = await request.body()
     actual_signature = signature.split("sha256=")[1]
     expected_signature = hmac.new(
         META_APP_SECRET.encode("utf-8"),
@@ -83,6 +81,13 @@ async def receive_webhook(request: Request):
     
     if not hmac.compare_digest(expected_signature, actual_signature):
         raise HTTPException(status_code=403, detail="Invalid Meta signature")
+
+@router.post("/webhook", dependencies=[Depends(verify_meta_signature)])
+@limiter.limit("100/minute")
+async def receive_webhook(request: Request):
+    """
+    Receives inbound messages and delivery status updates from Meta.
+    """
 
     try:
         body = await request.json()
