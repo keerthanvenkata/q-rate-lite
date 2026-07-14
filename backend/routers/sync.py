@@ -15,7 +15,8 @@ import os
 import logging
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+import resend
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from pydantic import BaseModel
@@ -86,9 +87,43 @@ def _make_unique_slug(base: str, db: Session) -> str:
     return slug
 
 
+def _send_welcome_email(email: str):
+    if not email:
+        return
+    try:
+        resend.api_key = os.getenv("RESEND_API_KEY", "")
+        if not resend.api_key:
+            logger.warning("RESEND_API_KEY not set. Skipping welcome email.")
+            return
+
+        html_content = """
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h1 style="color: #1a1a1a;">Welcome to Q-Rate Lite!</h1>
+            <p style="color: #4a4a4a; font-size: 16px; line-height: 1.5;">We're thrilled to have you on board. To start collecting feedback and growing your business, please complete your dashboard onboarding:</p>
+            <ul style="color: #4a4a4a; font-size: 16px; line-height: 1.5;">
+                <li><strong>Set up your Google Maps link</strong> to direct happy customers.</li>
+                <li><strong>Set a Staff Passcode</strong> so your team can process rewards safely.</li>
+                <li><strong>Print your custom QR Code</strong> and place it on your tables.</li>
+            </ul>
+            <p style="color: #4a4a4a; font-size: 16px; line-height: 1.5;">Log in to your dashboard to finish setting up!</p>
+        </div>
+        """
+        resend.Emails.send({
+            "from": "Q-Rate Lite <onboarding@tinkernlabs.com>",
+            "to": email,
+            "subject": "Welcome to Q-Rate Lite",
+            "html": html_content
+        })
+        logger.info(f"Welcome email sent to {email}")
+    except Exception as e:
+        logger.error(f"Failed to send welcome email to {email}: {e}")
+
+
+
 @router.post("/sync", response_model=SyncResponse)
 def sync_user(
     body: SyncRequest,
+    background_tasks: BackgroundTasks,
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db),
 ):
@@ -159,6 +194,11 @@ def sync_user(
             details={"name": cafe_name, "slug": slug, "trial_days": TRIAL_DAYS},
         )
         db.commit()
+        
+        # Send welcome email asynchronously
+        user_email = payload.get("email")
+        if user_email:
+            background_tasks.add_task(_send_welcome_email, user_email)
     except Exception:
         db.rollback()
         logger.error(f"Sync: Failed to create Cafe for auth_id={auth_id!r}", exc_info=True)
