@@ -2,6 +2,18 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { fetchAdminDashboard, fetchMe, type AdminDataResponse, type FeedbackItem, type MeData } from '../api';
 import { LogOut, Star, MessageSquare, QrCode, Coffee } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import {
+  ResponsiveContainer,
+  ComposedChart,
+  Line,
+  Bar,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend
+} from 'recharts';
 import BillingTab from '../components/owner/BillingTab';
 import QRCodeTab from '../components/owner/QRCodeTab';
 import SettingsTab from '../components/owner/SettingsTab';
@@ -134,6 +146,51 @@ export default function AdminPage() {
                   {data.average_rating} <Star size={24} className="text-amber-400 fill-amber-400" />
                 </div>
               </div>
+            </div>
+
+            {/* Chart Area */}
+            <h2 className="text-lg font-bold text-slate-900 mb-4">Feedback Trends (30 Days)</h2>
+            <div className="dashboard-card p-6 mb-8 h-80">
+              {data.chart_data && data.chart_data.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={data.chart_data} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#171717" stopOpacity={0.15}/>
+                        <stop offset="95%" stopColor="#171717" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#f0f0f0" />
+                    <XAxis 
+                      dataKey="date" 
+                      tick={{ fill: '#888888', fontSize: 12, fontWeight: 500 }} 
+                      tickLine={false} 
+                      axisLine={false} 
+                      dy={10}
+                      tickFormatter={(val) => {
+                        if (!val) return '';
+                        const d = new Date(val);
+                        return `${d.getDate()} ${d.toLocaleString('default', { month: 'short' })}`;
+                      }}
+                    />
+                    <YAxis yAxisId="left" tick={{ fill: '#888888', fontSize: 12, fontWeight: 500 }} tickLine={false} axisLine={false} dx={-10} />
+                    <YAxis yAxisId="right" orientation="right" domain={[0, 5]} tick={{ fill: '#888888', fontSize: 12, fontWeight: 500 }} tickLine={false} axisLine={false} dx={10} />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '8px', border: '1px solid #eaeaea', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)', backgroundColor: '#ffffff', padding: '12px' }}
+                      labelStyle={{ fontWeight: '600', color: '#171717', marginBottom: '8px' }}
+                      itemStyle={{ fontWeight: '500', fontSize: '13px' }}
+                      cursor={{ stroke: '#e5e5e5', strokeWidth: 1, strokeDasharray: '4 4' }}
+                    />
+                    <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', fontWeight: 500, paddingTop: '10px' }} />
+                    <Area yAxisId="left" type="monotone" dataKey="count" name="Feedback Volume" stroke="#171717" strokeWidth={2} fillOpacity={1} fill="url(#colorCount)" activeDot={{ r: 5, fill: '#171717', stroke: '#fff', strokeWidth: 2 }} />
+                    <Line yAxisId="right" type="monotone" dataKey="avg_rating" name="Avg Rating" stroke="#10B981" strokeWidth={2.5} dot={false} activeDot={{ r: 5, fill: '#10B981', stroke: '#fff', strokeWidth: 2 }} />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-neutral-400 text-sm">
+                  Not enough data to display trends
+                </div>
+              )}
             </div>
 
             {/* Feedback List */}

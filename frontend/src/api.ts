@@ -132,6 +132,7 @@ export interface AdminDataResponse {
   total_feedback: number;
   average_rating: number;
   recent_feedbacks: FeedbackItem[];
+  chart_data: Array<{ date: string; avg_rating: number; count: number }>;
 }
 
 export async function fetchAdminDashboard(token: string): Promise<AdminDataResponse> {

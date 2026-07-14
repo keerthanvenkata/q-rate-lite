@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from urllib.parse import urlparse
 import bcrypt
 import logging
@@ -54,11 +54,18 @@ class FeedbackItem(BaseModel):
     created_at: datetime
 
 
+class ChartDataPoint(BaseModel):
+    date: str
+    avg_rating: float
+    count: int
+
+
 class AdminDataResponse(BaseModel):
     cafe_id: int
     total_feedback: int
     average_rating: float
     recent_feedbacks: List[FeedbackItem]
+    chart_data: List[ChartDataPoint]
 
 
 class OnboardingRequest(BaseModel):
@@ -129,11 +136,37 @@ def get_admin_dashboard(db: Session = Depends(get_db), cafe: Cafe = Depends(requ
         for f in feedbacks
     ]
 
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+    
+    # Works in both SQLite and PostgreSQL
+    from sqlalchemy import cast, Date
+    chart_query = (
+        db.query(
+            cast(Feedback.created_at, Date).label("date"),
+            func.avg(Feedback.rating).label("avg_rating"),
+            func.count(Feedback.id).label("count")
+        )
+        .filter(Feedback.cafe_id == cafe.id, Feedback.created_at >= thirty_days_ago)
+        .group_by(cast(Feedback.created_at, Date))
+        .order_by(cast(Feedback.created_at, Date))
+        .all()
+    )
+    
+    chart_data = [
+        ChartDataPoint(
+            date=str(row.date),
+            avg_rating=round(row.avg_rating, 1) if row.avg_rating else 0.0,
+            count=row.count
+        )
+        for row in chart_query
+    ]
+
     return AdminDataResponse(
         cafe_id=cafe.id,
         total_feedback=total_fb,
         average_rating=avg_fb,
         recent_feedbacks=fb_items,
+        chart_data=chart_data,
     )
 
 
