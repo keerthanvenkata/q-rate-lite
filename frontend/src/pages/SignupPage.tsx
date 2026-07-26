@@ -92,10 +92,10 @@ const SignupPage = () => {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 border border-neutral-200 shadow-sm sm:rounded-lg sm:px-10">
+        <div className="bg-white py-10 px-6 border border-neutral-200 shadow-sm sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSignup}>
             <div>
-              <label htmlFor="cafeName" className="block text-sm font-medium text-black">
+              <label htmlFor="cafeName" className="dashboard-label">
                 Cafe Name
               </label>
               <div className="mt-1">
@@ -106,13 +106,13 @@ const SignupPage = () => {
                   required
                   value={cafeName}
                   onChange={(e) => setCafeName(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-neutral-300 px-3 py-2 placeholder-neutral-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm text-black bg-white"
+                  className="dashboard-input"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-black">
+              <label htmlFor="email" className="dashboard-label">
                 Email address
               </label>
               <div className="mt-1">
@@ -124,13 +124,13 @@ const SignupPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-neutral-300 px-3 py-2 placeholder-neutral-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm text-black bg-white"
+                  className="dashboard-input"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-black">
+              <label htmlFor="password" className="dashboard-label">
                 Password
               </label>
               <div className="mt-1">
@@ -142,14 +142,15 @@ const SignupPage = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-neutral-300 px-3 py-2 placeholder-neutral-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm text-black bg-white"
+                  className="dashboard-input"
                 />
               </div>
             </div>
 
             {error && (
-              <div className="text-red-600 text-sm">
-                {error}
+              <div className="flex items-start gap-2 rounded-lg border border-red-100 bg-red-50 p-3 text-sm text-red-700">
+                <span className="mt-0.5">⚠</span>
+                <span>{error}</span>
               </div>
             )}
 
@@ -157,7 +158,7 @@ const SignupPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full justify-center rounded-md border border-transparent bg-black py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:opacity-50"
+                className="dashboard-btn-primary w-full"
               >
                 {loading ? 'Creating account...' : 'Create account'}
               </button>
@@ -167,7 +168,7 @@ const SignupPage = () => {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-neutral-300" />
+                <div className="w-full border-t border-neutral-200" />
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="bg-white px-2 text-neutral-500">Or continue with</span>
@@ -179,7 +180,7 @@ const SignupPage = () => {
                 type="button"
                 onClick={handleGoogleLogin}
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-3 rounded-lg border border-neutral-200 bg-white px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50 transition-all duration-150 ease-out active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 disabled:opacity-40"
               >
                 <svg className="h-5 w-5" aria-hidden="true" viewBox="0 0 24 24">
                   <path d="M12.0003 4.75C13.7703 4.75 15.3553 5.36002 16.6053 6.54998L20.0303 3.125C17.9502 1.19 15.2353 0 12.0003 0C7.31028 0 3.25527 2.69 1.28027 6.60998L5.27028 9.70498C6.21525 6.86002 8.87028 4.75 12.0003 4.75Z" fill="#EA4335" />
