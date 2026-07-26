@@ -32,20 +32,36 @@ export default function QRCodeTab({ cafeId }: QRCodeTabProps) {
     document.body.removeChild(a);
   };
 
-  if (error) return <div className="text-red-500 p-8">{error}</div>;
-  if (!wabaNumber) return <div className="text-neutral-500 p-8">Loading...</div>;
+  if (error) {
+    return (
+      <div className="flex items-start gap-2 rounded-lg border border-red-100 bg-red-50 p-3 text-sm text-red-700">
+        <span className="mt-0.5">⚠</span>
+        <span>{error}</span>
+      </div>
+    );
+  }
+  if (!wabaNumber) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="w-10 h-10 rounded-full border-2 border-neutral-200 border-t-black animate-spin" />
+          <p className="text-sm text-neutral-500 font-medium">Loading QR code…</p>
+        </div>
+      </div>
+    );
+  }
 
   const deepLink = `https://wa.me/${wabaNumber}?text=RateMyVisit%20${cafeId}`;
 
   return (
     <div className="space-y-6 max-w-xl">
-      <h2 className="text-lg font-bold text-slate-900 mb-4">Table QR Code</h2>
-      <p className="text-sm text-neutral-600">
+      <h2 className="text-sm font-bold text-black tracking-tight mb-2">Table QR Code</h2>
+      <p className="text-sm text-neutral-500 leading-relaxed">
         Print and place this QR code on your tables. When customers scan it, it will open a pre-filled WhatsApp message to collect their feedback.
       </p>
 
-      <div className="dashboard-card p-8 flex flex-col items-center justify-center bg-neutral-50">
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-neutral-100 mb-6" ref={qrRef}>
+      <div className="dashboard-card p-8 flex flex-col items-center justify-center bg-white gap-6">
+        <div className="p-4 rounded-xl border border-neutral-200" style={{ boxShadow: '0 1px 2px 0 rgba(0,0,0,0.05)' }} ref={qrRef}>
           <QRCodeCanvas 
             value={deepLink}
             size={200}
@@ -56,15 +72,15 @@ export default function QRCodeTab({ cafeId }: QRCodeTabProps) {
         
         <button 
           onClick={downloadQR}
-          className="dashboard-btn-secondary flex items-center gap-2 w-full justify-center"
+          className="dashboard-btn-secondary w-full max-w-xs mx-auto"
         >
           <Download size={16} /> Download as PNG
         </button>
       </div>
       
-      <div className="p-4 border border-neutral-200 rounded-lg">
-         <p className="text-xs font-bold text-neutral-500 uppercase mb-1">Raw Deep Link</p>
-         <p className="font-mono text-sm break-all text-black">{deepLink}</p>
+      <div className="p-4 bg-neutral-50 border border-neutral-200 rounded-lg">
+         <p className="dashboard-section-title mb-2">Raw Deep Link</p>
+         <p className="font-mono text-xs text-neutral-600 break-all leading-relaxed">{deepLink}</p>
       </div>
     </div>
   );
