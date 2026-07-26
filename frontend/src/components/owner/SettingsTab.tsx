@@ -68,19 +68,19 @@ export default function SettingsTab({
   return (
     <div className="max-w-2xl">
       <div className="flex items-center gap-3 mb-6">
-        <Settings size={20} className="text-neutral-500" />
+        <Settings size={20} className="text-neutral-400" />
         <h2 className="text-lg font-bold text-black">Cafe Settings</h2>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Basic Info */}
-        <div className="dashboard-card p-6 space-y-4">
-          <h3 className="text-sm font-bold text-neutral-500 uppercase tracking-widest">
+        <div className="dashboard-card p-6 space-y-5">
+          <h3 className="dashboard-section-title mb-4">
             Basic Information
           </h3>
 
           <div>
-            <label className="block text-sm font-semibold text-neutral-700 mb-1">
+            <label className="dashboard-label">
               Cafe Name
             </label>
             <input
@@ -94,7 +94,7 @@ export default function SettingsTab({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-neutral-700 mb-1">
+            <label className="dashboard-label">
               Google Maps Link{' '}
               <span className="text-neutral-400 font-normal">(for 4–5 star redirect)</span>
             </label>
@@ -109,7 +109,7 @@ export default function SettingsTab({
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-neutral-700 mb-1">
+            <label className="dashboard-label">
               Coupon Reward Text
             </label>
             <input
@@ -120,23 +120,23 @@ export default function SettingsTab({
               onChange={e => setRewardText(e.target.value)}
               placeholder="e.g. 10% off on your next visit"
             />
-            <p className="text-xs text-neutral-400 mt-1">
+            <p className="text-xs text-neutral-400 mt-1.5 leading-relaxed">
               Shown to staff when redeeming a customer coupon.
             </p>
           </div>
         </div>
 
         {/* Staff Passcode */}
-        <div className="dashboard-card p-6 space-y-4">
-          <h3 className="text-sm font-bold text-neutral-500 uppercase tracking-widest">
+        <div className="dashboard-card p-6 space-y-5">
+          <h3 className="dashboard-section-title mb-4">
             Staff Passcode
           </h3>
-          <p className="text-sm text-neutral-500">
+          <p className="text-xs text-neutral-400 mt-1.5 leading-relaxed">
             Leave blank to keep the current passcode unchanged.
           </p>
 
           <div>
-            <label className="block text-sm font-semibold text-neutral-700 mb-1">
+            <label className="dashboard-label">
               New Passcode
             </label>
             <div className="relative">
@@ -161,7 +161,7 @@ export default function SettingsTab({
 
           {passcode && (
             <div>
-              <label className="block text-sm font-semibold text-neutral-700 mb-1">
+              <label className="dashboard-label">
                 Confirm New Passcode
               </label>
               <input
@@ -179,12 +179,12 @@ export default function SettingsTab({
 
         {/* Feedback */}
         {error && (
-          <div className="text-red-600 text-sm font-medium bg-red-50 p-3 rounded-lg border border-red-100">
+          <div className="text-xs font-medium text-red-700 bg-red-50 p-3 rounded-md border border-red-100">
             {error}
           </div>
         )}
         {success && (
-          <div className="text-green-700 text-sm font-medium bg-green-50 p-3 rounded-lg border border-green-100">
+          <div className="text-xs font-medium text-green-700 bg-green-50 p-3 rounded-md border border-green-100">
             {success}
           </div>
         )}
@@ -192,7 +192,7 @@ export default function SettingsTab({
         <button
           type="submit"
           disabled={isSaving}
-          className="dashboard-btn-primary flex items-center gap-2"
+          className="dashboard-btn-primary"
         >
           <Save size={16} />
           {isSaving ? 'Saving...' : 'Save Changes'}
