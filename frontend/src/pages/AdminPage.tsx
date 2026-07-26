@@ -67,26 +67,34 @@ export default function AdminPage() {
 
   if (error) {
     return (
-      <div className="dashboard-bg p-8 flex flex-col items-center justify-center h-[50vh]">
-        <p className="text-red-500 mb-4">{error}</p>
-        <button onClick={handleLogout} className="dashboard-btn-secondary">Logout</button>
+      <div className="dashboard-bg p-8 flex flex-col items-center justify-center h-[50vh] gap-6">
+        <div className="text-center">
+          <p className="text-sm font-semibold text-neutral-900 mb-1">Something went wrong</p>
+          <p className="text-sm text-neutral-500">{error}</p>
+        </div>
+        <button onClick={handleLogout} className="dashboard-btn-secondary max-w-fit">
+          <LogOut size={15} /> Logout
+        </button>
       </div>
     );
   }
 
   if (!data) {
     return (
-      <div className="dashboard-bg p-8 flex items-center justify-center h-[50vh]">
-        <p className="text-neutral-500">Loading dashboard...</p>
+      <div className="dashboard-bg flex items-center justify-center h-screen">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="w-10 h-10 rounded-full border-2 border-neutral-200 border-t-black animate-spin" />
+          <p className="text-sm text-neutral-500 font-medium">Loading your dashboard…</p>
+        </div>
       </div>
     );
   }
 
   const tabClass = (t: Tab) =>
-    `px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+    `px-4 py-2.5 text-sm font-semibold rounded-md transition-all duration-150 ease-out ${
       activeTab === t
-        ? 'border-black text-black'
-        : 'border-transparent text-neutral-500 hover:text-black'
+        ? 'bg-neutral-100 text-black'
+        : 'text-neutral-500 hover:text-neutral-800 hover:bg-neutral-50'
     }`;
 
   return (
@@ -95,10 +103,10 @@ export default function AdminPage() {
 
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Owner Dashboard</h1>
+          <h1 className="text-xl font-bold text-black tracking-tight">Owner Dashboard</h1>
           <button
             onClick={handleLogout}
-            className="dashboard-btn-secondary flex items-center gap-2 text-sm max-w-[120px] justify-center"
+            className="dashboard-btn-secondary max-w-fit"
           >
             <LogOut size={16} /> Logout
           </button>
@@ -124,7 +132,7 @@ export default function AdminPage() {
         )}
 
         {/* Navigation Tabs */}
-        <div className="flex space-x-1 border-b border-neutral-200 mb-8 overflow-x-auto">
+        <div className="flex gap-1 bg-neutral-100 p-1 rounded-xl mb-8 overflow-x-auto">
           <button onClick={() => setActiveTab('overview')} className={tabClass('overview')}>Overview</button>
           <button onClick={() => setActiveTab('qrcode')} className={tabClass('qrcode')}>QR Code</button>
           <button onClick={() => setActiveTab('billing')} className={tabClass('billing')}>Billing</button>
@@ -135,21 +143,21 @@ export default function AdminPage() {
         {activeTab === 'overview' && (
           <div>
             {/* Stats Bar */}
-            <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-2 gap-5 mb-8">
               <div className="dashboard-card p-6">
-                <p className="text-sm font-medium text-neutral-500">Total Feedback</p>
-                <p className="text-4xl font-bold text-black mt-2">{data.total_feedback}</p>
+                <p className="text-xs font-semibold text-neutral-400 uppercase tracking-widest">Total Feedback</p>
+                <p className="text-4xl font-bold text-black mt-3 tracking-tight">{data.total_feedback}</p>
               </div>
               <div className="dashboard-card p-6">
-                <p className="text-sm font-medium text-neutral-500">Average Rating</p>
-                <div className="flex items-center gap-2 mt-2 text-4xl font-bold text-black">
+                <p className="text-xs font-semibold text-neutral-400 uppercase tracking-widest">Average Rating</p>
+                <div className="flex items-center gap-2 mt-3 text-4xl font-bold text-black tracking-tight">
                   {data.average_rating} <Star size={24} className="text-amber-400 fill-amber-400" />
                 </div>
               </div>
             </div>
 
             {/* Chart Area */}
-            <h2 className="text-lg font-bold text-slate-900 mb-4">Feedback Trends (30 Days)</h2>
+            <h2 className="text-sm font-bold text-black tracking-tight mb-4">Feedback Trends (30 Days)</h2>
             <div className="dashboard-card p-6 mb-8 h-80">
               {data.chart_data && data.chart_data.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
@@ -187,19 +195,22 @@ export default function AdminPage() {
                   </ComposedChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-neutral-400 text-sm">
-                  Not enough data to display trends
+                <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+                  <div className="w-8 h-8 text-neutral-200">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h4v18H3V3zm7 6h4v12h-4V9zm7-4h4v16h-4V5z"/></svg>
+                  </div>
+                  <p className="text-sm text-neutral-400 font-medium">Not enough data yet</p>
                 </div>
               )}
             </div>
 
             {/* Feedback List */}
-            <h2 className="text-lg font-bold text-slate-900 mb-4">Recent Feedback</h2>
+            <h2 className="text-sm font-bold text-black tracking-tight mb-4">Recent Feedback</h2>
             <div className="space-y-4">
               {data.recent_feedbacks.length === 0 ? (
                 /* Rich empty state */
                 <div className="dashboard-card p-10 text-center">
-                  <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-neutral-200">
+                  <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-neutral-200 transition-colors">
                     <Coffee size={32} className="text-neutral-300" />
                   </div>
                   <h3 className="text-lg font-bold text-black mb-2">No feedback yet</h3>
@@ -209,7 +220,7 @@ export default function AdminPage() {
                   </p>
                   <button
                     onClick={() => setActiveTab('qrcode')}
-                    className="dashboard-btn-primary inline-flex items-center gap-2"
+                    className="dashboard-btn-primary max-w-fit mx-auto"
                   >
                     <QrCode size={16} /> Generate QR Code →
                   </button>
@@ -221,19 +232,20 @@ export default function AdminPage() {
                     <div className="flex-shrink-0 border border-neutral-200 p-4 rounded-xl flex flex-col items-center justify-center w-24 h-24">
                       <span className="text-2xl font-bold text-black">{fb.rating}</span>
                       <Star size={20} className={fb.rating >= 4 ? 'text-green-500 fill-green-500' : 'text-amber-500 fill-amber-500'} />
+                      <span className="text-xs font-medium text-neutral-400 mt-1">/ 5</span>
                     </div>
 
                     {/* Content */}
                     <div className="flex-grow">
                       <div className="flex items-center justify-between mb-2 gap-4">
-                        <p className="font-mono text-sm font-bold text-black border border-neutral-200 px-2 py-1 rounded">
+                        <p className="font-mono text-xs font-semibold text-neutral-700 border border-neutral-200 bg-neutral-50 px-2 py-0.5 rounded-md">
                           +{fb.customer_phone}
                         </p>
                         <p className="text-xs text-neutral-400">
                           {new Date(fb.created_at).toLocaleDateString()}
                         </p>
                       </div>
-                      <p className="text-black text-sm mt-3 border-l-2 border-neutral-200 pl-3 italic">
+                      <p className="text-sm text-neutral-600 leading-relaxed mt-2 pl-3 border-l-2 border-neutral-100 italic">
                         {fb.comment || 'No comment provided.'}
                       </p>
                     </div>
@@ -242,7 +254,7 @@ export default function AdminPage() {
                     <div className="flex-shrink-0 w-full sm:w-auto">
                       <button
                         onClick={() => openWhatsApp(fb.customer_phone)}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors"
+                        className="inline-flex items-center gap-2 py-2 px-4 rounded-lg bg-[#25D366] hover:bg-[#20bc5a] text-white text-xs font-semibold transition-all duration-150 active:scale-[0.98]"
                       >
                         <MessageSquare size={16} /> Reply
                       </button>
