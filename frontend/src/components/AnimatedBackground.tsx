@@ -24,8 +24,8 @@ export default function AnimatedBackground() {
         {/* Focal Bloom (keeps the area behind the headline softly lit) */}
         <div className="absolute top-[15%] left-[50%] -translate-x-1/2 w-[50%] h-[30%] rounded-[100%] bg-teal-400/5 blur-[100px]"></div>
         
-        {/* Animated Film Grain */}
-        <div className="absolute inset-[-10%] opacity-[0.04] mix-blend-screen animate-noise-shift" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+        {/* Static Film Grain (Animation removed for performance) */}
+        <div className="absolute inset-[-10%] opacity-[0.04] mix-blend-screen" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       </div>
       
       {/* Light Mode Papyrus Background (Sweeping Ink Washes & God Rays) */}
