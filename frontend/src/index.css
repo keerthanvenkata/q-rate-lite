@@ -64,6 +64,39 @@
 
 
 
+  @keyframes shimmer-sweep {
+    from { background-position: -200% center; }
+    to   { background-position:  200% center; }
+  }
+
+  .btn-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-sheen::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    background-size: 200% auto;
+    animation: shimmer-sweep 3s linear infinite;
+    pointer-events: none;
+  }
+
+  @property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  @keyframes border-spin {
+    to { --angle: 360deg; }
+  }
+
+  .animate-border-spin {
+    animation: border-spin 6s linear infinite;
+  }
+
   /* Ultra-Minimalist Dashboard Theme Utilities */
   .dashboard-bg {
     @apply bg-white min-h-screen text-black font-sans;
