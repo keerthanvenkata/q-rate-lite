@@ -68,10 +68,10 @@ const LoginPage = () => {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 border border-neutral-200 shadow-sm sm:rounded-lg sm:px-10">
+        <div className="bg-white py-10 px-6 border border-neutral-200 shadow-sm sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleLogin}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-black">
+              <label htmlFor="email" className="dashboard-label">
                 Email address
               </label>
               <div className="mt-1">
@@ -83,13 +83,13 @@ const LoginPage = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-neutral-300 px-3 py-2 placeholder-neutral-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm text-black bg-white"
+                  className="dashboard-input"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-black">
+              <label htmlFor="password" className="dashboard-label">
                 Password
               </label>
               <div className="mt-1">
@@ -101,14 +101,15 @@ const LoginPage = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full appearance-none rounded-md border border-neutral-300 px-3 py-2 placeholder-neutral-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm text-black bg-white"
+                  className="dashboard-input"
                 />
               </div>
             </div>
 
             {error && (
-              <div className="text-red-600 text-sm">
-                {error}
+              <div className="flex items-start gap-2 rounded-lg border border-red-100 bg-red-50 p-3 text-sm text-red-700">
+                <span className="mt-0.5">⚠</span>
+                <span>{error}</span>
               </div>
             )}
 
@@ -116,7 +117,7 @@ const LoginPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex w-full justify-center rounded-md border border-transparent bg-black py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:opacity-50"
+                className="dashboard-btn-primary w-full"
               >
                 {loading ? 'Signing in...' : 'Sign in'}
               </button>
@@ -126,7 +127,7 @@ const LoginPage = () => {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-neutral-300" />
+                <div className="w-full border-t border-neutral-200" />
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="bg-white px-2 text-neutral-500">Or continue with</span>
@@ -138,7 +139,7 @@ const LoginPage = () => {
                 type="button"
                 onClick={handleGoogleLogin}
                 disabled={loading}
-                className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-3 rounded-lg border border-neutral-200 bg-white px-3 py-2.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50 transition-all duration-150 ease-out active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 disabled:opacity-40"
               >
                 <svg className="h-5 w-5" aria-hidden="true" viewBox="0 0 24 24">
                   <path
