@@ -10,7 +10,7 @@ export default function AnimatedBackground() {
         <div className="absolute inset-0 bg-slate-950/80 blur-[50px]"></div>
 
         {/* Mid Layer: Curved Hollow Ellipse Ribbons */}
-        <div className="absolute inset-0 opacity-80 mix-blend-screen" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 30%, transparent 90%)', maskImage: 'linear-gradient(to bottom, black 30%, transparent 90%)' }}>
+        <div className="absolute inset-0 opacity-60" style={{ WebkitMaskImage: 'linear-gradient(to bottom, black 30%, transparent 90%)', maskImage: 'linear-gradient(to bottom, black 30%, transparent 90%)' }}>
           {/* Ribbon 1: Primary Emerald Curve */}
           <div className="absolute top-[-60%] left-[-20%] w-[150vw] h-[120vh] border-[60px] border-emerald-500/25 rounded-[100%] blur-[40px] animate-[ribbon-wave-1_25s_ease-in-out_infinite]"></div>
           
@@ -25,17 +25,17 @@ export default function AnimatedBackground() {
         <div className="absolute top-[15%] left-[50%] -translate-x-1/2 w-[50%] h-[30%] rounded-[100%] bg-teal-400/5 blur-[100px]"></div>
         
         {/* Static Film Grain (Animation removed for performance) */}
-        <div className="absolute inset-[-10%] opacity-[0.04] mix-blend-screen" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+        <div className="absolute inset-[-10%] opacity-[0.03]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       </div>
       
       {/* Light Mode Papyrus Background (Sweeping Ink Washes & God Rays) */}
       <div className="dark:hidden fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#FAF3E0]">
         
         {/* Soft Sun Glow (Top Right) */}
-        <div className="absolute top-[-20%] right-[-10%] w-[70vw] h-[70vh] bg-amber-400/15 blur-[120px] rounded-full mix-blend-multiply"></div>
+        <div className="absolute top-[-20%] right-[-10%] w-[70vw] h-[70vh] bg-amber-400/15 blur-[120px] rounded-full"></div>
         
         {/* Soft Earth Glow (Bottom Left) */}
-        <div className="absolute bottom-[-20%] left-[-10%] w-[60vw] h-[60vh] bg-orange-600/10 blur-[120px] rounded-full mix-blend-multiply"></div>
+        <div className="absolute bottom-[-20%] left-[-10%] w-[60vw] h-[60vh] bg-orange-600/10 blur-[120px] rounded-full"></div>
 
         {/* Dune 1: Sweeping Hollow Curve */}
         <div className="absolute top-[-50%] left-[-20%] w-[150vw] h-[120vh] border-[80px] border-amber-700/5 rounded-[100%] blur-[40px] animate-[papyrus-dune-1_30s_ease-in-out_infinite] will-change-transform"></div>
@@ -44,10 +44,10 @@ export default function AnimatedBackground() {
         <div className="absolute bottom-[-60%] right-[-10%] w-[140vw] h-[130vh] border-[60px] border-orange-800/5 rounded-[100%] blur-[50px] animate-[papyrus-dune-2_35s_ease-in-out_infinite] will-change-transform"></div>
 
         {/* God Ray */}
-        <div className="absolute top-[-50%] left-[30%] w-[40vw] h-[200vh] bg-gradient-to-r from-transparent via-amber-100/40 to-transparent blur-[60px] mix-blend-overlay animate-[papyrus-ray_25s_ease-in-out_infinite] will-change-transform"></div>
+        <div className="absolute top-[-50%] left-[30%] w-[40vw] h-[200vh] bg-gradient-to-r from-transparent via-amber-100/30 to-transparent blur-[60px] animate-[papyrus-ray_25s_ease-in-out_infinite] will-change-transform"></div>
 
         {/* Subtle SVG Noise Texture for Papyrus feel */}
-        <div className="absolute inset-0 opacity-[0.35] mix-blend-multiply" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+        <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
       </div>
     </>
   );
