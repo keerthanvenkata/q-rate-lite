@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from './Logo';
 import { Sun, Moon, Menu, X } from 'lucide-react';
@@ -11,10 +11,19 @@ export default function Navbar() {
   const location = useLocation();
   const isLandingPage = location.pathname === '/';
   const { session, signOut } = useAuth();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 80);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <>
-      <nav className="fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-xl bg-[#FAF3E0]/70 dark:bg-zinc-950/60 border-b border-amber-200/50 dark:border-white/5">
+      <nav className={`fixed w-full z-50 top-0 transition-all duration-300 backdrop-blur-xl ${scrolled ? 'bg-[#FAF3E0]/80 dark:bg-zinc-950/70 border-b border-amber-200/50 dark:border-white/5 shadow-sm' : 'bg-transparent border-b border-transparent'}`}>
         <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
           <Link to="/">
             <Logo />
