@@ -32,7 +32,7 @@ export default function AnimatedBackground() {
       <div className="dark:hidden fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#FAF3E0]">
         
         {/* Soft Sun Glow (Top Right) */}
-        <div className="absolute top-[-20%] right-[-10%] w-[70vw] h-[70vh] bg-amber-400/15 blur-[120px] rounded-full"></div>
+        <div className="absolute top-[-20%] right-[-10%] w-[70vw] h-[70vh] bg-amber-400/20 blur-[120px] rounded-full"></div>
         
         {/* Soft Earth Glow (Bottom Left) */}
         <div className="absolute bottom-[-20%] left-[-10%] w-[60vw] h-[60vh] bg-orange-600/10 blur-[120px] rounded-full"></div>
@@ -45,6 +45,12 @@ export default function AnimatedBackground() {
 
         {/* God Ray */}
         <div className="absolute top-[-50%] left-[30%] w-[40vw] h-[200vh] bg-gradient-to-r from-transparent via-amber-100/30 to-transparent blur-[60px] animate-[papyrus-ray_25s_ease-in-out_infinite] will-change-transform"></div>
+
+        {/* Second God Ray */}
+        <div className="absolute top-[-40%] right-[20%] w-[30vw] h-[180vh] bg-gradient-to-l from-transparent via-amber-200/20 to-transparent blur-[50px] animate-[papyrus-ray_20s_ease-in-out_infinite_reverse] will-change-transform"></div>
+
+        {/* Headline Bloom */}
+        <div className="absolute top-[25%] left-[50%] -translate-x-1/2 w-[60%] h-[40%] rounded-full bg-amber-300/10 blur-[100px]"></div>
 
         {/* Subtle SVG Noise Texture for Papyrus feel */}
         <div className="absolute inset-0 opacity-[0.15]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
