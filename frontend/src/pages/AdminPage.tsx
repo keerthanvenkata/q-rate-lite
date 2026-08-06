@@ -26,16 +26,24 @@ export default function AdminPage() {
   const [me, setMe] = useState<MeData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('overview');
+  const [isExpired, setIsExpired] = useState(false);
 
   const loadDashboard = useCallback(async () => {
     if (!session) return;
     try {
-      const [resp, meResp] = await Promise.all([
-        fetchAdminDashboard(session.access_token),
-        fetchMe(session.access_token),
-      ]);
-      setData(resp);
+      const meResp = await fetchMe(session.access_token);
       setMe(meResp);
+      try {
+        const resp = await fetchAdminDashboard(session.access_token);
+        setData(resp);
+      } catch (dashErr: any) {
+        if (dashErr.message?.toLowerCase().includes('expired')) {
+          setIsExpired(true);
+          setActiveTab('billing');
+        } else {
+          throw dashErr;
+        }
+      }
     } catch (err: any) {
       setError(err.message || 'Failed to load dashboard.');
     }
@@ -79,7 +87,7 @@ export default function AdminPage() {
     );
   }
 
-  if (!data) {
+  if (!data && !isExpired) {
     return (
       <div className="dashboard-bg flex items-center justify-center h-screen">
         <div className="flex flex-col items-center gap-4 text-center">
@@ -133,14 +141,14 @@ export default function AdminPage() {
 
         {/* Navigation Tabs */}
         <div className="flex gap-1 bg-neutral-100 p-1 rounded-xl mb-8 overflow-x-auto">
-          <button onClick={() => setActiveTab('overview')} className={tabClass('overview')}>Overview</button>
-          <button onClick={() => setActiveTab('qrcode')} className={tabClass('qrcode')}>QR Code</button>
+          {!isExpired && <button onClick={() => setActiveTab('overview')} className={tabClass('overview')}>Overview</button>}
+          {!isExpired && <button onClick={() => setActiveTab('qrcode')} className={tabClass('qrcode')}>QR Code</button>}
           <button onClick={() => setActiveTab('billing')} className={tabClass('billing')}>Billing</button>
-          <button onClick={() => setActiveTab('settings')} className={tabClass('settings')}>Settings</button>
+          {!isExpired && <button onClick={() => setActiveTab('settings')} className={tabClass('settings')}>Settings</button>}
         </div>
 
         {/* Tab Content */}
-        {activeTab === 'overview' && (
+        {activeTab === 'overview' && data && (
           <div>
             {/* Stats Bar */}
             <div className="grid grid-cols-2 gap-5 mb-8">
@@ -266,7 +274,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {activeTab === 'qrcode' && (
+        {activeTab === 'qrcode' && data && (
           <QRCodeTab cafeId={data.cafe_id} />
         )}
 
