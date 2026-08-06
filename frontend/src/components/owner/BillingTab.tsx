@@ -51,11 +51,26 @@ export default function BillingTab({ token }: BillingTabProps) {
               razorpay_signature: response.razorpay_signature,
               plan: "monthly",
             });
-            // We give the webhook a slight head start before refreshing
-            setTimeout(() => {
-              loadStatus();
-              setIsLoading(false);
-            }, 1500);
+            
+            // Poll backend for status update since webhook handles activation
+            let attempts = 0;
+            const pollInterval = setInterval(async () => {
+              attempts++;
+              try {
+                const data = await fetchBillingStatus(token);
+                if (data.subscription_status === 'active' || attempts >= 5) {
+                  clearInterval(pollInterval);
+                  setStatus(data);
+                  setIsLoading(false);
+                  if (data.subscription_status !== 'active') {
+                     setError("Payment successful, but status is still updating. Please refresh in a moment.");
+                  }
+                }
+              } catch (e) {
+                // Ignore fetch errors during polling
+              }
+            }, 2000);
+            
           } catch (verifyErr: any) {
             setError(verifyErr.message || "Payment verification failed");
             setIsLoading(false);
