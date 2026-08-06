@@ -77,10 +77,10 @@ def verify_razorpay_payment(
     cafe: Cafe = Depends(get_current_user)
 ):
     """
-    Verifies the Razorpay payment signature and immediately activates the
-    subscription. The webhook (POST /billing/webhook) will also fire and
-    is idempotent — it becomes a no-op if the audit log already records
-    this payment_id.
+    Verifies the Razorpay payment signature.
+    Unlike before, this NO LONGER updates the subscription status optimistically.
+    All subscription updates and audit logs are delegated to the secure webhook
+    to prevent plan spoofing.
     """
     # 1. Verify signature
     try:
@@ -98,35 +98,8 @@ def verify_razorpay_payment(
         logger.error(f"Signature verification failed: {e}", exc_info=True)
         raise HTTPException(status_code=400, detail="Signature verification failed")
 
-    # 2. Activate subscription immediately (optimistic)
-    # The webhook is the authoritative source; this prevents the UX gap where
-    # the user sees 'payment successful' but their subscription is still 'trial'.
-    plan = data.plan if data.plan in ("monthly", "annual") else "monthly"
-    days = 30 if plan == "monthly" else 365
-    old_status = cafe.subscription_status
-    cafe.subscription_status = "active"
-    cafe.subscription_plan = plan
-    cafe.plan_expiry = datetime.now(timezone.utc) + timedelta(days=days)
-    log_audit(
-        db=db,
-        actor=f"cafe_{cafe.id}",
-        action="SUBSCRIPTION_ACTIVATED_VERIFY",
-        target_cafe_id=cafe.id,
-        details={
-            "old_status": old_status,
-            "plan": plan,
-            "payment_id": data.razorpay_payment_id,
-            "order_id": data.razorpay_order_id,
-        },
-    )
-    try:
-        db.commit()
-    except Exception:
-        db.rollback()
-        logger.error("Failed to activate subscription on verify-payment", exc_info=True)
-        raise HTTPException(status_code=500, detail="Payment verified but failed to activate subscription. Please contact support.")
-
-    return {"status": "success", "subscription_status": "active", "plan": plan}
+    # Return processing state; the webhook will update the DB.
+    return {"status": "processing", "message": "Payment verified. Subscription will be updated shortly via webhook."}
 
 def _process_webhook(payment_id: str, cafe_id: str, plan: str, amount: int):
     db = SessionLocal()
