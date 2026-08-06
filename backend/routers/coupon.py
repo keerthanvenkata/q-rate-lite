@@ -18,7 +18,7 @@ class RedeemRequest(BaseModel):
     passcode: str # Simple staff pin/password
 
 @router.post("/redeem")
-@limiter.limit("5/minute")
+@limiter.limit("30/minute")
 def redeem_coupon(data: RedeemRequest, request: Request, db: Session = Depends(get_db)):
     # 1. Find Coupon
     coupon = db.query(Coupon).filter(Coupon.code == data.coupon_code).with_for_update().first()
