@@ -29,25 +29,19 @@ def decode_access_token(token: str):
     """
     Safely decode and verify a Q-Rate customer token.
 
-    Security invariant: the signature is ALWAYS verified first.
-    We never decode with verify_signature=False.  Instead we do a
-    two-pass approach:
-      1. Decode with audience/issuer verification relaxed to extract cafe_id.
-      2. If cafe_id is present, re-decode with strict per-cafe audience and
-         issuer enforcement to prevent cross-cafe token reuse.
+    Security invariant: the signature is ALWAYS verified.
+    We do a two-pass approach:
+      1. Extract unverified claims to get the cafe_id claim without computing HMAC.
+      2. If cafe_id is present, decode with strict per-cafe audience and
+         issuer enforcement and full signature verification to prevent cross-cafe token reuse.
     """
     try:
-        # Pass 1: verify signature + expiry; relax aud/iss to read cafe_id claim
-        payload = jwt.decode(
-            token,
-            SECRET_KEY,
-            algorithms=[ALGORITHM],
-            options={"verify_aud": False, "verify_iss": False},
-        )
-        cafe_id = payload.get("cafe_id")
+        # Pass 1: Extract claims without verifying signature
+        unverified_claims = jwt.get_unverified_claims(token)
+        cafe_id = unverified_claims.get("cafe_id")
 
         if cafe_id:
-            # Pass 2: re-verify with strict per-cafe audience and issuer
+            # Pass 2: verify signature and strict per-cafe audience and issuer
             payload = jwt.decode(
                 token,
                 SECRET_KEY,
@@ -55,6 +49,13 @@ def decode_access_token(token: str):
                 audience=f"cafe-{cafe_id}",
                 issuer="qrate-customer",
             )
-        return payload
+            return payload
+        else:
+            # Fallback for tokens without cafe_id (if any)
+            return jwt.decode(
+                token,
+                SECRET_KEY,
+                algorithms=[ALGORITHM]
+            )
     except JWTError:
         return None
