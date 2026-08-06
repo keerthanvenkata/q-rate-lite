@@ -6,7 +6,8 @@ import hashlib
 import re
 import logging
 from fastapi.concurrency import run_in_threadpool
-from database import SessionLocal
+from database import SessionLocal, get_db
+from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from models import ProcessedWebhook, Cafe
 
@@ -49,8 +50,7 @@ from limiter import limiter
 
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
-def _check_webhook_replay(message_id: str) -> bool:
-    db = SessionLocal()
+def _check_webhook_replay(db: Session, message_id: str) -> bool:
     try:
         new_webhook = ProcessedWebhook(message_id=message_id)
         db.add(new_webhook)
@@ -59,8 +59,6 @@ def _check_webhook_replay(message_id: str) -> bool:
     except IntegrityError:
         db.rollback()
         return True
-    finally:
-        db.close()
 
 async def verify_meta_signature(request: Request):
     """
@@ -84,7 +82,7 @@ async def verify_meta_signature(request: Request):
 
 @router.post("/webhook", dependencies=[Depends(verify_meta_signature)])
 @limiter.limit("100/minute")
-async def receive_webhook(request: Request):
+async def receive_webhook(request: Request, db: Session = Depends(get_db)):
     """
     Receives inbound messages and delivery status updates from Meta.
     """
@@ -102,7 +100,7 @@ async def receive_webhook(request: Request):
                     for msg in value.get("messages", []):
                         message_id = msg.get("id")
                         if message_id:
-                            is_replay = await run_in_threadpool(_check_webhook_replay, message_id)
+                            is_replay = await run_in_threadpool(_check_webhook_replay, db, message_id)
                             if is_replay:
                                 continue
 
@@ -123,22 +121,24 @@ async def receive_webhook(request: Request):
 
                         cafe_id = int(match.group(1))
 
-                        # Validate the cafe exists and is active before issuing a token
-                        def _lookup_cafe(cid: int):
-                            db = SessionLocal()
-                            try:
-                                return db.query(Cafe).filter(
-                                    Cafe.id == cid,
-                                    Cafe.subscription_status.in_(["active", "trial"])
-                                ).first()
-                            finally:
-                                db.close()
+                        def _lookup_cafe_status(cid: int):
+                            c = db.query(Cafe).filter(Cafe.id == cid).first()
+                            if not c:
+                                return None, False
+                            return c, c.subscription_status in ("active", "trial")
 
-                        cafe = await run_in_threadpool(_lookup_cafe, cafe_id)
+                        cafe, is_active = await run_in_threadpool(_lookup_cafe_status, cafe_id)
                         if not cafe:
                             await send_whatsapp_text(
                                 to_phone=phone_number,
                                 text_message="Sorry, we couldn't find that cafe. Please re-scan the QR code."
+                            )
+                            continue
+                            
+                        if not is_active:
+                            await send_whatsapp_text(
+                                to_phone=phone_number,
+                                text_message="This cafe's feedback system is currently inactive."
                             )
                             continue
 
