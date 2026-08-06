@@ -102,6 +102,23 @@ def _log_blast(cafe_id: int, success_count: int, template_name: str):
         db.close()
 
 
+def _refund_credits(cafe_id: int, refund_amount: int):
+    if refund_amount <= 0:
+        return
+    db = SessionLocal()
+    try:
+        cafe = db.query(Cafe).filter(Cafe.id == cafe_id).first()
+        if cafe:
+            cafe.marketing_credits += refund_amount
+            db.commit()
+            logger.info(f"Refunded {refund_amount} credits to cafe {cafe_id}")
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to refund credits for cafe {cafe_id}: {e}", exc_info=True)
+    finally:
+        db.close()
+
+
 @router.post("/blast")
 async def send_marketing_blast(data: BlastRequest, cafe: Cafe = Depends(require_active_subscription)):
     # Run DB preparation in threadpool to avoid blocking event loop
@@ -136,6 +153,11 @@ async def send_marketing_blast(data: BlastRequest, cafe: Cafe = Depends(require_
             else:
                 # Covers simulated responses and other non-error dicts
                 success_count += 1
+
+    failed_count = len(phones) - success_count
+    if failed_count > 0:
+        await run_in_threadpool(_refund_credits, cafe_id, failed_count)
+        remaining_credits += failed_count
 
     # Log audit in threadpool
     await run_in_threadpool(_log_blast, cafe_id, success_count, data.template_name)
